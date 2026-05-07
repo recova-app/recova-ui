@@ -4,6 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
+  static const bool useMockMode = true;
+
   // TODO: Pindahkan ke environment variables
   static const String _googleClientId =
       '756280521811-8g4mpvlputn04ltqdcghionnbrebhqbo.apps.googleusercontent.com';
@@ -16,6 +18,10 @@ class AuthService {
   final _storage = const FlutterSecureStorage();
 
   Future<String?> signInWithGoogle() async {
+    if (useMockMode) {
+      return mockSignInDev();
+    }
+
     // 1. Lakukan sign in dengan Google
     final GoogleSignInAccount? account = await _googleSignIn.signIn();
     if (account == null) {
@@ -43,8 +49,14 @@ class AuthService {
       // Try several common places where the backend might place the JWT.
       String? jwtToken;
       if (data is Map<String, dynamic>) {
-        jwtToken = data['data'] is Map ? (data['data']['token'] ?? data['data']['accessToken'] ?? data['data']['access_token']) : null;
-        jwtToken ??= data['token'] ?? data['accessToken'] ?? data['access_token'];
+        jwtToken =
+            data['data'] is Map
+                ? (data['data']['token'] ??
+                    data['data']['accessToken'] ??
+                    data['data']['access_token'])
+                : null;
+        jwtToken ??=
+            data['token'] ?? data['accessToken'] ?? data['access_token'];
       }
 
       if (jwtToken != null && jwtToken.isNotEmpty) {
@@ -53,14 +65,27 @@ class AuthService {
         return jwtToken;
       } else {
         // Provide the raw response body to help debugging backend changes.
-        throw Exception("Respons dari server tidak valid (token tidak ditemukan). Body: ${response.body}");
+        throw Exception(
+          "Respons dari server tidak valid (token tidak ditemukan). Body: ${response.body}",
+        );
       }
     } else {
       throw Exception("Login gagal: ${response.body}");
     }
   }
 
+  Future<String> mockSignInDev() async {
+    const token = 'mock-dev-token';
+    await _storage.write(key: 'jwt_token', value: token);
+    return token;
+  }
+
   Future<void> logout() async {
+    if (useMockMode) {
+      await _storage.delete(key: 'jwt_token');
+      return;
+    }
+
     // Hapus token dari kedua tempat
     await _googleSignIn.signOut();
     await _storage.delete(key: 'jwt_token');
