@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:recova/pages/home_page.dart';
-import 'package:recova/pages/create_post_page.dart';
-import 'package:recova/pages/stats_page.dart';
 import 'package:recova/pages/community_page.dart';
+import 'package:recova/pages/create_post_page.dart';
 import 'package:recova/pages/education_page.dart';
+import 'package:recova/pages/home_page.dart';
 import 'package:recova/pages/profile_page.dart';
+import 'package:recova/pages/stats_page.dart';
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
@@ -14,75 +14,101 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
+  static const Color _selectedColor = Color(0xFF0E6B52);
+  static const Color _unselectedColor = Color(0xFF111111);
+
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomePage(),
-    const StatsPage(),
-    const CommunityPage(),
-    const EducationPage(),
-    const ProfilePage(),
+  final List<Widget> _pages = const [
+    HomePage(),
+    StatsPage(),
+    CommunityPage(),
+    EducationPage(),
+    ProfilePage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
-      // Gunakan IndexedStack untuk menjaga state setiap halaman
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
+      backgroundColor: Colors.white,
+      body: IndexedStack(index: _currentIndex, children: _pages),
+      floatingActionButton:
+          _currentIndex == 2
+              ? FloatingActionButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const CreatePostPage(),
+                    ),
+                  );
+                },
+                backgroundColor: _selectedColor,
+                shape: const CircleBorder(),
+                child: const Icon(Icons.add, color: Colors.white),
+              )
+              : null,
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x14000000),
+                blurRadius: 18,
+                offset: Offset(0, -4),
+              ),
+            ],
+          ),
+          child: NavigationBar(
+            selectedIndex: _currentIndex,
+            onDestinationSelected: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            backgroundColor: Colors.white,
+            indicatorColor: _selectedColor,
+            elevation: 0,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+            destinations: [
+              _navDestination('assets/images/menu/home_icon.png', 0, 'Home'),
+              _navDestination('assets/images/menu/stat_icon.png', 1, 'Stats'),
+              _navDestination(
+                'assets/images/menu/comm_icon.png',
+                2,
+                'Community',
+              ),
+              _navDestination(
+                'assets/images/menu/book_icon.png',
+                3,
+                'Education',
+              ),
+              _navDestination(
+                'assets/images/menu/setting_icon.png',
+                4,
+                'Profile',
+              ),
+            ],
+          ),
+        ),
       ),
-      floatingActionButton: _currentIndex == 2
-          ? FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CreatePostPage(),
-                  ),
-                );
-              },
-              backgroundColor: const Color(0xFF2EC4B6),
-              shape: const CircleBorder(),
-              child: const Icon(Icons.add, color: Colors.white),
-            )
-          : null,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF2EC4B6),
-        unselectedItemColor: const Color.fromARGB(255, 0, 0, 0),
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/menu/home_icon.png')),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/menu/stat_icon.png')),
-            label: 'Stats',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/menu/comm_icon.png')),
-            label: 'Community',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/menu/book_icon.png')),
-            label: 'Eduacation',
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/menu/setting_icon.png')),
-            label: 'Profile',
-          ),
-        ],
+    );
+  }
+
+  NavigationDestination _navDestination(
+    String assetPath,
+    int index,
+    String label,
+  ) {
+    final selected = _currentIndex == index;
+
+    return NavigationDestination(
+      icon: ImageIcon(
+        AssetImage(assetPath),
+        color: selected ? Colors.white : _unselectedColor,
       ),
+      selectedIcon: ImageIcon(AssetImage(assetPath), color: Colors.white),
+      label: label,
     );
   }
 }

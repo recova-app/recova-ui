@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/checkin_cubit.dart';
+import 'package:get/get.dart';
+import 'package:recova/controllers/checkin/checkin_controller.dart';
 
 class CheckInPage extends StatefulWidget {
   final int streakDays;
@@ -14,6 +14,7 @@ class CheckInPage extends StatefulWidget {
 
 class _CheckInPageState extends State<CheckInPage> {
   late final TextEditingController _journalController;
+  late final CheckinController _checkinController;
   final List<String> _templates = [
     'Aku merasa sangat tersiksa hari ini',
     'Hari ini cukup menantang',
@@ -25,6 +26,7 @@ class _CheckInPageState extends State<CheckInPage> {
   void initState() {
     super.initState();
     _journalController = TextEditingController();
+    _checkinController = Get.find<CheckinController>();
   }
 
   @override
@@ -45,19 +47,19 @@ class _CheckInPageState extends State<CheckInPage> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: BlocBuilder<CheckinCubit, CheckinState>(
-        builder: (context, state) {
-          final isAlreadyCheckedIn = widget.hasCheckedInToday || state is CheckinSuccess;
-          final displayStreak = (state is CheckinSuccess) ? widget.streakDays + 1 : widget.streakDays;
+      body: Obx(() {
+        final state = _checkinController.state.value;
+        final isAlreadyCheckedIn = widget.hasCheckedInToday || state is CheckinSuccess;
+        final displayStreak = (state is CheckinSuccess) ? widget.streakDays + 1 : widget.streakDays;
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 16),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 16),
 
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 500),
@@ -114,49 +116,47 @@ class _CheckInPageState extends State<CheckInPage> {
                   Text(_getTodayDate(), style: const TextStyle(color: Colors.black54, fontSize: 13)),
 
                   const SizedBox(height: 20),
-                ],
-              ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      }),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
         child: SizedBox(
           width: double.infinity,
-          child: BlocBuilder<CheckinCubit, CheckinState>(
-            builder: (context, state) {
-              final isAlreadyCheckedIn = widget.hasCheckedInToday || state is CheckinSuccess;
-              final isCheckingIn = state is CheckinLoading;
+          child: Obx(() {
+            final state = _checkinController.state.value;
+            final isAlreadyCheckedIn = widget.hasCheckedInToday || state is CheckinSuccess;
+            final isCheckingIn = state is CheckinLoading;
 
-              return ElevatedButton(
-                onPressed: (isCheckingIn || isAlreadyCheckedIn)
-                    ? null
-                    : () async {
-                        await context.read<CheckinCubit>().performCheckIn(journal: _journalController.text);
-                        if (!context.mounted) return;
+            return ElevatedButton(
+              onPressed: (isCheckingIn || isAlreadyCheckedIn)
+                  ? null
+                  : () async {
+                      await _checkinController.performCheckIn(journal: _journalController.text);
+                      if (!context.mounted) return;
 
-                        final resultState = context.read<CheckinCubit>().state;
+                      final resultState = _checkinController.state.value;
 
-                        if (resultState is CheckinSuccess) {
-                          _journalController.clear();
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Berhasil check-in. Terima kasih!')));
-                        } else if (resultState is CheckinFailure) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(resultState.error)));
-                        }
-                      },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2EC4B6),
-                  disabledBackgroundColor: const Color(0xFFB2DFDB),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                ),
-                child: isCheckingIn
-                    ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white))
-                    : Text(isAlreadyCheckedIn ? 'Sudah Check-in' : 'Check In', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-              );
-            },
-          ),
+                      if (resultState is CheckinSuccess) {
+                        _journalController.clear();
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Berhasil check-in. Terima kasih!')));
+                      } else if (resultState is CheckinFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(resultState.error)));
+                      }
+                    },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2EC4B6),
+                disabledBackgroundColor: const Color(0xFFB2DFDB),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              ),
+              child: isCheckingIn
+                  ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white))
+                  : Text(isAlreadyCheckedIn ? 'Sudah Check-in' : 'Check In', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+            );
+          }),
         ),
       ),
     );

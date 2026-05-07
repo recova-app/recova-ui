@@ -1,24 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/checkin_cubit.dart';
-import 'package:recova/bloc/home_cubit.dart';
-import 'package:recova/models/user_model.dart';
+import 'package:get/get.dart';
+import 'package:recova/controllers/checkin/checkin_controller.dart';
+import 'package:recova/controllers/home/home_controller.dart';
 import 'package:recova/models/statistics_model.dart';
 import 'package:recova/pages/checkin_page.dart';
-import 'package:recova/pages/login_page.dart';
 import 'package:recova/pages/emergency_page.dart';
+import 'package:recova/pages/login_page.dart';
+import 'package:recova/services/api_service.dart';
 import 'package:recova/services/auth_service.dart';
+import 'package:recova/widgets/recova_ui.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late final HomeController _homeController;
+  late final CheckinController _checkinController;
+
+  @override
+  void initState() {
+    super.initState();
+    _homeController = Get.find<HomeController>();
+    _checkinController = Get.find<CheckinController>();
+    if (!ApiService.useMockData) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _homeController.fetchHomeData();
+      });
+    }
+  }
+
   Future<void> _handleLogout(BuildContext context) async {
-    final AuthService authService = AuthService();
+    final authService = AuthService();
     await authService.logout();
 
     if (!context.mounted) return;
 
-    // Navigasi ke halaman login dan hapus semua rute sebelumnya
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const LoginPage()),
       (route) => false,
@@ -29,11 +49,10 @@ class HomePage extends StatelessWidget {
     if (stats == null || stats.streakCalendar.isEmpty) {
       return false;
     }
-    // Ambil tanggal terakhir dari kalender streak
+
     final lastCheckInDate = DateTime.parse(stats.streakCalendar.last);
     final now = DateTime.now();
 
-    // Bandingkan hanya tahun, bulan, dan hari
     return lastCheckInDate.year == now.year &&
         lastCheckInDate.month == now.month &&
         lastCheckInDate.day == now.day;
@@ -41,382 +60,428 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Panggil fetchHomeData jika state masih initial
-    final homeState = context.watch<HomeCubit>().state;
-    if (homeState is HomeInitial) {
-      context.read<HomeCubit>().fetchHomeData();
-    }
-
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
-      body: BlocBuilder<HomeCubit, HomeState>(
-          builder: (context, state) {
-            if (state is HomeLoading || state is HomeInitial) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      backgroundColor: Colors.white,
+      body: Obx(() {
+        final state = _homeController.state.value;
 
-            if (state is HomeLoadFailure) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Gagal memuat data: ${state.error}'),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () => context.read<HomeCubit>().fetchHomeData(),
-                      child: const Text('Coba Lagi'),
-                    )
-                  ],
-                ),
-              );
-            }
+        if (state is HomeLoading || state is HomeInitial) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-            if (state is HomeLoadSuccess) {
-              final user = state.user;
-              final stats = state.statistics;
-              final hasCheckedInToday = _hasCheckedInToday(stats);
-              const totalDays = 32;
-
-              return RefreshIndicator(
-                onRefresh: () => context.read<HomeCubit>().fetchHomeData(),
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // ===== HEADER STREAK =====
-                      _buildHeader(context, user, stats, totalDays),
-
-                      // ===== KONTEN UTAMA =====
-                      _buildMainContent(context, stats, hasCheckedInToday),
-                    ],
+        if (state is HomeLoadFailure) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    color: Color(0xFFD65A5A),
+                    size: 48,
                   ),
-                ),
-              );
-            }
-
-            return const SizedBox.shrink(); // Should not happen
-          },
-        ),
-      );
-  }
-
-  Widget _buildHeader(
-      BuildContext context, User user, Statistics stats, int totalDays) {
-    return Container(
-                padding: const EdgeInsets.fromLTRB(20, 40, 20, 30),
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF003E53),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Row(
-                          children: [
-                            Text(
-                              'Streak Kamu',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Text('🔥', style: TextStyle(fontSize: 24)),
-                          ],
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.logout, color: Colors.white),
-                          onPressed: () => _handleLogout(context),
-                          tooltip: 'Logout',
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    // Greeting using user nickname (prevents unused-field lint)
-                    Text(
-                      'Hi, ${user.nickname}',
-                      style: const TextStyle(color: Colors.white70, fontSize: 14),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Setelah Melakukan Daily Check-in streak kamu akan terupdate di tengah malam',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Progress: ${stats.currentStreak} / $totalDays Days',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: LinearProgressIndicator(
-                        value: stats.currentStreak / totalDays,
-                        backgroundColor: Colors.white30,
-                        valueColor:
-                            const AlwaysStoppedAnimation<Color>(Colors.white),
-                        minHeight: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-  }
-
-  Widget _buildMainContent(
-      BuildContext context, Statistics stats, bool hasCheckedInToday) {
-    return Container(
-                transform: Matrix4.translationValues(0, -10, 0),
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Gagal memuat data: ${state.error}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 15),
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ===== DAILY ROUTINE =====
-                    const Text(
-                      'Daily Routine',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _homeController.fetchHomeData,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF0E6B52),
+                      foregroundColor: Colors.white,
                     ),
-                    const SizedBox(height: 16),
-                    InkWell(
-                      onTap: () async {
-                        // Capture objects that depend on the BuildContext before any await
-                        final checkinCubit = context.read<CheckinCubit>();
-                        final homeCubit = context.read<HomeCubit>();
-                        final messenger = ScaffoldMessenger.of(context);
+                    child: const Text('Coba Lagi'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
 
-                        // Reset cubit state before navigating so any previous
-                        // CheckinFailure/CheckinSuccess doesn't trigger logic prematurely.
-                        checkinCubit.resetState();
+        if (state is! HomeLoadSuccess) {
+          return const SizedBox.shrink();
+        }
 
-                        // Navigasi ke CheckInPage dan tunggu hasilnya (saat di-pop).
-                        final result = await Navigator.push<CheckinState?>(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CheckInPage(
-                              streakDays: stats.currentStreak,
-                              hasCheckedInToday: hasCheckedInToday,
-                            ),
-                          ),
-                        );
+        final user = state.user;
+        final stats = state.statistics;
+        final hasCheckedInToday = _hasCheckedInToday(stats);
+        const totalDays = 32;
 
-                        // Jika hasilnya bukan null, tangani notifikasi di sini
-                        if (result != null) {
-                          if (result is CheckinSuccess) {
-                            homeCubit.updateStreakAfterCheckin();
-                            messenger
-                              ..hideCurrentSnackBar()
-                              ..showSnackBar(
-                                const SnackBar(
-                                  content: Text("Check-in berhasil! ✅"),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
-                          } else if (result is CheckinFailure) {
-                            messenger
-                              ..hideCurrentSnackBar()
-                              ..showSnackBar(
-                                SnackBar(
-                                  content: Text("Gagal check-in: ${result.error}"),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                          }
-
-                          // Setelah menampilkan notifikasi, reset state cubit agar bersih
-                          checkinCubit.resetState();
-                          // Refresh data home untuk memperbarui streak/statistics
-                          homeCubit.fetchHomeData();
-                        }
-                      },
-                      child: RoutineCard(
-                        icon: 'assets/images/home/icon_checkin.png',
-                        title: 'Check-In Harian',
-                        subtitle: hasCheckedInToday
-                            ? 'Kamu sudah check-in hari ini. Sampai jumpa besok!'
-                            : 'Laporkan progres pemulihanmu hari ini',
-                        backgroundColor: const Color(0xFFE3FDFB),
-                      ),
+        return RefreshIndicator(
+          onRefresh: _homeController.fetchHomeData,
+          color: const Color(0xFF0E6B52),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 40, 20, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RecovaTopBar(
+                    onLeftPressed: () => _handleLogout(context),
+                    onRightPressed: () {},
+                    leftIcon: Icons.settings,
+                  ),
+                  const SizedBox(height: 28),
+                  Text(
+                    'Halo, ${user.nickname}! 👋',
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w800,
+                      height: 1.0,
                     ),
-                    const SizedBox(height: 12),
-                    RoutineCard(
-                      icon: 'assets/images/home/icon_motivation.png',
-                      title: 'Motivation',
-                      subtitle:
-                          'Dapatkan Motivasi Untuk tetap terus di jalan yang benar',
-                      backgroundColor: const Color(0xFFFFF9C4),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Proud of you for showing up today',
+                    style: TextStyle(fontSize: 16, color: Color(0xFF8B98A0)),
+                  ),
+                  const SizedBox(height: 18),
+                  RecovaHeroBanner(
+                    title: 'Streak Kamu\n${stats.currentStreak} Hari',
+                    subtitle:
+                        'Setelah melakukan daily check-in streak kamu akan terupdate di tengah malam',
+                    imagePath: 'assets/images/home/gunung.png',
+                    height: 150,
+                    imageWidth: 130,
+                    contentPadding: const EdgeInsets.fromLTRB(20, 22, 14, 18),
+                    footer: _buildWeekFooter(stats, totalDays),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Daily Routine',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 16),
+                  RecovaFeatureCard(
+                    onTap:
+                        () => _openCheckIn(stats, hasCheckedInToday, context),
+                    title:
+                        'Check-In Harian Diatur Saat ${_formatCheckInTime(user.checkinTime)}',
+                    subtitle: 'Klik untuk Check-In lebih awal',
+                    assetPath: 'assets/images/home/icon_checkin.png',
+                    backgroundColor: const Color(0xFFEAF9F1),
+                    iconBackground: Colors.white,
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: Color(0xFF1A1A1A),
                     ),
-                    const SizedBox(height: 12),
-                    RoutineCard(
-                      icon: 'assets/images/home/icon_challenge.png',
-                      title: 'Daily Activity Challenge',
-                      subtitle:
-                          'Dapatkan Tantangan harian untuk mengatasi rasa bosanmu',
-                      backgroundColor: const Color(0xFFF3E5F5),
-                    ),
-                    const SizedBox(height: 30),
-
-                    // ===== BANTU PEMULIHAN =====
-                    const Text(
-                      'Bantu Pemulihan',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 16),
-                    const EmergencyButton(),
-                    const SizedBox(height: 12),
-                    const RoutineCard( // Tambahkan const
-                      icon: 'assets/images/home/icon_coach.png',
-                      title: 'Smart Personal AI Coach',
-                      subtitle:
-                          'Dapatkan Insight untuk Keluhan atau Pertanyaanmu',
-                      backgroundColor: Color(0xFFE0F7FA),
-                    ),
-                    const SizedBox(height: 30),
-
-                    // ===== TODAY INSIGHT =====
-                    const Row(
-                      children: [
-                        Text(
-                          'Today Insight',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 14),
+                  const RecovaFeatureCard(
+                    title: 'Motivation',
+                    subtitle:
+                        'Dapatkan Motivasi Untuk tetap terus di jalan yang benar',
+                    assetPath: 'assets/images/home/icon_motivation.png',
+                    backgroundColor: Color(0xFFF2F2F2),
+                    iconBackground: Colors.white,
+                  ),
+                  const SizedBox(height: 14),
+                  const RecovaFeatureCard(
+                    title: 'Daily Activity Challenge',
+                    subtitle:
+                        'Dapatkan Tantangan harian untuk mengatasi rasa bosanmu',
+                    assetPath: 'assets/images/home/icon_challenge.png',
+                    backgroundColor: Color(0xFFF2F2F2),
+                    iconBackground: Colors.white,
+                  ),
+                  const SizedBox(height: 28),
+                  const Text(
+                    'Bantu Pemulihan',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 16),
+                  _RecoveryActionCard(
+                    title: 'Emergency Button',
+                    subtitle:
+                        'Dapatkan Bantuan instan ketika dalam waktu feeling tempted',
+                    assetPath: 'assets/images/home/icon_emergency.png',
+                    backgroundColor: const Color(0xFFFF9191),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EmergencyPage(),
+                          fullscreenDialog: true,
                         ),
-                        SizedBox(width: 8),
-                        Text('✨', style: TextStyle(fontSize: 18)),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    const InsightCard(),
-                  ],
-                ),
-              );
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 14),
+                  const _RecoveryActionCard(
+                    title: 'Smart Personal AI Coach',
+                    subtitle:
+                        'Dapatkan Insight untuk Keluhan atau Pertanyaanmu',
+                    assetPath: 'assets/images/home/icon_coach.png',
+                    backgroundColor: Color(0xFFF0F0F0),
+                  ),
+                  const SizedBox(height: 28),
+                  const Text(
+                    'Today Insight',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 16),
+                  const _InsightPanel(),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
+    );
   }
-}
 
-class RoutineCard extends StatelessWidget {
-  final String icon;
-  final String title;
-  final String subtitle;
-  final Color backgroundColor;
+  Widget _buildWeekFooter(Statistics stats, int totalDays) {
+    final now = DateTime.now();
+    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    final trackedDays =
+        stats.streakCalendar
+            .map((date) => DateTime.parse(date))
+            .map((date) => DateTime(date.year, date.month, date.day))
+            .toSet();
 
-  const RoutineCard({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.backgroundColor,
-  });
+    const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-  @override
-  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.grey.withAlpha((0.1 * 255).round()),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
+            color: Color(0x16000000),
+            blurRadius: 16,
+            offset: Offset(0, 8),
           ),
         ],
       ),
-      child: Row(
+      child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Image.asset(icon, width: 28, height: 28),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(7, (index) {
+              final day = DateTime(
+                startOfWeek.year,
+                startOfWeek.month,
+                startOfWeek.day + index,
+              );
+              final checked = trackedDays.any(
+                (item) =>
+                    item.year == day.year &&
+                    item.month == day.month &&
+                    item.day == day.day,
+              );
+              final isToday =
+                  day.year == now.year &&
+                  day.month == now.month &&
+                  day.day == now.day;
+              return Expanded(
+                child: Column(
+                  children: [
+                    Text(
+                      dayLabels[index],
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF5A6268),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: 26,
+                      height: 26,
+                      decoration: BoxDecoration(
+                        color:
+                            checked
+                                ? const Color(0xFF2FB15A)
+                                : Colors.transparent,
+                        border: Border.all(
+                          color:
+                              isToday
+                                  ? const Color(0xFF2FB15A)
+                                  : const Color(0xFFD5D5D5),
+                          width: 1.6,
+                        ),
+                        shape: BoxShape.circle,
+                      ),
+                      child:
+                          checked
+                              ? const Icon(
+                                Icons.check,
+                                size: 16,
+                                color: Colors.white,
+                              )
+                              : null,
+                    ),
+                  ],
+                ),
+              );
+            }),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 15)),
-                const SizedBox(height: 4),
-                Text(subtitle,
-                    style:
-                        const TextStyle(fontSize: 13, color: Colors.black54)),
-              ],
+          const SizedBox(height: 14),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Progress: ${stats.currentStreak} / $totalDays Days',
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF5E6B72),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: LinearProgressIndicator(
+              value: stats.currentStreak / totalDays,
+              backgroundColor: const Color(0xFFD7D7D7),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xFF2FB15A),
+              ),
+              minHeight: 14,
             ),
           ),
         ],
       ),
     );
   }
+
+  String _formatCheckInTime(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return '10 pm';
+    }
+
+    final normalized = value.trim().toLowerCase();
+    if (normalized.contains(':')) {
+      return normalized;
+    }
+    return normalized;
+  }
+
+  Future<void> _openCheckIn(
+    Statistics stats,
+    bool hasCheckedInToday,
+    BuildContext context,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    _checkinController.resetState();
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => CheckInPage(
+              streakDays: stats.currentStreak,
+              hasCheckedInToday: hasCheckedInToday,
+            ),
+      ),
+    );
+
+    final resultState = _checkinController.state.value;
+    if (resultState is CheckinSuccess) {
+      _homeController.updateStreakAfterCheckin();
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Check-in berhasil! ✅'),
+            backgroundColor: Colors.green,
+          ),
+        );
+    } else if (resultState is CheckinFailure) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text('Gagal check-in: ${resultState.error}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+    }
+
+    _checkinController.resetState();
+    _homeController.fetchHomeData();
+  }
 }
 
-class EmergencyButton extends StatelessWidget {
-  const EmergencyButton({super.key});
+class _RecoveryActionCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String assetPath;
+  final Color backgroundColor;
+  final VoidCallback? onTap;
+
+  const _RecoveryActionCard({
+    required this.title,
+    required this.subtitle,
+    required this.assetPath,
+    required this.backgroundColor,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const EmergencyPage(),
-            fullscreenDialog: true, // Menampilkan halaman dari bawah
-          ),
-        );
-      },
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFCDD2),
-          borderRadius: BorderRadius.circular(16),
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(18),
         ),
         child: Row(
           children: [
-            Image.asset('assets/images/home/icon_emergency.png',
-                width: 32, height: 32),
-            const SizedBox(width: 16),
-            const Expanded(
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Center(
+                child: Image.asset(assetPath, width: 24, height: 24),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Emergency Button',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Color(0xFFC62828))),
-                  SizedBox(height: 4),
                   Text(
-                    'Dapatkan Bantuan instan ketika dalam waktu feeling tempted',
-                    style: TextStyle(fontSize: 13, color: Color(0xFFD32F2F)),
+                    title,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.white.withValues(alpha: 0.92),
+                      height: 1.2,
+                    ),
                   ),
                 ],
               ),
             ),
+            if (onTap != null) ...[
+              const SizedBox(width: 8),
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: Colors.white,
+              ),
+            ],
           ],
         ),
       ),
@@ -424,16 +489,16 @@ class EmergencyButton extends StatelessWidget {
   }
 }
 
-class InsightCard extends StatelessWidget {
-  const InsightCard({super.key});
+class _InsightPanel extends StatelessWidget {
+  const _InsightPanel();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F7),
-        borderRadius: BorderRadius.circular(16),
+        color: const Color(0xFFF1F1F1),
+        borderRadius: BorderRadius.circular(18),
       ),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,14 +506,15 @@ class InsightCard extends StatelessWidget {
           Text(
             '“Kamu sudah melakukan yang terbaik hari ini, hasil yang memuaskan datang dari hal kecil yang dilakukan secara konsisten.”',
             style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                fontStyle: FontStyle.italic),
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              height: 1.25,
+            ),
           ),
           SizedBox(height: 16),
           Text(
             'Insight ini dibuat dari journal harian yang kamu tulis dan aktifitas daily check-in kamu',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
+            style: TextStyle(fontSize: 12, color: Color(0xFF97A0A7)),
           ),
         ],
       ),

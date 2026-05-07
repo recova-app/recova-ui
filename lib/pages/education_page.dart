@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/education_cubit.dart';
+import 'package:get/get.dart';
+import 'package:recova/controllers/education/education_controller.dart';
 import 'package:recova/models/education_model.dart';
 import 'package:recova/pages/coach_page.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,22 +13,29 @@ class EducationPage extends StatefulWidget {
 }
 
 class _EducationPageState extends State<EducationPage> {
+  late final EducationController _educationController;
+
   @override
   void initState() {
     super.initState();
-    context.read<EducationCubit>().fetchEducationContents();
+    _educationController = Get.find<EducationController>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _educationController.fetchEducationContents();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     // Widget ini hanya mengembalikan kontennya, tanpa Scaffold.
+    // Bungkus dengan SafeArea agar tidak tertutup oleh system UI / bottom nav.
     // Padding atas ditambahkan untuk ruang di bawah status bar.
-    return RefreshIndicator(
-      onRefresh: () => context.read<EducationCubit>().fetchEducationContents(),
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-      child: Column( // Column dipertahankan karena strukturnya sudah benar
+    return SafeArea(
+      child: RefreshIndicator(
+        onRefresh: _educationController.fetchEducationContents,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+          child: Column( // Column dipertahankan karena strukturnya sudah benar
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
@@ -104,36 +111,35 @@ class _EducationPageState extends State<EducationPage> {
           ),
           const SizedBox(height: 12),
 
-          BlocBuilder<EducationCubit, EducationState>(
-            builder: (context, state) {
-              if (state is EducationLoading) {
-                return const Center(child: CircularProgressIndicator());
+          Obx(() {
+            final state = _educationController.state.value;
+            if (state is EducationLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state is EducationLoadFailure) {
+              return Center(child: Text('Gagal memuat konten: ${state.error}'));
+            }
+            if (state is EducationLoadSuccess) {
+              if (state.contents.isEmpty) {
+                return const Center(child: Text('Belum ada konten edukasi.'));
               }
-              if (state is EducationLoadFailure) {
-                return Center(child: Text('Gagal memuat konten: ${state.error}'));
+              final groupedContent = <String, List<EducationContent>>{};
+              for (var content in state.contents) {
+                (groupedContent[content.category] ??= []).add(content);
               }
-              if (state is EducationLoadSuccess) {
-                if (state.contents.isEmpty) {
-                  return const Center(child: Text('Belum ada konten edukasi.'));
-                }
-                // Kelompokkan konten berdasarkan kategori
-                final groupedContent = <String, List<EducationContent>>{};
-                for (var content in state.contents) {
-                  (groupedContent[content.category] ??= []).add(content);
-                }
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: groupedContent.entries.map((entry) {
-                    return buildVideoCategory(entry.key, entry.value);
-                  }).toList(),
-                );
-              }
-              return const SizedBox.shrink();
-            },
-          ),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: groupedContent.entries.map((entry) {
+                  return buildVideoCategory(entry.key, entry.value);
+                }).toList(),
+              );
+            }
+            return const SizedBox.shrink();
+          }),
         ],
-      ),
+          ),
+        ),
       ),
     );
   }
@@ -146,12 +152,24 @@ class _EducationPageState extends State<EducationPage> {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
         const SizedBox(height: 8),
         SizedBox(
-          height: 150, // Tinggi disesuaikan untuk gambar
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return VideoCard(content: items[index]);
+          height: 150, // Placeholder height for the horizontal list container. Individual cards compute their own height responsively.
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final cardWidth = MediaQuery.of(context).size.width * 0.45;
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 0),
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 12.0),
+                    child: SizedBox(
+                      width: cardWidth,
+                      child: VideoCard(content: items[index], width: cardWidth),
+                    ),
+                  );
+                },
+              );
             },
           ),
         ),
@@ -163,10 +181,12 @@ class _EducationPageState extends State<EducationPage> {
 
 class VideoCard extends StatelessWidget {
   final EducationContent content;
+  final double width;
 
   const VideoCard({
     super.key,
     required this.content,
+    required this.width,
   });
 
   Future<void> _launchURL(String urlString) async {
@@ -178,45 +198,50 @@ class VideoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Compute height responsively from width (maintain aspect ratio)
+    final double height = width * 0.75; // 4:3-ish aspect
+    final double imageHeight = height * 0.66;
+
     return GestureDetector(
       onTap: () => _launchURL(content.url),
       child: Container(
-        width: 200,
-        margin: const EdgeInsets.only(right: 12),
+        margin: const EdgeInsets.only(right: 0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
-              offset: const Offset(0, 4),
+              offset: const Offset(0, 2),
             )
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Thumbnail
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              child: Image.network(
-                content.thumbnailUrl,
-                height: 100,
-                width: double.infinity,
-                fit: BoxFit.cover,
+        child: SizedBox(
+          height: height,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Thumbnail
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                child: Image.network(
+                  content.thumbnailUrl,
+                  height: imageHeight,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 // Placeholder dan error handling untuk gambar
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Container(
-                    height: 100,
+                    height: imageHeight,
                     color: Colors.grey.shade200,
                     child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
                   );
                 },
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    height: 100,
+                    height: imageHeight,
                     color: Colors.grey.shade200,
                     child: const Icon(Icons.broken_image, color: Colors.grey),
                   );
@@ -224,16 +249,20 @@ class VideoCard extends StatelessWidget {
               ),
             ),
             // Judul
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                content.title,
-                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: height - imageHeight - 16, // remaining space minus paddings
+                  child: Text(
+                    content.title,
+                    style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ),
-            ),
           ],
+          ),
         ),
       ),
     );

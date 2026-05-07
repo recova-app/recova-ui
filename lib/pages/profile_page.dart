@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/home_cubit.dart';
+import 'package:get/get.dart';
+import 'package:recova/controllers/home/home_controller.dart';
 import 'package:recova/pages/login_page.dart';
 import 'package:recova/services/auth_service.dart';
 
@@ -12,8 +12,8 @@ class ProfilePage extends StatelessWidget {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-        child: BlocBuilder<HomeCubit, HomeState>(
-          builder: (context, state) {
+        child: Obx(() {
+          final state = Get.find<HomeController>().state.value;
             if (state is HomeLoadSuccess) {
               final user = state.user;
               return Column(
@@ -133,8 +133,7 @@ class ProfilePage extends StatelessWidget {
               return Center(child: Text('Gagal memuat profil: ${state.error}'));
             }
             return const SizedBox.shrink(); // Fallback
-          },
-        ),
+        }),
       ),
     );
   }

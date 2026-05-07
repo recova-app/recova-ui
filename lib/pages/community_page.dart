@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/models/post_model.dart';
-import 'package:recova/bloc/community_cubit.dart';
+import 'package:get/get.dart';
+import 'package:recova/controllers/community/community_controller.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});
@@ -11,28 +10,28 @@ class CommunityPage extends StatefulWidget {
 }
 
 class _CommunityPageState extends State<CommunityPage> {
+  final CommunityController _communityController =
+      Get.find<CommunityController>();
   String _selectedFilter = "Nasihat";
   final List<String> _filters = const ["Nasihat", "Bantuan", "Motivasi"];
 
   @override
   void initState() {
     super.initState();
-    // Panggil fetchPosts saat halaman pertama kali dimuat
-    context.read<CommunityCubit>().fetchPosts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _communityController.fetchPosts();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Widget ini hanya mengembalikan kontennya, tanpa Scaffold atau SafeArea.
-    // Padding atas ditambahkan untuk ruang di bawah status bar.
     return RefreshIndicator(
-      onRefresh: () => context.read<CommunityCubit>().fetchPosts(),
+      onRefresh: _communityController.fetchPosts,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
-        child: Column( // Column dipertahankan karena strukturnya sudah benar
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -47,68 +46,74 @@ class _CommunityPageState extends State<CommunityPage> {
               ],
             ),
             const SizedBox(height: 20),
-    
-            // Filter Buttons
             Row(
-              children: _filters.map((filter) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 10.0),
-                  child: FilterChipWidget(
-                    label: filter,
-                    selected: _selectedFilter == filter,
-                    onSelected: (isSelected) {
-                      if (isSelected) {
-                        setState(() {
-                          _selectedFilter = filter;
-                        });
-                      }
-                    },
-                  ),
-                );
-              }).toList(),
+              children:
+                  _filters.map((filter) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: FilterChipWidget(
+                        label: filter,
+                        selected: _selectedFilter == filter,
+                        onSelected: (isSelected) {
+                          if (isSelected) {
+                            setState(() {
+                              _selectedFilter = filter;
+                            });
+                          }
+                        },
+                      ),
+                    );
+                  }).toList(),
             ),
             const SizedBox(height: 20),
-    
-            // Posts List
             Expanded(
-              child: BlocBuilder<CommunityCubit, CommunityState>(
-                builder: (context, state) {
-                  if (state is CommunityLoading && state is! CommunityLoadSuccess) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is CommunityLoadFailure) {
-                    return Center(child: Text('Gagal memuat postingan: ${state.error}'));
-                  }
-                  if (state is CommunityLoadSuccess) {
-                    final allPosts = state.posts.map((p) => p.toPostCardMap()).toList();
-                    final filteredPosts = allPosts.where((post) => post['category'] == _selectedFilter).toList();
-    
-                    if (filteredPosts.isEmpty) {
-                      return Center(child: Text('Belum ada postingan di kategori ini.'));
-                    }
-    
-                    return ListView.builder(
-                      itemCount: filteredPosts.length,
-                      itemBuilder: (context, index) {
-                        final post = filteredPosts[index];
-                        final postId = post['id'] as String;
-                        return PostCard(
-                          id: postId,
-                          username: post['username'] ?? 'Anonim', // Memberikan nilai default jika null
-                          likes: post['likes'] ?? 0, // Memberikan nilai default jika null
-                          text: post['text'] ?? '', // Memberikan nilai default jika null
-                          streak: post['streak'] ?? 0, // Memberikan nilai default jika null
-                          isLiked: post['isLiked'] ?? false,
-                          onLikePressed: () {
-                            context.read<CommunityCubit>().toggleLike(postId);
-                          },
-                        );
-                      },
+              child: Obx(() {
+                final state = _communityController.state.value;
+
+                if (state is CommunityLoading &&
+                    state is! CommunityLoadSuccess) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is CommunityLoadFailure) {
+                  return Center(
+                    child: Text('Gagal memuat postingan: ${state.error}'),
+                  );
+                }
+                if (state is CommunityLoadSuccess) {
+                  final allPosts =
+                      state.posts.map((p) => p.toPostCardMap()).toList();
+                  final filteredPosts =
+                      allPosts
+                          .where((post) => post['category'] == _selectedFilter)
+                          .toList();
+
+                  if (filteredPosts.isEmpty) {
+                    return const Center(
+                      child: Text('Belum ada postingan di kategori ini.'),
                     );
                   }
-                  return const Center(child: Text('Belum ada postingan.'));
-                },
-              ),
+
+                  return ListView.builder(
+                    itemCount: filteredPosts.length,
+                    itemBuilder: (context, index) {
+                      final post = filteredPosts[index];
+                      final postId = post['id'] as String;
+                      return PostCard(
+                        id: postId,
+                        username: post['username'] ?? 'Anonim',
+                        likes: post['likes'] ?? 0,
+                        text: post['text'] ?? '',
+                        streak: post['streak'] ?? 0,
+                        isLiked: post['isLiked'] ?? false,
+                        onLikePressed: () {
+                          _communityController.toggleLike(postId);
+                        },
+                      );
+                    },
+                  );
+                }
+                return const Center(child: Text('Belum ada postingan.'));
+              }),
             ),
           ],
         ),
@@ -123,7 +128,12 @@ class FilterChipWidget extends StatelessWidget {
   final bool selected;
   final ValueChanged<bool> onSelected;
 
-  const FilterChipWidget({super.key, required this.label, this.selected = false, required this.onSelected});
+  const FilterChipWidget({
+    super.key,
+    required this.label,
+    this.selected = false,
+    required this.onSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -173,8 +183,10 @@ class PostCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(text,
-                style: const TextStyle(fontSize: 14, color: Colors.black87)),
+            Text(
+              text,
+              style: const TextStyle(fontSize: 14, color: Colors.black87),
+            ),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -184,12 +196,19 @@ class PostCard extends StatelessWidget {
                   child: Icon(Icons.person, size: 16, color: Colors.white),
                 ),
                 const SizedBox(width: 6),
-                Text(username,
-                    style: const TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w500)),
+                Text(
+                  username,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
                 const SizedBox(width: 6),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.orange.shade100,
                     borderRadius: BorderRadius.circular(6),
@@ -199,10 +218,15 @@ class PostCard extends StatelessWidget {
                       Text(
                         "$streak",
                         style: const TextStyle(
-                            fontSize: 12, fontWeight: FontWeight.bold),
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      const Icon(Icons.local_fire_department,
-                          size: 14, color: Colors.orange),
+                      const Icon(
+                        Icons.local_fire_department,
+                        size: 14,
+                        color: Colors.orange,
+                      ),
                     ],
                   ),
                 ),
@@ -217,14 +241,18 @@ class PostCard extends StatelessWidget {
                         size: 18,
                       ),
                       const SizedBox(width: 4),
-                      Text("$likes",
-                          style:
-                              const TextStyle(color: Colors.grey, fontSize: 13)),
+                      Text(
+                        "$likes",
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 13,
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

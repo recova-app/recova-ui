@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/community_cubit.dart';
+import 'package:get/get.dart';
+import 'package:recova/controllers/community/community_controller.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({super.key});
@@ -14,6 +14,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final _textController = TextEditingController();
   String _selectedCategory = 'Nasihat';
   final List<String> _categories = ['Nasihat', 'Bantuan', 'Motivasi'];
+  late final CommunityController _communityController;
+  bool _handledSubmissionResult = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _communityController = Get.find<CommunityController>();
+  }
 
   void _submitPost() {
     final title = _titleController.text.trim();
@@ -29,7 +37,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       return;
     }
 
-    context.read<CommunityCubit>().createPost(
+    _communityController.createPost(
       title: title,
       content: content,
       category: _selectedCategory,
@@ -47,26 +55,38 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     final themeColor = const Color(0xFF2EC4B6);
 
-    return BlocListener<CommunityCubit, CommunityState>(
-      listener: (context, state) {
-        if (state is CommunitySubmitSuccess) {
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Postingan berhasil dibuat!'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        } else if (state is CommunitySubmitFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Gagal membuat postingan: ${state.error}'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      },
-      child: Scaffold(
+    return Obx(() {
+      final state = _communityController.state.value;
+
+      if (state is CommunitySubmitting) {
+        _handledSubmissionResult = false;
+      }
+
+      if ((state is CommunitySubmitSuccess || state is CommunitySubmitFailure) && !_handledSubmissionResult) {
+        _handledSubmissionResult = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!context.mounted) return;
+          if (state is CommunitySubmitSuccess) {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Postingan berhasil dibuat!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else if (state is CommunitySubmitFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Gagal membuat postingan: ${state.error}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+          _communityController.state.value = CommunityInitial();
+        });
+      }
+
+      return Scaffold(
         backgroundColor: const Color(0xFFF9FAFB),
         appBar: AppBar(
           elevation: 0,
@@ -96,7 +116,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               ),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: _selectedCategory,
+                initialValue: _selectedCategory,
                 icon: const Icon(Icons.arrow_drop_down_rounded),
                 dropdownColor: Colors.white,
                 decoration: InputDecoration(
@@ -187,46 +207,41 @@ class _CreatePostPageState extends State<CreatePostPage> {
             ],
           ),
         ),
-        bottomNavigationBar: BlocBuilder<CommunityCubit, CommunityState>(
-          builder: (context, state) {
-            final isSubmitting = state is CommunitySubmitting;
-            return Padding(
-              padding: EdgeInsets.fromLTRB(20, 8, 20, MediaQuery.of(context).viewInsets.bottom + 20),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: isSubmitting ? null : _submitPost,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: themeColor,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: isSubmitting
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 3,
-                          ),
-                        )
-                      : const Text(
-                          'Kirim',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.fromLTRB(20, 8, 20, MediaQuery.of(context).viewInsets.bottom + 20),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: state is CommunitySubmitting ? null : _submitPost,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: themeColor,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                elevation: 0,
               ),
-            );
-          },
+              child: state is CommunitySubmitting
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 3,
+                      ),
+                    )
+                  : const Text(
+                      'Kirim',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+            ),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

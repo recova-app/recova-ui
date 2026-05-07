@@ -13,6 +13,11 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
   final AuthService _authService = AuthService();
 
+  String get _loginButtonLabel {
+    if (isLoading) return 'Memproses...';
+    return AuthService.useMockMode ? 'Masuk Demo' : 'Lanjutkan Dengan Google';
+  }
+
   Future<void> _handleGoogleSignIn() async {
     setState(() => isLoading = true);
     try {
@@ -32,10 +37,7 @@ class _LoginPageState extends State<LoginPage> {
         errorMessage = e.toString().replaceFirst('Exception: ', '');
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
       );
     } finally {
       setState(() => isLoading = false);
@@ -77,6 +79,31 @@ class _LoginPageState extends State<LoginPage> {
                 ),
 
                 const SizedBox(height: 32),
+
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.16),
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.24),
+                    ),
+                  ),
+                  child: const Text(
+                    'Mode demo aktif: data tampil statik sementara',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 18),
 
                 // 🔹 Teks kutipan motivasi
                 const Text(
@@ -139,9 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     label: Text(
-                      isLoading
-                          ? "Memproses..."
-                          : "Lanjutkan Dengan Google",
+                      _loginButtonLabel,
                       style: const TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.bold,

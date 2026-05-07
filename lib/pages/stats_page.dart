@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/home_cubit.dart';
+import 'package:get/get.dart';
+import 'package:recova/controllers/home/home_controller.dart';
 import 'package:recova/models/statistics_model.dart';
-import 'package:table_calendar/table_calendar.dart';
-import 'dart:async';
+import 'package:recova/widgets/recova_ui.dart';
 
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
@@ -13,306 +12,474 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> {
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
-  Timer? _timer;
-  Duration _timeSinceLastRelapse = Duration.zero;
+  late final HomeController _homeController;
+  int _modeIndex = 0;
+  int _chartScopeIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _selectedDay = _focusedDay;
-    _startTimer();
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      final homeState = context.read<HomeCubit>().state;
-      if (homeState is HomeLoadSuccess) {
-        // Menggunakan tanggal awal streak, bukan tanggal terakhir
-        final streakStartDate = _getStreakStartDate(homeState.statistics);
-        if (streakStartDate != null && mounted) {
-          setState(() {
-            _timeSinceLastRelapse = DateTime.now().difference(streakStartDate);
-          });
-        }
-      }
+    _homeController = Get.find<HomeController>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _homeController.fetchHomeData();
     });
-  }
-
-  DateTime? _getStreakStartDate(Statistics stats) {
-    if (stats.currentStreak == 0 || stats.streakCalendar.isEmpty) return null;
-
-    try {
-      // Ambil tanggal check-in terakhir
-      final lastCheckIn = DateTime.parse(stats.streakCalendar.last);
-      // Hitung tanggal mulai dengan mengurangi jumlah hari streak
-      final startDate = lastCheckIn.subtract(Duration(days: stats.currentStreak - 1));
-      // Kembalikan tanggal tanpa informasi jam, menit, detik
-      return DateTime(startDate.year, startDate.month, startDate.day);
-    } catch (_) {
-      return null;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
-      body: BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, state) {
-          if (state is HomeLoading || state is HomeInitial) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is HomeLoadFailure) {
-            return Center(child: Text('Gagal memuat statistik: ${state.error}'));
-          }
-          if (state is HomeLoadSuccess) {
-            final stats = state.statistics;
-            final totalDays = 32;
-            final streakEvents =
-                stats.streakCalendar.map((date) => DateTime.parse(date)).toSet();
+      backgroundColor: Colors.white,
+      body: Obx(() {
+        final state = _homeController.state.value;
 
-            return SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        if (state is HomeLoading || state is HomeInitial) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is HomeLoadFailure) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    color: Color(0xFFD65A5A),
+                    size: 48,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Gagal memuat statistik: ${state.error}',
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _homeController.fetchHomeData,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF0E6B52),
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Coba Lagi'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        if (state is! HomeLoadSuccess) {
+          return const SizedBox.shrink();
+        }
+
+        final stats = state.statistics;
+        final totalDays = 32;
+
+        return RefreshIndicator(
+          color: const Color(0xFF0E6B52),
+          onRefresh: _homeController.fetchHomeData,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 40, 20, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RecovaTopBar(
+                    onLeftPressed: () {},
+                    onRightPressed: () {},
+                    leftIcon: Icons.settings,
+                  ),
+                  const SizedBox(height: 28),
+                  RecovaHeroBanner(
+                    title: 'Mari Kita lihat,\nSeberapa Jauh Progressmu',
+                    subtitle: 'Satu langkah kecil setiap harinya',
+                    imagePath: 'assets/images/home/icon_review.png',
+                    height: 150,
+                    imageWidth: 112,
+                    contentPadding: const EdgeInsets.fromLTRB(20, 22, 14, 18),
+                  ),
+                  const SizedBox(height: 18),
+                  RecovaSegmentedControl(
+                    labels: const ['Analysis', 'History'],
+                    selectedIndex: _modeIndex,
+                    onChanged: (index) {
+                      setState(() {
+                        _modeIndex = index;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 220),
+                    child:
+                        _modeIndex == 0
+                            ? _buildAnalysisView(stats, totalDays)
+                            : _buildHistoryView(stats),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildAnalysisView(Statistics stats, int totalDays) {
+    final triggerData =
+        _chartScopeIndex == 0
+            ? const [
+              RecovaBarData(
+                label: 'Boredom',
+                value: 6,
+                color: Color(0xFF0E6B52),
+              ),
+              RecovaBarData(
+                label: 'Stress',
+                value: 4,
+                color: Color(0xFF6887A3),
+              ),
+              RecovaBarData(label: 'Media', value: 3, color: Color(0xFFFFC514)),
+              RecovaBarData(label: 'Mood', value: 3, color: Color(0xFF16B6A3)),
+              RecovaBarData(
+                label: 'Location',
+                value: 3,
+                color: Color(0xFFA36DFF),
+              ),
+            ]
+            : const [
+              RecovaBarData(
+                label: 'Boredom',
+                value: 7,
+                color: Color(0xFF0E6B52),
+              ),
+              RecovaBarData(
+                label: 'Stress',
+                value: 5,
+                color: Color(0xFF6887A3),
+              ),
+              RecovaBarData(label: 'Media', value: 4, color: Color(0xFFFFC514)),
+              RecovaBarData(label: 'Mood', value: 4, color: Color(0xFF16B6A3)),
+              RecovaBarData(
+                label: 'Location',
+                value: 4,
+                color: Color(0xFFA36DFF),
+              ),
+              RecovaBarData(
+                label: 'Lonely',
+                value: 2,
+                color: Color(0xFFE8777A),
+              ),
+            ];
+
+    final ringSegments =
+        _chartScopeIndex == 0
+            ? const [
+              RecovaRingSegment(
+                value: 68,
+                color: Color(0xFF4A5BD9),
+                label: 'Evening',
+              ),
+              RecovaRingSegment(
+                value: 32,
+                color: Color(0xFF7B3EDB),
+                label: 'Night',
+              ),
+            ]
+            : const [
+              RecovaRingSegment(
+                value: 58,
+                color: Color(0xFF4A5BD9),
+                label: 'Evening',
+              ),
+              RecovaRingSegment(
+                value: 42,
+                color: Color(0xFF7B3EDB),
+                label: 'Night',
+              ),
+            ];
+
+    return Column(
+      key: const ValueKey('analysis'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const RecovaSectionHeader(
+          title: 'Your Statistics',
+          subtitle: 'This is your overview for the last 90 days',
+        ),
+        const SizedBox(height: 16),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 5,
+              child: SizedBox(
+                height: 230,
+                child: RecovaMetricCard(
+                  title: 'Longest Streak',
+                  value: '${stats.longestStreak} Hari',
+                  backgroundColor: const Color(0xFFEFF8F0),
+                  accentColor: const Color(0xFF0E6B52),
+                  assetPath: 'assets/images/home/icon_checkin.png',
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 4,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 109,
+                    child: RecovaMetricCard(
+                      title: 'Success Rate',
+                      value: '${_successRate(stats, totalDays)}%',
+                      backgroundColor: const Color(0xFFE6F0FF),
+                      accentColor: const Color(0xFF4B6BFF),
+                      icon: Icons.check_box_outline_blank,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 109,
+                    child: RecovaMetricCard(
+                      title: 'Clean Days',
+                      value: '${stats.totalCheckins} Hari',
+                      backgroundColor: const Color(0xFFE7EEFF),
+                      accentColor: const Color(0xFF6B7CF5),
+                      icon: Icons.calendar_month_outlined,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 114,
+          child: RecovaMetricCard(
+            title: 'Most Common Trigger',
+            value: 'Boredom',
+            backgroundColor: const Color(0xFFF8E9D2),
+            accentColor: const Color(0xFFD49333),
+            assetPath: 'assets/images/home/icon_exercise.png',
+          ),
+        ),
+        const SizedBox(height: 28),
+        const RecovaSectionHeader(
+          title: 'Trigger & Urges',
+          subtitle: 'This is your overview for the last 90 days',
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF4F8F5),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x0D000000),
+                blurRadius: 18,
+                offset: Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Show: '),
+                  RecovaChartChip(
+                    label: 'Top 5',
+                    selected: _chartScopeIndex == 0,
+                    onTap: () => setState(() => _chartScopeIndex = 0),
+                  ),
+                  const SizedBox(width: 10),
+                  RecovaChartChip(
+                    label: 'All',
+                    selected: _chartScopeIndex == 1,
+                    onTap: () => setState(() => _chartScopeIndex = 1),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              RecovaBarChart(data: triggerData),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        const RecovaInfoCard(
+          text:
+              'Your data shows that Boredom is your main trigger. Developing specific coping strategies for idle moments can help reduce relapse risk.',
+        ),
+        const SizedBox(height: 28),
+        const RecovaSectionHeader(
+          title: 'Time Of Day',
+          subtitle: 'When relapses Occur throught the day',
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF4F8F5),
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Column(
+            children: [
+              Center(
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    // Header
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Statistik",
-                          style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                        const CircleAvatar(
-                          backgroundImage:
-                              AssetImage("assets/images/logo.png"),
-                          radius: 20,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Card 1: Streak
-                    _buildStreakCard(stats.currentStreak, stats.longestStreak, totalDays),
-                    const SizedBox(height: 16),
-
-                    // Card 2: Durasi
-                    _buildDurationCard(),
-                    const SizedBox(height: 20),
-
-                    // Kalender
-                    const Text(
-                      "Kalender Streak",
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 12),
-                    TableCalendar(
-                      firstDay: DateTime.utc(2020, 1, 1),
-                      lastDay: DateTime.utc(2030, 12, 31),
-                      focusedDay: _focusedDay,
-                      selectedDayPredicate: (day) =>
-                          isSameDay(_selectedDay, day),
-                      onDaySelected: (selectedDay, focusedDay) {
-                        setState(() {
-                          _selectedDay = selectedDay;
-                          _focusedDay = focusedDay;
-                        });
-                      },
-                      headerStyle: const HeaderStyle(
-                        formatButtonVisible: false,
-                        titleCentered: true,
-                      ),
-                      calendarStyle: CalendarStyle(
-                        todayDecoration: BoxDecoration(
-                          color: Colors.teal.withOpacity(0.5),
-                          shape: BoxShape.circle,
-                        ),
-                        selectedDecoration: BoxDecoration(
-                          color: Colors.orange,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      eventLoader: (day) {
-                        if (streakEvents
-                            .any((eventDate) => isSameDay(eventDate, day))) {
-                          return [Container()];
-                        }
-                        return [];
-                      },
-                      calendarBuilders: CalendarBuilders(
-                        markerBuilder: (context, day, events) {
-                          if (events.isNotEmpty) {
-                            return Positioned(
-                              bottom: 5,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.green,
-                                  shape: BoxShape.circle,
-                                ),
-                                width: 7,
-                                height: 7,
-                              ),
-                            );
-                          }
-                          return null;
-                        },
+                    RecovaDonutChart(segments: ringSegments, size: 200),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
                       ),
                     ),
                   ],
                 ),
               ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
+              const SizedBox(height: 16),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 14,
+                runSpacing: 10,
+                children: const [
+                  _LegendDot(
+                    color: Color(0xFF7B3EDB),
+                    label: 'Evening (18-22)',
+                  ),
+                  _LegendDot(color: Color(0xFF4A5BD9), label: 'Night (23-4)'),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        const RecovaInfoCard(
+          text:
+              'Night (9PM-5AM) is your highest risk period. Creating a specific routine during these hours can reduce impulsive behavior.',
+        ),
+      ],
     );
   }
 
-  Widget _buildStreakCard(int currentStreak, int longestStreak, int totalDays) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.orange[400],
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$currentStreak Hari Streak 🔥",
-            style: const TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            "Streak Terbaik kamu adalah $longestStreak hari",
-            style: const TextStyle(color: Colors.white),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            "Progress: $currentStreak / $totalDays Days",
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-          ),
-          const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: LinearProgressIndicator(
-              value: totalDays > 0 ? currentStreak / totalDays : 0,
-              backgroundColor: Colors.white30,
-              valueColor:
-                  const AlwaysStoppedAnimation<Color>(Colors.white),
-              minHeight: 8,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _buildHistoryView(Statistics stats) {
+    final historyEntries = _buildHistoryEntries(stats);
 
-  // ✅ Bagian yang diperbarui agar mirip dengan gambar contoh
-  Widget _buildDurationCard() {
-    final days = _timeSinceLastRelapse.inDays;
-    final hours = _timeSinceLastRelapse.inHours % 24;
-    final minutes = _timeSinceLastRelapse.inMinutes % 60;
-    final seconds = _timeSinceLastRelapse.inSeconds % 60;
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFF52C3BE),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Anda Bebas Pornografi Selama",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 20),
-          _buildRoundedBar(
-            label: "$days Hari",
-            progress: days > 0 ? 1.0 : 0.0, // Bar penuh jika sudah lebih dari 0 hari
-            color: const Color(0xFF0D3B66),
-          ),
-          const SizedBox(height: 12),
-          _buildRoundedBar(
-            label: "$hours Jam",
-            progress: hours / 24, // Progres jam dalam sehari
-            color: const Color(0xFFFFB703),
-          ),
-          const SizedBox(height: 12),
-          _buildRoundedBar(
-            label: "$minutes Menit",
-            progress: minutes / 60, // Progres menit dalam satu jam
-            color: const Color(0xFF457B9D),
-          ),
-          const SizedBox(height: 12),
-          _buildRoundedBar(
-            label: "$seconds Detik",
-            progress: seconds / 60, // Progres detik dalam satu menit
-            color: const Color.fromARGB(255, 47, 144, 134),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRoundedBar({
-    required String label,
-    required double progress,
-    required Color color,
-  }) {
-    return Stack(
-      alignment: Alignment.centerLeft,
+    return Column(
+      key: const ValueKey('history'),
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Latar belakang bar
+        const RecovaSectionHeader(
+          title: 'Relapse History',
+          subtitle: 'This is your relapse history for the last 90 days',
+        ),
+        const SizedBox(height: 20),
+        if (historyEntries.isEmpty)
+          const RecovaInfoCard(
+            text: 'Belum ada riwayat yang bisa ditampilkan saat ini.',
+          )
+        else
+          Column(
+            children: [
+              for (final entry in historyEntries) ...[
+                RecovaTimelineEntry(
+                  time: entry.time,
+                  reason: entry.reason,
+                  mood: entry.mood,
+                  trigger: entry.trigger,
+                ),
+                const SizedBox(height: 26),
+              ],
+            ],
+          ),
+      ],
+    );
+  }
+
+  int _successRate(Statistics stats, int totalDays) {
+    if (totalDays <= 0) return 0;
+    final rate = ((stats.currentStreak / totalDays) * 100).round();
+    return rate.clamp(0, 100);
+  }
+
+  List<_HistoryEntry> _buildHistoryEntries(Statistics stats) {
+    final entries = stats.streakCalendar.reversed.take(3).toList();
+    if (entries.isEmpty) return [];
+
+    return entries.map((date) {
+      final parsed = DateTime.tryParse(date) ?? DateTime.now();
+      return _HistoryEntry(
+        time: _formatLongDate(parsed),
+        reason: 'Check-in harian',
+        mood: 'Normal',
+        trigger: 'Tidak dicatat',
+      );
+    }).toList();
+  }
+
+  String _formatLongDate(DateTime date) {
+    const months = [
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
+
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
+}
+
+class _HistoryEntry {
+  final String time;
+  final String reason;
+  final String mood;
+  final String trigger;
+
+  const _HistoryEntry({
+    required this.time,
+    required this.reason,
+    required this.mood,
+    required this.trigger,
+  });
+}
+
+class _LegendDot extends StatelessWidget {
+  final Color color;
+  final String label;
+
+  const _LegendDot({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
         Container(
-          height: 28,
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(50),
-          ),
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
-        // Bar progres yang memanjang
-        FractionallySizedBox(
-          widthFactor: progress.clamp(0.0, 1.0),
-          child: Container(
-            height: 28,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(50),
-            ),
-          ),
-        ),
-        // Teks label yang selalu terlihat di atas
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, color: Color(0xFF40464A)),
         ),
       ],
     );
