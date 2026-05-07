@@ -146,9 +146,9 @@ class _HomePageState extends State<HomePage> {
                     subtitle:
                         'Setelah melakukan daily check-in streak kamu akan terupdate di tengah malam',
                     imagePath: 'assets/images/home/gunung.png',
-                    height: 150,
+                    height: 140,
                     imageWidth: 130,
-                    contentPadding: const EdgeInsets.fromLTRB(20, 22, 14, 18),
+                    contentPadding: const EdgeInsets.fromLTRB(20, 20, 14, 18),
                     footer: _buildWeekFooter(stats, totalDays),
                   ),
                   const SizedBox(height: 24),

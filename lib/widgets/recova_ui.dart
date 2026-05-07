@@ -118,24 +118,15 @@ class RecovaHeroBanner extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              right: -6,
-              top: 0,
-              child: Icon(
-                Icons.auto_awesome,
-                color: Colors.white.withValues(alpha: 0.18),
-                size: 120,
-              ),
-            ),
-            Positioned(
               right: -15,
-              bottom: footer != null ? 40 : -10,
+              bottom: footer != null ? 90 : -10,
               child: SizedBox(
-                width: imageWidth + 50,
+                width: imageWidth + 100,
                 child: Image.asset(imagePath, fit: BoxFit.contain),
               ),
             ),
             Padding(
-              padding: contentPadding,
+              padding: EdgeInsets.only(top: 40),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,31 +138,34 @@ class RecovaHeroBanner extends StatelessWidget {
                       children: [
                         SizedBox(
                           width: MediaQuery.of(context).size.width * 0.55,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                title,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.05,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 20, left: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  title,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w800,
+                                    height: 1.05,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                subtitle,
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.92),
-                                  fontSize: 11,
-                                  height: 1.15,
+                                const SizedBox(height: 8),
+                                Text(
+                                  subtitle,
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.92),
+                                    fontSize: 11,
+                                    height: 1.15,
+                                  ),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ],
