@@ -76,6 +76,7 @@ flutter:
     - assets/images/home/
     - assets/images/onboarding/
     - assets/images/menu/ # <-- Tambahkan path ini untuk ikon navigasi Anda
+    - assets/images/maskots/
     - assets/fonts/static/
     - .env
 

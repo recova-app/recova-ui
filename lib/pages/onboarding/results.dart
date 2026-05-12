@@ -10,16 +10,16 @@ class ResultsPage extends StatefulWidget {
 class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0,
       end: 1,
@@ -27,10 +27,10 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
       parent: _fadeController,
       curve: Curves.easeIn,
     ));
-    
+
     _fadeController.forward();
   }
-  
+
   @override
   void dispose() {
     _fadeController.dispose();
@@ -44,7 +44,7 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
       body: SafeArea(
         child: Column(
           children: [
-  
+
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -53,26 +53,27 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
                   child: Column(
                     children: [
                       const SizedBox(height: 20),
-                      
+
                           Container(
                       width: 100,
                       height: 100,
                       child: Image.asset(
-                        'assets/images/onboarding/results.png',
+                        'assets/images/maskots/results.png',
                         width: 120,
                         height: 120,
                         fit: BoxFit.contain,
                       ),
                     ),
                       const SizedBox(height: 20),
-                      
+
                       // Title
                       Text(
                         'Jawabanmu',
                         style: const TextStyle(
+                          fontFamily: 'Inter',
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
-                          color: Colors.black,
+                          color: Color(0xFF1A1A1A),
                           height: 1.2,
                         ),
                         textAlign: TextAlign.center,
@@ -81,9 +82,10 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
                         textAlign: TextAlign.center,
                         text: const TextSpan(
                           style: TextStyle(
+                            fontFamily: 'Inter',
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
-                            color: Colors.black,
+                            color: Color(0xFF1A1A1A),
                             height: 1.2,
                           ),
                           children: [
@@ -100,21 +102,22 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 8),
-                      
+
                       // Disclaimer
                       Text(
                         'ini Hanya indikasi*',
                         style: const TextStyle(
+                          fontFamily: 'Inter',
                           fontSize: 12,
-                          color: Colors.black,
+                          color: Color(0xFF777777),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 20),
-                      
+
                       // Information Cards
                       Expanded(
                         child: SingleChildScrollView(
@@ -138,27 +141,28 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 20),
-                      
+
                       // Continue Button
-                      Container(
+                      SizedBox(
                         width: double.infinity,
-                        height: 50,
+                        height: 56,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/benefits');
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF4ECDC4),
+                            backgroundColor: const Color(0xFF1B5E20),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
+                              borderRadius: BorderRadius.circular(32),
                             ),
                             elevation: 0,
                           ),
                           child: const Text(
                             'Selanjutnya',
                             style: TextStyle(
+                              fontFamily: 'Inter',
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -166,7 +170,7 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 20),
                     ],
                   ),
@@ -178,7 +182,7 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
       ),
     );
   }
-  
+
   Widget _buildInfoCard(String title, String description) {
     return Container(
       padding: const EdgeInsets.all(12),
@@ -198,17 +202,19 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
           Text(
             title,
             style: const TextStyle(
+              fontFamily: 'Inter',
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: Colors.black,
+              color: Color(0xFF1A1A1A),
             ),
           ),
           const SizedBox(height: 6),
           Text(
             description,
             style: const TextStyle(
+              fontFamily: 'Inter',
               fontSize: 12,
-              color: Colors.black87,
+              color: Color(0xFF555555),
               height: 1.3,
             ),
           ),

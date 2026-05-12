@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
+import '../../services/onboarding_state.dart';
 
 class SetNamePage extends StatefulWidget {
   const SetNamePage({super.key});
@@ -33,6 +34,7 @@ class _SetNamePageState extends State<SetNamePage> {
 
   void _continue() {
     if (_nameController.text.trim().isNotEmpty) {
+      OnboardingState().nickname = _nameController.text.trim();
       Navigator.pushNamed(context, '/question-1');
     }
   }
@@ -54,19 +56,21 @@ class _SetNamePageState extends State<SetNamePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: AppSpacing.large),
-                      
+
                       // Main Question Text
                       Text(
                         'Apa nama panggilan kamu?',
                         style: AppText.h2.copyWith(
+                          fontFamily: 'Inter',
                           height: 1.2,
                           fontWeight: FontWeight.w700,
                           fontSize: 32,
+                          color: const Color(0xFF1A1A1A),
                         ),
                       ),
-                      
+
                       const SizedBox(height: AppSpacing.large * 2),
-                      
+
                       // Name Input Field
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +80,7 @@ class _SetNamePageState extends State<SetNamePage> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(AppRadius.medium),
                               border: Border.all(
-                                color: AppTheme.textLight.withOpacity(0.3),
+                                color: const Color(0xFFDDDDDD),
                                 width: 1,
                               ),
                             ),
@@ -89,7 +93,7 @@ class _SetNamePageState extends State<SetNamePage> {
                               decoration: InputDecoration(
                                 hintText: 'Siapa nama kamu?',
                                 hintStyle: AppText.body.copyWith(
-                                  color: Colors.black26,
+                                  color: const Color(0xFFBBBBBB),
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -102,71 +106,58 @@ class _SetNamePageState extends State<SetNamePage> {
                               onSubmitted: (_) => _continue(),
                             ),
                           ),
-                          
+
                         ],
                       ),
-                      
+
                       const SizedBox(height: AppSpacing.large),
-                      
+
                       // Privacy Notice
                       Text(
                         'Hindari menyertakan informasi sensitif atau informasi yang membuatmu dapat dikenali oleh orang yang tidak kamu kenal.',
                         style: AppText.body.copyWith(
-                          color: AppTheme.textGrey,
+                          fontFamily: 'Inter',
+                          color: const Color(0xFF777777),
                           height: 1.4,
                           fontSize: 16,
                         ),
                       ),
-                      
+
                       // Add some bottom spacing to ensure button is visible
                       const SizedBox(height: AppSpacing.large * 3),
                     ],
                   ),
                 ),
               ),
-              
+
               // Bottom Button - Fixed at bottom
-              Container(
+              SizedBox(
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: _isButtonEnabled 
-                      ? AppTheme.primaryGradient 
-                      : LinearGradient(
-                          colors: [
-                            AppTheme.textLight.withOpacity(0.5),
-                            AppTheme.textLight.withOpacity(0.5),
-                          ],
-                        ),
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                  boxShadow: _isButtonEnabled ? [
-                    BoxShadow(
-                      color: AppTheme.primary.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ] : [],
-                ),
+                height: 56,
                 child: ElevatedButton(
                   onPressed: _isButtonEnabled ? _continue : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: _isButtonEnabled
+                        ? const Color(0xFF1B5E20)
+                        : const Color(0xFFBDBDBD),
+                    disabledBackgroundColor: const Color(0xFFBDBDBD),
                     shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.medium),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                      borderRadius: BorderRadius.circular(32),
                     ),
                   ),
                   child: Text(
                     'Lanjutkan',
                     style: TextStyle(
+                      fontFamily: 'Inter',
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: _isButtonEnabled ? Colors.white : AppTheme.textLight,
+                      color: _isButtonEnabled ? Colors.white : const Color(0xFF777777),
                     ),
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.medium),
             ],
           ),

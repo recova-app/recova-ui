@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
+import '../../../services/onboarding_state.dart';
 
 class Question1 extends StatefulWidget {
   const Question1({super.key});
@@ -25,6 +26,7 @@ class _Question1State extends State<Question1> {
 
   void _continue() {
     if (selectedAnswer != null) {
+      OnboardingState().answers['question_1'] = selectedAnswer;
       Navigator.pushNamed(context, '/question-2');
     }
   }
@@ -40,37 +42,37 @@ class _Question1State extends State<Question1> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Progress Bar
-              Container(
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppTheme.textLight.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: 1 / 8, // Question 1 of 8
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: AppTheme.primaryGradient,
-                      borderRadius: BorderRadius.circular(2),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  height: 16,
+                  color: const Color(0xFFE0E0E0),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: 1 / 8, // Question 1 of 8
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4BB857),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.large),
-              
+
               // Question Label
               Text(
                 'Pertanyaan 1',
                 style: AppText.body.copyWith(
-                  color: AppTheme.primary,
+                  color: const Color(0xFF2E7D32),
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.medium),
-              
+
               // Question Text
               Text(
                 'Diumur berapa kamu menonton pornografi untuk pertama kalinya?',
@@ -80,9 +82,9 @@ class _Question1State extends State<Question1> {
                   fontSize: 28,
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.large * 2),
-              
+
               // Answer Options
               Expanded(
                 child: ListView.builder(
@@ -90,27 +92,36 @@ class _Question1State extends State<Question1> {
                   itemBuilder: (context, index) {
                     final option = options[index];
                     final isSelected = selectedAnswer == option['value'];
-                    
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: AppSpacing.medium),
                       child: GestureDetector(
                         onTap: () => _selectAnswer(option['value']!),
                         child: Container(
-                          padding: const EdgeInsets.all(AppSpacing.large),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.large,
+                            vertical: 18,
+                          ),
                           decoration: BoxDecoration(
-                            color: isSelected ? AppTheme.primary.withOpacity(0.1) : AppTheme.textLight.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(AppRadius.medium),
-                            border: Border.all(
-                              color: isSelected ? AppTheme.primary : AppTheme.textLight.withOpacity(0.3),
-                              width: isSelected ? 2 : 1,
-                            ),
+                            color: isSelected
+                                ? const Color(0xFF4BB857).withOpacity(0.12)
+                                : const Color(0xFFF2F2F2),
+                            borderRadius: BorderRadius.circular(AppRadius.large),
+                            border: isSelected
+                                ? Border.all(
+                                    color: const Color(0xFF4BB857),
+                                    width: 2,
+                                  )
+                                : null,
                           ),
                           child: Text(
                             option['text']!,
                             style: AppText.body.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: isSelected ? AppTheme.primary : AppTheme.textDark,
+                              color: isSelected
+                                  ? const Color(0xFF2E7D32)
+                                  : AppTheme.textDark,
                             ),
                           ),
                         ),
@@ -119,45 +130,29 @@ class _Question1State extends State<Question1> {
                   },
                 ),
               ),
-              
+
               // Continue Button
-              Container(
+              SizedBox(
                 width: double.infinity,
-                margin: const EdgeInsets.only(bottom: AppSpacing.medium),
-                decoration: BoxDecoration(
-                  gradient: selectedAnswer != null 
-                      ? AppTheme.primaryGradient 
-                      : LinearGradient(
-                          colors: [
-                            AppTheme.textLight.withOpacity(0.5),
-                            AppTheme.textLight.withOpacity(0.5),
-                          ],
-                        ),
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                  boxShadow: selectedAnswer != null ? [
-                    BoxShadow(
-                      color: AppTheme.primary.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ] : [],
-                ),
+                height: 56,
                 child: ElevatedButton(
                   onPressed: selectedAnswer != null ? _continue : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: selectedAnswer != null
+                        ? const Color(0xFF1B5E20)
+                        : const Color(0xFFBDBDBD),
+                    disabledBackgroundColor: const Color(0xFFBDBDBD),
                     shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.medium),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                      borderRadius: BorderRadius.circular(32),
                     ),
                   ),
-                  child: Text(
-                    'Lanjutkan',
+                  child: const Text(
+                    'Continue',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: selectedAnswer != null ? Colors.white : AppTheme.textLight,
+                      color: Colors.white,
                     ),
                   ),
                 ),

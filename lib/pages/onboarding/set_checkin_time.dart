@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import '../../theme/app_theme.dart';
+import '../../services/onboarding_state.dart';
 
 class SetCheckinTimePage extends StatefulWidget {
   const SetCheckinTimePage({super.key});
@@ -13,7 +14,7 @@ class _SetCheckinTimePageState extends State<SetCheckinTimePage> {
   int selectedTime = 3; // Default to "10 pm"
   final List<String> times = [
     '7 pm',
-    '8 pm', 
+    '8 pm',
     '9 pm',
     '10 pm',
     '11 pm',
@@ -38,14 +39,25 @@ class _SetCheckinTimePageState extends State<SetCheckinTimePage> {
     '6 pm',
   ];
 
+  String _formatTime(String timeStr) {
+    final parts = timeStr.split(' ');
+    int hour = int.parse(parts[0]);
+    final ampm = parts[1];
+    if (ampm == 'pm' && hour < 12) hour += 12;
+    if (ampm == 'am' && hour == 12) hour = 0;
+    return '${hour.toString().padLeft(2, '0')}:00';
+  }
+
   void _setCheckinTime() {
+    final formattedTime = _formatTime(times[selectedTime]);
+    OnboardingState().dailyCheckinTime = formattedTime;
     Navigator.pushNamed(context, '/preparing-test-result');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.surface,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.large),
@@ -56,22 +68,22 @@ class _SetCheckinTimePageState extends State<SetCheckinTimePage> {
                 child: Column(
                   children: [
                     const SizedBox(height: AppSpacing.large ),
-                    
+
                         Container(
                       width: 200,
                       height: 200,
                       child: Image.asset(
-                        'assets/images/onboarding/set-time.png',
+                        'assets/images/maskots/set-checkin-time.png',
                         width: 220,
                         height: 20,
                         fit: BoxFit.contain,
                       ),
                     ),
-                    
-                    const SizedBox(height: AppSpacing.large),         
-                    
+
                     const SizedBox(height: AppSpacing.large),
-                    
+
+                    const SizedBox(height: AppSpacing.large),
+
                     // Main instruction
                     Text(
                       'Kapan Waktu yang kamu mau untuk daily check in setiap harinya?',
@@ -80,11 +92,13 @@ class _SetCheckinTimePageState extends State<SetCheckinTimePage> {
                         height: 1.2,
                         fontWeight: FontWeight.w700,
                         fontSize: 24,
+                        fontFamily: 'Inter',
+                        color: const Color(0xFF1A1A1A),
                       ),
                     ),
-                    
+
                     const SizedBox(height: AppSpacing.large),
-                    
+
                     // Time Picker
                     Expanded(
                       child: Container(
@@ -101,26 +115,27 @@ class _SetCheckinTimePageState extends State<SetCheckinTimePage> {
                           childDelegate: ListWheelChildBuilderDelegate(
                             builder: (context, index) {
                               if (index < 0 || index >= times.length) return null;
-                              
+
                               final time = times[index];
                               final isSelected = selectedTime == index;
-                              
+
                               return Container(
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                  border: isSelected ? Border(
-                                    top: BorderSide(color: AppTheme.textLight.withOpacity(0.3)),
-                                    bottom: BorderSide(color: AppTheme.textLight.withOpacity(0.3)),
-                                  ) : null,
-                                ),
-                                child: Text(
-                                  time,
-                                  style: TextStyle(
-                                    fontSize: isSelected ? 32 : 24,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                    color: isSelected ? AppTheme.textDark : AppTheme.textGrey,
+                                    border: isSelected ? const Border(
+                                      top: BorderSide(color: Color(0xFFDDDDDD)),
+                                      bottom: BorderSide(color: Color(0xFFDDDDDD)),
+                                    ) : null,
                                   ),
-                                ),
+                                  child: Text(
+                                    time,
+                                    style: TextStyle(
+                                      fontSize: isSelected ? 32 : 24,
+                                      fontFamily: 'Inter',
+                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                      color: isSelected ? const Color(0xFF1A1A1A) : const Color(0xFF777777),
+                                    ),
+                                  ),
                               );
                             },
                             childCount: times.length,
@@ -133,34 +148,24 @@ class _SetCheckinTimePageState extends State<SetCheckinTimePage> {
               ),
 
                 const SizedBox(height: AppSpacing.large ),
-              
+
               // Bottom Button
-              Container(
+              SizedBox(
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: AppTheme.primaryGradient,
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.primary.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
+                height: 56,
                 child: ElevatedButton(
                   onPressed: _setCheckinTime,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: const Color(0xFF1B5E20),
                     shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.medium),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                      borderRadius: BorderRadius.circular(32),
                     ),
                   ),
                   child: const Text(
                     'Atur Waktu Check-In',
                     style: TextStyle(
+                      fontFamily: 'Inter',
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -168,7 +173,7 @@ class _SetCheckinTimePageState extends State<SetCheckinTimePage> {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.medium),
             ],
           ),

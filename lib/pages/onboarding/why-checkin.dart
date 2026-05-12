@@ -7,7 +7,7 @@ class WhyCheckinPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.surface,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.large),
@@ -20,7 +20,7 @@ class WhyCheckinPage extends StatelessWidget {
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(
                       Icons.arrow_back_ios,
-                      color: AppTheme.textGrey,
+                      color: Color(0xFF777777),
                       size: 20,
                     ),
                   ),
@@ -34,7 +34,7 @@ class WhyCheckinPage extends StatelessWidget {
                 width: 200,
                 height: 200,
                 child: Image.asset(
-                  'assets/images/onboarding/why-checkin.png',
+                  'assets/images/maskots/why-checkin.png',
                   width: 220,
                   height: 20,
                   fit: BoxFit.contain,
@@ -49,15 +49,18 @@ class WhyCheckinPage extends StatelessWidget {
                   style: AppText.h2.copyWith(
                     height: 1.3,
                     fontWeight: FontWeight.w700,
+                    color: const Color(0xFF1A1A1A),
+                    fontFamily: 'Inter',
                   ),
                   children: [
                     const TextSpan(text: 'Daily Checkin selama satu menit '),
                     TextSpan(
                       text: 'setiap hari',
                       style: AppText.h2.copyWith(
-                        color: AppTheme.primary,
+                        color: const Color(0xFF4CAF50),
                         height: 1.3,
                         fontWeight: FontWeight.w700,
+                        fontFamily: 'Inter',
                       ),
                     ),
                     const TextSpan(
@@ -75,44 +78,32 @@ class WhyCheckinPage extends StatelessWidget {
                 'Kebanyakan pengguna mulai merasakan manfaatnya dalam minggu pertama.',
                 textAlign: TextAlign.center,
                 style: AppText.body.copyWith(
-                  color: AppTheme.textGrey,
+                  color: const Color(0xFF777777),
                   height: 1.4,
                 ),
               ),
 
               const SizedBox(height: 12),
 
-              // Tombol "Mengapa check-in?"
-              Container(
+              // Tombol "Atur Waktu Check-in"
+              SizedBox(
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: AppTheme.primaryGradient,
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.primary.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
+                height: 56,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/set-checkin-time');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: const Color(0xFF1B5E20),
                     shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.medium,
-                    ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                      borderRadius: BorderRadius.circular(32),
                     ),
                   ),
                   child: const Text(
                     'Atur Waktu Check-in',
                     style: TextStyle(
+                      fontFamily: 'Inter',
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,

@@ -7,7 +7,7 @@ class Learning4 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.surface,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.large),
@@ -24,7 +24,7 @@ class Learning4 extends StatelessWidget {
                       width: 220,
                       height: 220,
                       child: Image.asset(
-                        'assets/images/onboarding/learning-4.png',
+                        'assets/images/maskots/learning-4.png',
                         width: 220,
                         height: 220,
                         fit: BoxFit.contain,
@@ -32,7 +32,7 @@ class Learning4 extends StatelessWidget {
                     ),
 
                     const SizedBox(height: AppSpacing.large),
-                    
+
                     // Main Title
                     Text(
                       'Saya butuh lebih banyak',
@@ -43,9 +43,9 @@ class Learning4 extends StatelessWidget {
                         fontSize: 32,
                       ),
                     ),
-                    
+
                     const SizedBox(height: AppSpacing.medium),
-                    
+
                     // Description
                     Text(
                       'Semakin banyak pornografi yang kamu tonton, semakin banyak dopamin yang dibutuhkan otak kamu untuk merasa baik. Inilah sebabnya pornografi tidak memuaskanmu seperti dulu.',
@@ -59,7 +59,7 @@ class Learning4 extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // Bottom Navigation Area
               Expanded(
                 flex: 1,
@@ -75,10 +75,10 @@ class Learning4 extends StatelessWidget {
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
-                            color: AppTheme.surface,
+                            color: Colors.white,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: AppTheme.textGrey.withOpacity(0.3),
+                              color: const Color(0xFFDDDDDD),
                               width: 1,
                             ),
                           ),
@@ -86,35 +86,28 @@ class Learning4 extends StatelessWidget {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.arrow_back_ios,
-                              color: AppTheme.textGrey,
+                              color: Color(0xFF777777),
                               size: 20,
                             ),
                           ),
                         ),
-                        
+
                         // Next Button
                         Container(
                           width: 60,
                           height: 60,
-                          decoration: BoxDecoration(
-                            gradient: AppTheme.primaryGradient,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF1B5E20),
                             shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppTheme.primary.withOpacity(0.3),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
                           ),
                           child: IconButton(
                             onPressed: () {
                               // Navigate to next learning page or complete learning
                               Navigator.pushNamedAndRemoveUntil(
-                                context, 
-                                '/learning-5', 
+                                context,
+                                '/learning-5',
                                 (route) => false,
                               );
                             },
@@ -127,7 +120,7 @@ class Learning4 extends StatelessWidget {
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: AppSpacing.medium),
                   ],
                 ),
@@ -139,4 +132,3 @@ class Learning4 extends StatelessWidget {
     );
   }
 }
-

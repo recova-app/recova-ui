@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
+import '../../../services/onboarding_state.dart';
 
 class Question5 extends StatefulWidget {
   const Question5({super.key});
@@ -19,14 +20,12 @@ class _Question5State extends State<Question5> {
     setState(() {
       selectedOption = index;
     });
-    // Auto-navigate to next question when option is selected
-    Future.delayed(const Duration(milliseconds: 300), () {
-      Navigator.pushNamed(context, '/question-6');
-    });
   }
 
-  void _skipTest() {
-    Navigator.pushNamed(context, '/learning-1');
+  void _continue() {
+    if (selectedOption != null) {
+      Navigator.pushNamed(context, '/question-6');
+    }
   }
 
   @override
@@ -40,52 +39,52 @@ class _Question5State extends State<Question5> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Progress Bar
-              Container(
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppTheme.textLight.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: 5 / 8, // Question 5 of 8
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: AppTheme.primaryGradient,
-                      borderRadius: BorderRadius.circular(2),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  height: 16,
+                  color: const Color(0xFFE0E0E0),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: 5 / 9,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4BB857),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.large),
-              
+
               // Back Button
               GestureDetector(
                 onTap: () => Navigator.pop(context),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
+                child: const Padding(
+                  padding: EdgeInsets.all(8),
                   child: Icon(
                     Icons.arrow_back_ios,
-                    color: AppTheme.textGrey,
+                    color: Color(0xFF9E9E9E),
                     size: 24,
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.medium),
-              
+
               // Question Label
               Text(
                 'Pertanyaan 5',
                 style: AppText.body.copyWith(
-                  color: AppTheme.primary,
+                  color: const Color(0xFF2E7D32),
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.medium),
-              
+
               // Question Text
               Text(
                 'Apakah frekuensi atau durasi menonton pornografi kamu meningkat seiring waktu?',
@@ -95,81 +94,48 @@ class _Question5State extends State<Question5> {
                   fontSize: 28,
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.large * 2),
-              
+
               // Answer Options
               Expanded(
                 child: ListView.builder(
                   itemCount: options.length,
                   itemBuilder: (context, index) {
                     final isSelected = selectedOption == index;
-                    
+
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: AppSpacing.medium),
+                      padding:
+                          const EdgeInsets.only(bottom: AppSpacing.medium),
                       child: GestureDetector(
                         onTap: () => _selectOption(index),
                         child: Container(
-                          padding: const EdgeInsets.all(AppSpacing.large),
-                          decoration: BoxDecoration(
-                            color: isSelected ? AppTheme.success.withOpacity(0.1) : AppTheme.surface,
-                            borderRadius: BorderRadius.circular(AppRadius.medium),
-                            border: Border.all(
-                              color: isSelected ? AppTheme.success : AppTheme.textLight.withOpacity(0.3),
-                              width: isSelected ? 2 : 1,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.large,
+                            vertical: 18,
                           ),
-                          child: Row(
-                            children: [
-                              // Icon for Yes and No (green checkmark when selected)
-                              Container(
-                                width: 32,
-                                height: 32,
-                                decoration: BoxDecoration(
-                                  color: isSelected 
-                                      ? AppTheme.success 
-                                      : const Color(0xFFF39C12), // Green when selected, Orange when not
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: isSelected
-                                      ? const Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                          size: 20,
-                                        )
-                                      : Text(
-                                          '${index + 1}',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                ),
-                              ),
-                              
-                              const SizedBox(width: AppSpacing.medium),
-                              
-                              // Option Text
-                              Expanded(
-                                child: Text(
-                                  options[index],
-                                  style: AppText.body.copyWith(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: isSelected ? AppTheme.success : AppTheme.textDark,
-                                  ),
-                                ),
-                              ),
-                            ],
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFF4BB857).withOpacity(0.12)
+                                : const Color(0xFFF2F2F2),
+                            borderRadius:
+                                BorderRadius.circular(AppRadius.large),
+                            border: isSelected
+                                ? Border.all(
+                                    color: const Color(0xFF4BB857),
+                                    width: 2,
+                                  )
+                                : null,
+                          ),
+                          child: Text(
+                            options[index],
+                            style: AppText.body.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: isSelected
+                                  ? const Color(0xFF2E7D32)
+                                  : AppTheme.textDark,
+                            ),
                           ),
                         ),
                       ),
@@ -177,8 +143,33 @@ class _Question5State extends State<Question5> {
                   },
                 ),
               ),
-              
-              const SizedBox(height: AppSpacing.medium),
+
+              // Continue Button
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: selectedOption != null ? _continue : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: selectedOption != null
+                        ? const Color(0xFF1B5E20)
+                        : const Color(0xFFBDBDBD),
+                    disabledBackgroundColor: const Color(0xFFBDBDBD),
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                  ),
+                  child: const Text(
+                    'Continue',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

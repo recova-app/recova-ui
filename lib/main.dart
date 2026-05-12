@@ -28,6 +28,7 @@ import 'package:recova/pages/onboarding/preparing_test_result.dart';
 import 'package:recova/pages/onboarding/results.dart';
 import 'package:recova/pages/onboarding/benefits.dart';
 import 'package:recova/pages/onboarding/why-checkin.dart';
+import 'package:recova/pages/register_page.dart';
 import 'package:recova/pages/splash_screen.dart';
 import 'package:recova/pages/onboarding/learning_1.dart';
 import 'package:recova/theme/app_theme.dart';
@@ -36,7 +37,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 void main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    
+
     // Load environment variables
     await dotenv.load(fileName: ".env");
 
@@ -99,7 +100,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const SplashPage(),
         '/homepage': (context) => const MainScaffold(),
-        '/login': (context) => const LoginPage(),	
+        '/login': (context) => const LoginPage(),
+        '/register': (context) => const RegisterPage(),
         '/learning-1': (context) => const Learning1(),
         '/learning-2': (context) => const Learning2(),
         '/learning-3': (context) => const Learning3(),

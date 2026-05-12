@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
+import '../../services/auth_service.dart';
+import '../../services/onboarding_state.dart';
 
 class PreparingTestResultPage extends StatefulWidget {
   const PreparingTestResultPage({super.key});
@@ -47,10 +49,24 @@ class _PreparingTestResultPageState extends State<PreparingTestResultPage>
     _animationController.repeat(reverse: true);
     _progressController.forward();
 
-    // Navigate to results after animation completes
-    Future.delayed(const Duration(seconds: 4), () {
-      Navigator.pushReplacementNamed(context, '/results');
-    });
+    // Submit data to API and navigate to results
+    _submitOnboardingData();
+  }
+
+  Future<void> _submitOnboardingData() async {
+    try {
+      final authService = AuthService();
+      final data = OnboardingState().toJson();
+      await authService.submitOnboarding(data);
+    } catch (e) {
+      print('Error submitting onboarding data: $e');
+    } finally {
+      // Ensure we navigate after at least 4 seconds for the animation
+      await Future.delayed(const Duration(seconds: 4));
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/results');
+      }
+    }
   }
 
   @override
@@ -63,7 +79,7 @@ class _PreparingTestResultPageState extends State<PreparingTestResultPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.surface,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.large),
@@ -76,34 +92,24 @@ class _PreparingTestResultPageState extends State<PreparingTestResultPage>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Animated Brain Character
-                    AnimatedBuilder(
-                      animation: _rotationAnimation,
-                      builder: (context, child) {
-                        return Container(
+                    Container(
                           height: 200,
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              // Main brain character with dumbbells
-                              Transform.rotate(
-                                angle: _rotationAnimation.value * 0.2,
-                                child: Container(
-                                  width: 120,
-                                  height: 120,
+                              Container(
+                                  width: 200,
+                                  height: 200,
                                   child: Image.asset(
-                                    'assets/images/onboarding/preparing-result.png',
-                                    width: 120,
-                                    height: 120,
+                                    'assets/images/maskots/preparing-results.png',
+                                    width: 200,
+                                    height: 200,
                                     fit: BoxFit.contain,
                                   ),
                                 ),
-                              ),
                             ],
                           ),
-                        );
-                      },
-                    ),
+                        ),
 
                     const SizedBox(height: AppSpacing.large),
 
@@ -111,9 +117,10 @@ class _PreparingTestResultPageState extends State<PreparingTestResultPage>
                     Text(
                       'Tahukah kamu?',
                       style: AppText.h2.copyWith(
-                        color: AppTheme.primary,
+                        color: const Color(0xFF4CAF50),
                         fontWeight: FontWeight.w700,
                         fontSize: 24,
+                        fontFamily: 'Inter',
                       ),
                     ),
 
@@ -127,6 +134,8 @@ class _PreparingTestResultPageState extends State<PreparingTestResultPage>
                         height: 1.2,
                         fontWeight: FontWeight.w700,
                         fontSize: 24,
+                        fontFamily: 'Inter',
+                        color: const Color(0xFF1A1A1A),
                       ),
                     ),
                   ],
@@ -150,7 +159,7 @@ class _PreparingTestResultPageState extends State<PreparingTestResultPage>
                               width: double.infinity,
                               height: 8,
                               decoration: BoxDecoration(
-                                color: AppTheme.textLight.withOpacity(0.3),
+                                color: const Color(0xFFE0E0E0),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: FractionallySizedBox(
@@ -158,7 +167,7 @@ class _PreparingTestResultPageState extends State<PreparingTestResultPage>
                                 widthFactor: _progressAnimation.value,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    gradient: AppTheme.primaryGradient,
+                                    color: const Color(0xFF4CAF50),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                 ),
@@ -171,8 +180,9 @@ class _PreparingTestResultPageState extends State<PreparingTestResultPage>
                             Text(
                               'Mempersiapkan hasilmu...${(_progressAnimation.value * 100).toInt()}%',
                               style: AppText.body.copyWith(
-                                color: AppTheme.textGrey,
+                                color: const Color(0xFF777777),
                                 fontSize: 16,
+                                fontFamily: 'Inter',
                                 fontWeight: FontWeight.w500,
                               ),
                             ),

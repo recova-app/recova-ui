@@ -7,11 +7,11 @@ class BenefitsPage extends StatefulWidget {
   State<BenefitsPage> createState() => _BenefitsPageState();
 }
 
-class _BenefitsPageState extends State<BenefitsPage> 
+class _BenefitsPageState extends State<BenefitsPage>
     with TickerProviderStateMixin {
   late AnimationController _slideController;
   late List<Animation<Offset>> _slideAnimations;
-  
+
   final List<BenefitItem> _benefits = [
     BenefitItem(
       emoji: '💛',
@@ -50,16 +50,16 @@ class _BenefitsPageState extends State<BenefitsPage>
       title: 'Stres dan kecemasan berkurang',
     ),
   ];
-  
+
   @override
   void initState() {
     super.initState();
-    
+
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-    
+
     _slideAnimations = List.generate(
       _benefits.length,
       (index) => Tween<Offset>(
@@ -74,10 +74,10 @@ class _BenefitsPageState extends State<BenefitsPage>
         ),
       )),
     );
-    
+
     _slideController.forward();
   }
-  
+
   @override
   void dispose() {
     _slideController.dispose();
@@ -97,14 +97,15 @@ class _BenefitsPageState extends State<BenefitsPage>
               child: Text(
                 'Manfaat Bebas Pornografi',
                 style: const TextStyle(
+                  fontFamily: 'Inter',
                   fontSize: 28,
                   fontWeight: FontWeight.w700,
-                  color: Colors.black,
+                  color: Color(0xFF1A1A1A),
                 ),
                 textAlign: TextAlign.center,
               ),
             ),
-            
+
             // Benefits List
             Expanded(
               child: ListView.builder(
@@ -121,27 +122,28 @@ class _BenefitsPageState extends State<BenefitsPage>
                 },
               ),
             ),
-            
+
             // Continue Button
             Padding(
               padding: const EdgeInsets.all(20),
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 56,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/homepage');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4ECDC4),
+                    backgroundColor: const Color(0xFF1B5E20),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+                      borderRadius: BorderRadius.circular(32),
                     ),
                     elevation: 0,
                   ),
                   child: const Text(
                     'Selanjutnya',
                     style: TextStyle(
+                      fontFamily: 'Inter',
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -182,8 +184,8 @@ class BenefitCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8E8E8),
-        borderRadius: BorderRadius.circular(25),
+        color: const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         children: [
@@ -192,17 +194,18 @@ class BenefitCard extends StatelessWidget {
             benefit.emoji,
             style: const TextStyle(fontSize: 24),
           ),
-          
+
           const SizedBox(width: 16),
-          
+
           // Title
           Expanded(
             child: Text(
               benefit.title,
               style: const TextStyle(
+                fontFamily: 'Inter',
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,
+                color: Color(0xFF1A1A1A),
               ),
             ),
           ),

@@ -22,7 +22,7 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
   void _setGoal() {
     // Get the selected goal text
     final selectedGoalText = goals[selectedGoal]['text'] as String;
-    
+
     // Navigate to result page with the selected goal
     Navigator.push(
       context,
@@ -41,7 +41,7 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.surface,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.large),
@@ -53,22 +53,22 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
                 child: Column(
                   children: [
                     const SizedBox(height: AppSpacing.large),
-                    
+
                       Container(
                       width: 200,
                       height: 200,
                       child: Image.asset(
-                        'assets/images/onboarding/porn-victory.png',
+                        'assets/images/maskots/set-porn-free-day.png',
                         width: 220,
                         height: 220,
                         fit: BoxFit.contain,
                       ),
                     ),
-                    
+
                     const SizedBox(height: AppSpacing.large),
-                    
+
                     const SizedBox(height: AppSpacing.large),
-                    
+
                     // Main instruction
                     Text(
                       'Mari mulai dengan target kecil untuk membangun momentum.',
@@ -77,11 +77,13 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
                         height: 1.2,
                         fontWeight: FontWeight.w700,
                         fontSize: 28,
+                        fontFamily: 'Inter',
+                        color: const Color(0xFF1A1A1A),
                       ),
                     ),
-                    
+
                     const SizedBox(height: AppSpacing.large * 2),
-                    
+
                     // Goal Options
                     Column(
                       children: goals.asMap().entries.map((entry) {
@@ -89,7 +91,7 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
                         final goal = entry.value;
                         final isSelected = selectedGoal == index;
                         final isRecommended = goal['recommended'] as bool;
-                        
+
                         return Padding(
                           padding: const EdgeInsets.only(bottom: AppSpacing.medium),
                           child: GestureDetector(
@@ -102,10 +104,14 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
                               width: double.infinity,
                               padding: const EdgeInsets.all(AppSpacing.large),
                               decoration: BoxDecoration(
-                                color: isSelected ? AppTheme.primary.withOpacity(0.1) : AppTheme.surface,
+                                color: isSelected
+                                    ? const Color(0xFF4CAF50).withOpacity(0.1)
+                                    : const Color(0xFFF5F5F5),
                                 borderRadius: BorderRadius.circular(AppRadius.medium),
                                 border: Border.all(
-                                  color: isSelected ? AppTheme.primary : AppTheme.textLight.withOpacity(0.3),
+                                  color: isSelected
+                                      ? const Color(0xFF4CAF50)
+                                      : const Color(0xFFDDDDDD),
                                   width: isSelected ? 2 : 1,
                                 ),
                               ),
@@ -114,8 +120,13 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
                                   goal['text'] as String,
                                   style: AppText.body.copyWith(
                                     fontSize: 18,
+                                    fontFamily: 'Inter',
                                     fontWeight: isRecommended ? FontWeight.w600 : FontWeight.w500,
-                                    color: isSelected ? AppTheme.primary : (isRecommended ? AppTheme.textDark : AppTheme.textGrey),
+                                    color: isSelected
+                                        ? const Color(0xFF1B5E20)
+                                        : (isRecommended
+                                            ? const Color(0xFF1A1A1A)
+                                            : const Color(0xFF777777)),
                                   ),
                                 ),
                               ),
@@ -127,37 +138,27 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
                   ],
                 ),
               ),
-              
+
               // Bottom Buttons
               Column(
                 children: [
                   // Set Goal Button
-                  Container(
+                  SizedBox(
                     width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: AppTheme.primaryGradient,
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppTheme.primary.withOpacity(0.3),
-                          blurRadius: 12,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
-                    ),
+                    height: 56,
                     child: ElevatedButton(
                       onPressed: _setGoal,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
+                        backgroundColor: const Color(0xFF1B5E20),
                         shadowColor: Colors.transparent,
-                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.medium),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppRadius.medium),
+                          borderRadius: BorderRadius.circular(32),
                         ),
                       ),
                       child: const Text(
                         'Tetapkan target bebas pornografi',
                         style: TextStyle(
+                          fontFamily: 'Inter',
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
@@ -165,13 +166,13 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: AppSpacing.medium),
-                  
+
                   // Skip Button
                 ],
               ),
-              
+
               const SizedBox(height: AppSpacing.medium),
             ],
           ),

@@ -7,7 +7,7 @@ class Learning3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.surface,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.large),
@@ -24,7 +24,7 @@ class Learning3 extends StatelessWidget {
                       width: 220,
                       height: 220,
                       child: Image.asset(
-                        'assets/images/onboarding/learning-3.png',
+                        'assets/images/maskots/learning-3.png',
                         width: 220,
                         height: 220,
                         fit: BoxFit.contain,
@@ -74,10 +74,10 @@ class Learning3 extends StatelessWidget {
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
-                            color: AppTheme.surface,
+                            color: Colors.white,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: AppTheme.textGrey.withOpacity(0.3),
+                              color: const Color(0xFFDDDDDD),
                               width: 1,
                             ),
                           ),
@@ -85,9 +85,9 @@ class Learning3 extends StatelessWidget {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.arrow_back_ios,
-                              color: AppTheme.textGrey,
+                              color: Color(0xFF777777),
                               size: 20,
                             ),
                           ),
@@ -97,16 +97,9 @@ class Learning3 extends StatelessWidget {
                         Container(
                           width: 60,
                           height: 60,
-                          decoration: BoxDecoration(
-                            gradient: AppTheme.primaryGradient,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF1B5E20),
                             shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppTheme.primary.withOpacity(0.3),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
                           ),
                           child: IconButton(
                             onPressed: () {

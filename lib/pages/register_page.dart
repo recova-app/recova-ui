@@ -1,98 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:recova/pages/main_scaffold.dart';
 import 'package:recova/pages/onboarding/learning_1.dart';
-import 'package:recova/pages/register_page.dart';
 import 'package:recova/services/auth_service.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  final _identifierController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
-  bool _isEmailLoading = false;
-  bool _isGoogleLoading = false;
+  bool _isLoading = false;
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   final AuthService _authService = AuthService();
 
   @override
   void dispose() {
-    _identifierController.dispose();
+    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  // ── Navigation helper ─────────────────────────────────────────────────────
-
-  void _navigateAfterAuth(Map<String, dynamic> data) {
-    final user = data['user'] as Map<String, dynamic>;
-    final onboardingCompleted = user['onboarding_completed'] as bool? ?? false;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) =>
-            onboardingCompleted ? const MainScaffold() : const Learning1(),
-      ),
-    );
-  }
-
-  // ── Handlers ──────────────────────────────────────────────────────────────
-
-  Future<void> _handleEmailLogin() async {
+  Future<void> _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _isEmailLoading = true);
+    setState(() => _isLoading = true);
 
     try {
-      final data = await _authService.loginWithEmail(
-        identifier: _identifierController.text.trim(),
+      final data = await _authService.registerWithEmail(
+        email: _emailController.text.trim(),
+        username: _usernameController.text.trim(),
         password: _passwordController.text,
+        confirmPassword: _confirmPasswordController.text,
       );
+
       if (!mounted) return;
-      _navigateAfterAuth(data);
+
+      final user = data['user'] as Map<String, dynamic>;
+      final onboardingCompleted = user['onboarding_completed'] as bool? ?? false;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) =>
+              onboardingCompleted ? const MainScaffold() : const Learning1(),
+        ),
+      );
     } catch (e) {
+       print(e);
       if (!mounted) return;
-      _showError(e.toString().replaceFirst('Exception: ', ''));
-      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString().replaceFirst('Exception: ', '')),
+          backgroundColor: const Color(0xFFD32F2F),
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
     } finally {
-      if (mounted) setState(() => _isEmailLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
-
-  Future<void> _handleGoogleLogin() async {
-    setState(() => _isGoogleLoading = true);
-
-    try {
-      final data = await _authService.signInWithGoogle();
-      if (!mounted) return;
-      if (data == null) return; // user cancelled
-      _navigateAfterAuth(data);
-    } catch (e) {
-      if (!mounted) return;
-      _showError(e.toString().replaceFirst('Exception: ', ''));
-    } finally {
-      if (mounted) setState(() => _isGoogleLoading = false);
-    }
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: const Color(0xFFD32F2F),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
-  }
-
-  // ── Input decoration helper ───────────────────────────────────────────────
 
   InputDecoration _fieldDecoration({
     required String hint,
@@ -110,7 +89,8 @@ class _LoginPageState extends State<LoginPage> {
       suffixIcon: suffixIcon,
       filled: true,
       fillColor: const Color(0xFFF7F7F7),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Color(0xFFEEEEEE)),
@@ -121,7 +101,8 @@ class _LoginPageState extends State<LoginPage> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFF4CAF50), width: 1.5),
+        borderSide:
+            const BorderSide(color: Color(0xFF4CAF50), width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -129,12 +110,11 @@ class _LoginPageState extends State<LoginPage> {
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Color(0xFFD32F2F), width: 1.5),
+        borderSide:
+            const BorderSide(color: Color(0xFFD32F2F), width: 1.5),
       ),
     );
   }
-
-  // ── Build ─────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -177,12 +157,11 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
 
-
-                          const SizedBox(height: 28),
+                          const SizedBox(height: 20),
 
                           // Heading
                           const Text(
-                            'Masuk',
+                            'Buat Akun',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: 'Inter',
@@ -197,7 +176,7 @@ class _LoginPageState extends State<LoginPage> {
 
                           // Subtitle
                           const Text(
-                            'Data kamu aman bersama kami. Kami hanya menyimpan profil dan aktivitas akun kamu',
+                            'Daftarkan dirimu dan mulai perjalanan pemulihanmu bersama kami',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: 'Inter',
@@ -208,14 +187,39 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
 
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 28),
 
-                          // Identifier field (email or username)
+                          // Email field
                           TextFormField(
-                            controller: _identifierController,
+                            controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             decoration: _fieldDecoration(
-                              hint: 'Email atau username',
+                              hint: 'Alamat email',
+                              icon: Icons.email_outlined,
+                            ),
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14,
+                              color: Color(0xFF1A1A1A),
+                            ),
+                            validator: (v) {
+                              if (v == null || v.trim().isEmpty) {
+                                return 'Email wajib diisi';
+                              }
+                              if (!v.contains('@')) {
+                                return 'Format email tidak valid';
+                              }
+                              return null;
+                            },
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          // Username field
+                          TextFormField(
+                            controller: _usernameController,
+                            decoration: _fieldDecoration(
+                              hint: 'Username',
                               icon: Icons.person_outline,
                             ),
                             style: const TextStyle(
@@ -225,7 +229,10 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             validator: (v) {
                               if (v == null || v.trim().isEmpty) {
-                                return 'Email atau username wajib diisi';
+                                return 'Username wajib diisi';
+                              }
+                              if (v.trim().length < 3) {
+                                return 'Username minimal 3 karakter';
                               }
                               return null;
                             },
@@ -261,68 +268,107 @@ class _LoginPageState extends State<LoginPage> {
                               if (v == null || v.isEmpty) {
                                 return 'Password wajib diisi';
                               }
+                              if (v.length < 8) {
+                                return 'Password minimal 8 karakter';
+                              }
+                              return null;
+                            },
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          // Confirm password field
+                          TextFormField(
+                            controller: _confirmPasswordController,
+                            obscureText: _obscureConfirmPassword,
+                            decoration: _fieldDecoration(
+                              hint: 'Konfirmasi password',
+                              icon: Icons.lock_outline,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscureConfirmPassword
+                                      ? Icons.visibility_off_outlined
+                                      : Icons.visibility_outlined,
+                                  color: const Color(0xFF999999),
+                                  size: 20,
+                                ),
+                                onPressed: () => setState(() =>
+                                    _obscureConfirmPassword =
+                                        !_obscureConfirmPassword),
+                              ),
+                            ),
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14,
+                              color: Color(0xFF1A1A1A),
+                            ),
+                            validator: (v) {
+                              if (v == null || v.isEmpty) {
+                                return 'Konfirmasi password wajib diisi';
+                              }
+                              if (v != _passwordController.text) {
+                                return 'Konfirmasi password tidak cocok';
+                              }
                               return null;
                             },
                           ),
 
                           const SizedBox(height: 24),
 
-                          // ── Submit Button ───────────────────────────────────
+                          // Register button
                           SizedBox(
                             width: double.infinity,
-                            height: 52,
+                            height: 56,
                             child: ElevatedButton(
-                              onPressed: _isEmailLoading ? null : _handleEmailLogin,
+                              onPressed: _isLoading ? null : _handleRegister,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF1B5E20),
-                                foregroundColor: Colors.white,
+                                disabledBackgroundColor:
+                                    const Color(0xFF1B5E20).withOpacity(0.6),
+                                shadowColor: Colors.transparent,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(40),
                                 ),
-                                elevation: 0,
                               ),
-                              child: _isEmailLoading
+                              child: _isLoading
                                   ? const SizedBox(
-                                      height: 24,
-                                      width: 24,
+                                      width: 22,
+                                      height: 22,
                                       child: CircularProgressIndicator(
+                                        strokeWidth: 2.5,
                                         color: Colors.white,
-                                        strokeWidth: 2,
                                       ),
                                     )
                                   : const Text(
-                                      'Masuk',
+                                      'Daftar',
                                       style: TextStyle(
                                         fontFamily: 'Inter',
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
                                       ),
                                     ),
                             ),
                           ),
 
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 20),
 
-                          // ── Register link ───────────────────────────────────
+                          // Login link
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text(
-                                'Belum punya akun? ',
+                                'Sudah punya akun? ',
                                 style: TextStyle(
                                   fontFamily: 'Inter',
                                   fontSize: 13,
-                                  color: Color(0xFF777777),
+                                  color: Color(0xFF444444),
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const RegisterPage()),
-                                ),
+                                onTap: () => Navigator.pop(context),
                                 child: const Text(
-                                  'Daftar',
+                                  'Masuk',
                                   style: TextStyle(
                                     fontFamily: 'Inter',
                                     fontSize: 13,
@@ -334,7 +380,7 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                           
-                          // Add some padding at the bottom so it clears the image
+                          // Add padding to clear the image at bottom
                           const SizedBox(height: 40),
                         ],
                       ),

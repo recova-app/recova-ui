@@ -8,7 +8,7 @@ class Learning1 extends StatelessWidget {
   Widget build(BuildContext context) {
     print('Learning1 build method called'); // Debug print
     return Scaffold(
-      backgroundColor: AppTheme.surface,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.large),
@@ -25,7 +25,7 @@ class Learning1 extends StatelessWidget {
                         width: 220,
                         height: 220,
                         child: Image.asset(
-                          'assets/images/onboarding/learning-1.png',
+                          'assets/images/maskots/learning-1.png',
                           width: 220,
                           height: 220,
                           fit: BoxFit.contain,
@@ -61,54 +61,32 @@ class Learning1 extends StatelessWidget {
               ),
 
               // Bottom Action Area - Always visible and clickable
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.only(top: AppSpacing.medium),
-                child: Column(
-                  children: [
-                    // Continue Button
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: AppTheme.primaryGradient,
-                        borderRadius: BorderRadius.circular(AppRadius.medium),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppTheme.primary.withOpacity(0.3),
-                            blurRadius: 12,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/learning-2');
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppSpacing.medium,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppRadius.medium,
-                            ),
-                          ),
-                        ),
-                        child: const Text(
-                          'Selanjutnya',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.medium, bottom: AppSpacing.medium),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/learning-2');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1B5E20),
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(32),
                       ),
                     ),
-
-                    const SizedBox(height: AppSpacing.medium),
-                  ],
+                    child: const Text(
+                      'Selanjutnya',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],

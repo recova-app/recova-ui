@@ -7,7 +7,7 @@ class Learning5 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.surface,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.large),
@@ -24,14 +24,14 @@ class Learning5 extends StatelessWidget {
                       width: 220,
                       height: 220,
                       child: Image.asset(
-                        'assets/images/onboarding/learning-5.png',
+                        'assets/images/maskots/learning-5.png',
                         width: 220,
                         height: 220,
                         fit: BoxFit.contain,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.large),
-                    
+
                     // Main Title
                     Text(
                       'Wajar jika kamu merasa terjebak oleh pornografi. Tapi kamu tidak benar-benar terjebak.',
@@ -42,9 +42,9 @@ class Learning5 extends StatelessWidget {
                         fontSize: 28,
                       ),
                     ),
-                    
+
                     const SizedBox(height: AppSpacing.large),
-                    
+
                     // Subtitle
                     Text(
                       'Otakmu bisa berubah dan menyesuaikan kembali.',
@@ -59,7 +59,7 @@ class Learning5 extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // Bottom Action Area
               Expanded(
                 flex: 1,
@@ -67,39 +67,29 @@ class Learning5 extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     // Continue Button
-                    Container(
+                    SizedBox(
                       width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: AppTheme.primaryGradient,
-                        borderRadius: BorderRadius.circular(AppRadius.medium),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppTheme.primary.withOpacity(0.3),
-                            blurRadius: 12,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
+                      height: 56,
                       child: ElevatedButton(
                         onPressed: () {
                           // Navigate to main app or complete learning
                           Navigator.pushNamedAndRemoveUntil(
-                            context, 
-                            '/set-name', 
+                            context,
+                            '/set-name',
                             (route) => false,
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
+                          backgroundColor: const Color(0xFF1B5E20),
                           shadowColor: Colors.transparent,
-                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.medium),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(AppRadius.medium),
+                            borderRadius: BorderRadius.circular(32),
                           ),
                         ),
                         child: const Text(
-                          'Continue',
+                          'Selanjutnya',
                           style: TextStyle(
+                            fontFamily: 'Inter',
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
@@ -107,7 +97,7 @@ class Learning5 extends StatelessWidget {
                         ),
                       ),
                     ),
-                    
+
                     const SizedBox(height: AppSpacing.medium),
                   ],
                 ),
@@ -128,40 +118,40 @@ class CuteBrainPainter extends CustomPainter {
     final brainPaint = Paint()
       ..color = const Color(0xFFB39DDB) // Light purple
       ..style = PaintingStyle.fill;
-    
+
     // Brain outline
     final outlinePaint = Paint()
       ..color = const Color(0xFF9575CD) // Medium purple
       ..strokeWidth = 3.0
       ..style = PaintingStyle.stroke;
-    
+
     // Eyes
     final eyePaint = Paint()
       ..color = Colors.black
       ..style = PaintingStyle.fill;
-    
+
     // Mouth
     final mouthPaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill;
-    
+
     // Arms
     final armPaint = Paint()
       ..color = Colors.black
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
-    
+
     // Legs
     final legPaint = Paint()
       ..color = Colors.black
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
-    
+
     // Draw main brain shape
     final brainPath = Path();
-    
+
     // Brain outline (rounded, bulbous shape)
     brainPath.moveTo(size.width * 0.3, size.height * 0.2);
     brainPath.quadraticBezierTo(
@@ -193,16 +183,16 @@ class CuteBrainPainter extends CustomPainter {
       size.width * 0.3, size.height * 0.2,
     );
     brainPath.close();
-    
+
     canvas.drawPath(brainPath, brainPaint);
     canvas.drawPath(brainPath, outlinePaint);
-    
+
     // Draw brain texture lines
     final texturePaint = Paint()
       ..color = const Color(0xFF9575CD)
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
-    
+
     // Left hemisphere lines
     final leftTexture = Path();
     leftTexture.moveTo(size.width * 0.25, size.height * 0.3);
@@ -215,7 +205,7 @@ class CuteBrainPainter extends CustomPainter {
       size.width * 0.3, size.height * 0.45,
       size.width * 0.4, size.height * 0.55,
     );
-    
+
     // Right hemisphere lines
     leftTexture.moveTo(size.width * 0.75, size.height * 0.3);
     leftTexture.quadraticBezierTo(
@@ -227,23 +217,23 @@ class CuteBrainPainter extends CustomPainter {
       size.width * 0.7, size.height * 0.45,
       size.width * 0.6, size.height * 0.55,
     );
-    
+
     // Center line
     leftTexture.moveTo(size.width * 0.5, size.height * 0.25);
     leftTexture.quadraticBezierTo(
       size.width * 0.48, size.height * 0.4,
       size.width * 0.5, size.height * 0.6,
     );
-    
+
     canvas.drawPath(leftTexture, texturePaint);
-    
+
     // Draw eyes
     final leftEye = Offset(size.width * 0.4, size.height * 0.4);
     final rightEye = Offset(size.width * 0.6, size.height * 0.4);
-    
+
     canvas.drawCircle(leftEye, 4, eyePaint);
     canvas.drawCircle(rightEye, 4, eyePaint);
-    
+
     // Draw cute mouth (small rectangle with rounded corners)
     final mouthRect = RRect.fromRectAndRadius(
       Rect.fromCenter(
@@ -254,7 +244,7 @@ class CuteBrainPainter extends CustomPainter {
       const Radius.circular(2),
     );
     canvas.drawRRect(mouthRect, mouthPaint);
-    
+
     // Draw arms
     // Left arm
     canvas.drawLine(
@@ -262,14 +252,14 @@ class CuteBrainPainter extends CustomPainter {
       Offset(size.width * 0.05, size.height * 0.65),
       armPaint,
     );
-    
+
     // Right arm
     canvas.drawLine(
       Offset(size.width * 0.8, size.height * 0.55),
       Offset(size.width * 0.95, size.height * 0.65),
       armPaint,
     );
-    
+
     // Draw legs
     // Left leg
     canvas.drawLine(
@@ -277,19 +267,19 @@ class CuteBrainPainter extends CustomPainter {
       Offset(size.width * 0.3, size.height * 0.9),
       legPaint,
     );
-    
+
     // Right leg
     canvas.drawLine(
       Offset(size.width * 0.65, size.height * 0.7),
       Offset(size.width * 0.7, size.height * 0.9),
       legPaint,
     );
-    
+
     // Draw feet (small circles)
     final footPaint = Paint()
       ..color = Colors.black
       ..style = PaintingStyle.fill;
-    
+
     canvas.drawCircle(Offset(size.width * 0.3, size.height * 0.9), 3, footPaint);
     canvas.drawCircle(Offset(size.width * 0.7, size.height * 0.9), 3, footPaint);
   }

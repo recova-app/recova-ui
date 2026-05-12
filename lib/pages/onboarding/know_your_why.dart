@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
+import '../../services/onboarding_state.dart';
 
 class KnowYourWhyPage extends StatefulWidget {
   const KnowYourWhyPage({super.key});
@@ -37,6 +38,7 @@ class _KnowYourWhyPageState extends State<KnowYourWhyPage> {
 
   void _saveWhy() {
     if (_reasonController.text.trim().isNotEmpty) {
+      OnboardingState().recoveryReason = _reasonController.text.trim();
       Navigator.pushNamed(context, '/why-checkin');
     }
   }
@@ -52,7 +54,7 @@ class _KnowYourWhyPageState extends State<KnowYourWhyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.surface,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.large),
@@ -66,12 +68,12 @@ class _KnowYourWhyPageState extends State<KnowYourWhyPage> {
                     const SizedBox(height: AppSpacing.large),
 
                     Container(
-                      width: 200,
-                      height: 200,
+                      width: 220,
+                      height: 220,
                       child: Image.asset(
-                        'assets/images/onboarding/know-your-why.png',
+                        'assets/images/maskots/know-your-why.png',
                         width: 220,
-                        height: 20,
+                        height: 220,
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -87,6 +89,8 @@ class _KnowYourWhyPageState extends State<KnowYourWhyPage> {
                         height: 1.2,
                         fontWeight: FontWeight.w700,
                         fontSize: 28,
+                        fontFamily: 'Inter',
+                        color: const Color(0xFF1A1A1A),
                       ),
                     ),
 
@@ -99,7 +103,7 @@ class _KnowYourWhyPageState extends State<KnowYourWhyPage> {
                       padding: const EdgeInsets.all(AppSpacing.small),
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: AppTheme.textLight.withOpacity(0.3),
+                          color: const Color(0xFFDDDDDD),
                           width: 1,
                         ),
                         borderRadius: BorderRadius.circular(AppRadius.medium),
@@ -125,7 +129,7 @@ class _KnowYourWhyPageState extends State<KnowYourWhyPage> {
                         vertical: AppSpacing.small,
                       ),
                       decoration: BoxDecoration(
-                        color: AppTheme.textLight.withOpacity(0.1),
+                        color: const Color(0xFFF5F5F5),
                         borderRadius: BorderRadius.circular(AppRadius.medium),
                       ),
                       child: Row(
@@ -143,41 +147,27 @@ class _KnowYourWhyPageState extends State<KnowYourWhyPage> {
               SizedBox(height: AppSpacing.large),
 
               // Bottom Save Button
-              Container(
+              SizedBox(
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: AppTheme.primaryGradient,
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                  boxShadow:
-                      _isButtonEnabled
-                          ? [
-                            BoxShadow(
-                              color: const Color(0xFF4CAF50).withOpacity(0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 6),
-                            ),
-                          ]
-                          : [],
-                ),
+                height: 56,
                 child: ElevatedButton(
                   onPressed: _isButtonEnabled ? _saveWhy : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: _isButtonEnabled
+                        ? const Color(0xFF1B5E20)
+                        : const Color(0xFFBDBDBD),
                     shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.medium,
-                    ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                      borderRadius: BorderRadius.circular(32),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Simpan alasan saya',
                     style: TextStyle(
+                      fontFamily: 'Inter',
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color:
-                          _isButtonEnabled ? Colors.white : AppTheme.textLight,
+                      color: Colors.white,
                     ),
                   ),
                 ),

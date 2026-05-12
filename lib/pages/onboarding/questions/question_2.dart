@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../theme/app_theme.dart';
+import '../../../services/onboarding_state.dart';
 
 class Question2 extends StatefulWidget {
   const Question2({super.key});
@@ -12,7 +13,7 @@ class _Question2State extends State<Question2> {
   int selectedAge = 15;
   final List<int> ages = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50];
 
-  void _confirmAge() {
+  void _continue() {
     Navigator.pushNamed(context, '/question-3');
   }
 
@@ -27,52 +28,52 @@ class _Question2State extends State<Question2> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Progress Bar
-              Container(
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppTheme.textLight.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                child: FractionallySizedBox(
-                  alignment: Alignment.centerLeft,
-                  widthFactor: 2 / 8, // Question 2 of 8
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: AppTheme.primaryGradient,
-                      borderRadius: BorderRadius.circular(2),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  height: 16,
+                  color: const Color(0xFFE0E0E0),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: 2 / 9,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF4BB857),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.large),
-              
+
               // Back Button
               GestureDetector(
                 onTap: () => Navigator.pop(context),
-                child: Container(
-                  padding: const EdgeInsets.all(8),
+                child: const Padding(
+                  padding: EdgeInsets.all(8),
                   child: Icon(
                     Icons.arrow_back_ios,
-                    color: AppTheme.textGrey,
+                    color: Color(0xFF9E9E9E),
                     size: 24,
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.medium),
-              
+
               // Question Label
               Text(
                 'Pertanyaan 2',
                 style: AppText.body.copyWith(
-                  color: AppTheme.primary,
+                  color: const Color(0xFF2E7D32),
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              
+
               const SizedBox(height: AppSpacing.medium),
-              
+
               // Question Text
               Text(
                 'Berapa umur kamu sekarang?',
@@ -82,11 +83,11 @@ class _Question2State extends State<Question2> {
                   fontSize: 28,
                 ),
               ),
-              
+
               // Age Picker
               Expanded(
                 child: Center(
-                  child: Container(
+                  child: SizedBox(
                     height: 300,
                     child: ListWheelScrollView.useDelegate(
                       itemExtent: 60,
@@ -101,24 +102,34 @@ class _Question2State extends State<Question2> {
                       childDelegate: ListWheelChildBuilderDelegate(
                         builder: (context, index) {
                           if (index < 0 || index >= ages.length) return null;
-                          
+
                           final age = ages[index];
                           final isSelected = age == selectedAge;
-                          
+
                           return Container(
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              border: isSelected ? Border(
-                                top: BorderSide(color: AppTheme.textLight.withOpacity(0.3)),
-                                bottom: BorderSide(color: AppTheme.textLight.withOpacity(0.3)),
-                              ) : null,
+                              border: isSelected
+                                  ? Border(
+                                      top: BorderSide(
+                                          color: const Color(0xFF4BB857)
+                                              .withOpacity(0.4)),
+                                      bottom: BorderSide(
+                                          color: const Color(0xFF4BB857)
+                                              .withOpacity(0.4)),
+                                    )
+                                  : null,
                             ),
                             child: Text(
                               age.toString(),
                               style: TextStyle(
                                 fontSize: isSelected ? 32 : 24,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                color: isSelected ? AppTheme.textDark : AppTheme.textGrey,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: isSelected
+                                    ? const Color(0xFF2E7D32)
+                                    : AppTheme.textGrey,
                               ),
                             ),
                           );
@@ -129,34 +140,22 @@ class _Question2State extends State<Question2> {
                   ),
                 ),
               ),
-              
-              // Confirm Button
-              Container(
+
+              // Continue Button
+              SizedBox(
                 width: double.infinity,
-                margin: const EdgeInsets.only(bottom: AppSpacing.medium),
-                decoration: BoxDecoration(
-                  gradient: AppTheme.primaryGradient,
-                  borderRadius: BorderRadius.circular(AppRadius.medium),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.primary.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
+                height: 56,
                 child: ElevatedButton(
-                  onPressed: _confirmAge,
+                  onPressed: _continue,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: const Color(0xFF1B5E20),
                     shadowColor: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.medium),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppRadius.medium),
+                      borderRadius: BorderRadius.circular(32),
                     ),
                   ),
                   child: const Text(
-                    'Konfirmasi umur',
+                    'Continue',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
