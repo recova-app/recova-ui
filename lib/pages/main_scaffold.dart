@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:recova/pages/home_page.dart';
 import 'package:recova/pages/create_post_page.dart';
 import 'package:recova/pages/stats_page.dart';
-import 'package:recova/pages/community_page.dart';
+import 'package:recova/pages/community_hub_page.dart';
 import 'package:recova/pages/education_page.dart';
 import 'package:recova/pages/profile_page.dart';
 
@@ -19,7 +19,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   final List<Widget> _pages = [
     const HomePage(),
     const StatsPage(),
-    const CommunityPage(),
+    const CommunityHubPage(),
     const EducationPage(),
     const ProfilePage(),
   ];
@@ -33,7 +33,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         index: _currentIndex,
         children: _pages,
       ),
-      floatingActionButton: _currentIndex == 2
+      floatingActionButton: _currentIndex == -1
           ? FloatingActionButton(
               onPressed: () {
                 Navigator.push(
