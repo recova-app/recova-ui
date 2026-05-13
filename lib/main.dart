@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:recova/pages/splash_screen.dart';
+import 'package:recova/pages/community_hub_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recova/bloc/home_cubit.dart';
 import 'package:recova/bloc/community_cubit.dart';
 import 'package:recova/bloc/checkin_cubit.dart';
 import 'package:recova/bloc/education_cubit.dart';
+
 
 void main() {
   // Ensure binding is initialized for plugin calls during startup
@@ -70,6 +72,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Inter',
       ),
       debugShowCheckedModeBanner: false,
+      // home: const CommunityHubPage(), // bypass langsung ke CommunityHubPage
       routes: {'/': (context) => const SplashPage()},
     );
   }
