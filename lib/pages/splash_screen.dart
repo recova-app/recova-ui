@@ -34,7 +34,8 @@ class _SplashPageState extends State<SplashPage> {
     } else {
       // Token exists – check if onboarding was completed
       final onboarded = await authService.isOnboardingCompleted();
-      page = onboarded ? const MainScaffold() : const SetNamePage();
+      // page = onboarded ? const MainScaffold() : const SetNamePage();
+      page =  const MainScaffold();
     }
 
     if (!mounted) return;

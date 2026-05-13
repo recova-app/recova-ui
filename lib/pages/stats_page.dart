@@ -1,9 +1,5 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/home_cubit.dart';
-import 'package:recova/models/statistics_model.dart';
-import 'package:table_calendar/table_calendar.dart';
-import 'dart:async';
 
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
@@ -13,208 +9,712 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> {
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
-  Timer? _timer;
-  Duration _timeSinceLastRelapse = Duration.zero;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedDay = _focusedDay;
-    _startTimer();
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      final homeState = context.read<HomeCubit>().state;
-      if (homeState is HomeLoadSuccess) {
-        // Menggunakan tanggal awal streak, bukan tanggal terakhir
-        final streakStartDate = _getStreakStartDate(homeState.statistics);
-        if (streakStartDate != null && mounted) {
-          setState(() {
-            _timeSinceLastRelapse = DateTime.now().difference(streakStartDate);
-          });
-        }
-      }
-    });
-  }
-
-  DateTime? _getStreakStartDate(Statistics stats) {
-    if (stats.currentStreak == 0 || stats.streakCalendar.isEmpty) return null;
-
-    try {
-      // Ambil tanggal check-in terakhir
-      final lastCheckIn = DateTime.parse(stats.streakCalendar.last);
-      // Hitung tanggal mulai dengan mengurangi jumlah hari streak
-      final startDate = lastCheckIn.subtract(Duration(days: stats.currentStreak - 1));
-      // Kembalikan tanggal tanpa informasi jam, menit, detik
-      return DateTime(startDate.year, startDate.month, startDate.day);
-    } catch (_) {
-      return null;
-    }
-  }
+  bool _isAnalysisTab = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
-      body: BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, state) {
-          if (state is HomeLoading || state is HomeInitial) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is HomeLoadFailure) {
-            return Center(child: Text('Gagal memuat statistik: ${state.error}'));
-          }
-          if (state is HomeLoadSuccess) {
-            final stats = state.statistics;
-            final totalDays = 32;
-            final streakEvents =
-                stats.streakCalendar.map((date) => DateTime.parse(date)).toSet();
+      backgroundColor: const Color(0xFFF2F2F2),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(22, 12, 22, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF22C55E),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Icon(Icons.star, size: 16),
+                  ),
+                  const Icon(Icons.notifications_none_rounded),
+                ],
+              ),
+              const SizedBox(height: 20),
+              _hero(),
+              const SizedBox(height: 12),
+              _tabs(),
+              const SizedBox(height: 22),
+              if (_isAnalysisTab) ...[
+                const Text(
+                  'Your Statistics',
+                  style: TextStyle(
+                    fontSize: 43 * 0.55,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Text(
+                  'This is your overview for the last 90 days',
+                  style: TextStyle(fontSize: 14, color: Color(0xFF9AA3AA)),
+                ),
+                const SizedBox(height: 12),
+                _statCards(),
+                const SizedBox(height: 22),
+                const Text(
+                  'Streak Calendar',
+                  style: TextStyle(
+                    fontSize: 43 * 0.55,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Text(
+                  'This is your Streak calendar',
+                  style: TextStyle(fontSize: 14, color: Color(0xFF9AA3AA)),
+                ),
+                const SizedBox(height: 14),
+                _calendar(),
+                const SizedBox(height: 22),
+                const Text(
+                  'Trigger & Urges',
+                  style: TextStyle(
+                    fontSize: 43 * 0.55,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Text(
+                  'This is your overview for the last 90 days',
+                  style: TextStyle(fontSize: 14, color: Color(0xFF9AA3AA)),
+                ),
+                const SizedBox(height: 12),
+                _barPanel(),
+                const SizedBox(height: 22),
+                const Text(
+                  'Time Of Day',
+                  style: TextStyle(
+                    fontSize: 43 * 0.55,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const Text(
+                  'When relapses Occur troughout the day',
+                  style: TextStyle(fontSize: 14, color: Color(0xFF9AA3AA)),
+                ),
+                const SizedBox(height: 12),
+                _donutPanel(),
+              ] else ...[
+                _historyPanel(),
+              ]
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-            return SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _hero() => Container(
+    height: 154,
+    decoration: BoxDecoration(
+      color: const Color(0xFF0C7A57),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Stack(
+      children: [
+        const Positioned(
+          left: 16,
+          top: 40,
+          right: 120,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Mari Kita liat, Seberapa\nJauh Progresmu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 34 * 0.55,
+                  height: 1.1,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Satu langkah kecil setiap harinya',
+                style: TextStyle(color: Color(0xFFD1FAE5), fontSize: 11),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          right: 0,
+          bottom: -20,
+          child: Image.asset(
+            'assets/images/home/task.png',
+            width: 195,
+            height: 195,
+            fit: BoxFit.contain,
+          ),
+        ),
+      ],
+    ),
+  );
+
+  Widget _tabs() => Container(
+    height: 36,
+    padding: const EdgeInsets.all(3),
+    decoration: BoxDecoration(
+      color: const Color(0xFFE1E1E1),
+      borderRadius: BorderRadius.circular(30),
+    ),
+    child: Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() => _isAnalysisTab = true),
+            child: Container(
+              decoration: BoxDecoration(
+                color: _isAnalysisTab ? const Color(0xFF0C7A57) : Colors.transparent,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Center(
+                child: Text(
+                  'Analysis',
+                  style: TextStyle(
+                    color: _isAnalysisTab ? Colors.white : const Color(0xFF444444),
+                    fontWeight: _isAnalysisTab ? FontWeight.w700 : FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() => _isAnalysisTab = false),
+            child: Container(
+              decoration: BoxDecoration(
+                color: !_isAnalysisTab ? const Color(0xFF0C7A57) : Colors.transparent,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Center(
+                child: Text(
+                  'History',
+                  style: TextStyle(
+                    color: !_isAnalysisTab ? Colors.white : const Color(0xFF444444),
+                    fontWeight: !_isAnalysisTab ? FontWeight.w700 : FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  Widget _statCards() => Column(
+    children: [
+      Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Container(
+              height: 220,
+              decoration: BoxDecoration(
+                color: const Color(0xFFDDE8E2),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Stack(
+                clipBehavior: Clip.antiAlias,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Statistik",
+                        Text(
+                          'Longest Streak',
                           style: TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
+                            color: Color(0xFF5C6761),
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                        const CircleAvatar(
-                          backgroundImage:
-                              AssetImage("assets/images/logo.png"),
-                          radius: 20,
+                        SizedBox(height: 8),
+                        Text(
+                          '23 Hari',
+                          style: TextStyle(
+                            fontSize: 56 * 0.55,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF2E5948),
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                  ),
+                  Positioned(
+                    right: 10,
+                    bottom: -15,
+                    child: Image.asset(
+                      'assets/images/home/longStreak.png',
+                      width: 220, // Disesuaikan agar muat
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            flex: 2,
+            child: SizedBox(
+              height: 220,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFC8D5E8),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.check_box_outlined, size: 20),
+                          Spacer(),
+                          Text(
+                            'Success Rate',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF4D5560),
+                            ),
+                          ),
+                          Text(
+                            '98%',
+                            style: TextStyle(
+                              fontSize: 44 * 0.55,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF273247),
+                              height: 1.1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFB6C3EE),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.calendar_month_outlined, size: 20),
+                          Spacer(),
+                          Text(
+                            'Clean Days',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF4D5560),
+                            ),
+                          ),
+                          Text(
+                            '33 Hari',
+                            style: TextStyle(
+                              fontSize: 44 * 0.55,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF273247),
+                              height: 1.1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 10),
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFFE8DDCB),
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Most Common Trigger',
+                    style: TextStyle(
+                      color: Color(0xFF6E6558),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    'Boredom',
+                    style: TextStyle(
+                      fontSize: 50 * 0.55,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF3B352D),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              child: Image.asset(
+                'assets/images/home/boredom.png',
+                width: 120, // Disesuaikan agar muat
+                height: 120,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 
-                    // Card 1: Streak
-                    _buildStreakCard(stats.currentStreak, stats.longestStreak, totalDays),
-                    const SizedBox(height: 16),
+  Widget _calendar() => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
+    decoration: BoxDecoration(
+      color: const Color(0xFFF4F4F4),
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Column(
+      children: [
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Icon(Icons.chevron_left),
+            Text(
+              'Agustus 2025',
+              style: TextStyle(
+                fontSize: 30 * 0.42,
+                color: Color(0xFF666666),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Icon(Icons.chevron_right),
+          ],
+        ),
+        const SizedBox(height: 10),
+        const Divider(),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text('SEN'),
+            Text('SEL'),
+            Text('RAB'),
+            Text('KAM'),
+            Text('JUM'),
+            Text('SAB'),
+            Text('MIN'),
+          ],
+        ),
+        const SizedBox(height: 8),
+        ...[
+          ['1', '2', '3', '4', '5', '6', '7'],
+          ['8', '9', '10', '11', '12', '13', '14'],
+          ['15', '16', '17', '18', '19', '20', '21'],
+          ['22', '23', '24', '25', '26', '27', '28'],
+          ['29', '30', '31', '1', '2', '3', '4'],
+        ].map(
+          (week) => Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children:
+                  week.map((d) {
+                    final isActive = d == '21';
+                    final isOrange = d == '19' || d == '20';
+                    final faded =
+                        ['1', '2', '3', '4'].contains(d) &&
+                        week == ['29', '30', '31', '1', '2', '3', '4'];
+                    return Container(
+                      width: 32,
+                      height: 32,
+                      alignment: Alignment.center,
+                      decoration:
+                          isActive
+                              ? const BoxDecoration(
+                                color: Color(0xFF39B96B),
+                                shape: BoxShape.circle,
+                              )
+                              : null,
+                      child: Text(
+                        d,
+                        style: TextStyle(
+                          color:
+                              isActive
+                                  ? Colors.white
+                                  : faded
+                                  ? const Color(0xFFB8B8B8)
+                                  : isOrange
+                                  ? const Color(0xFFF0A43A)
+                                  : const Color(0xFF313131),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 
-                    // Card 2: Durasi
-                    _buildDurationCard(),
-                    const SizedBox(height: 20),
+  Widget _barPanel() => _panel(
+    child: Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Show:', style: TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFF0C7A57),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: const Text(
+                'Top 5',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFDDE3DF),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: const Text(
+                'All',
+                style: TextStyle(
+                  color: Color(0xFF5D6661),
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14),
+        SizedBox(
+          height: 190,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: const [
+              _Bar(value: 6, color: Color(0xFF0F9580), label: 'Boredom'),
+              _Bar(value: 4, color: Color(0xFF4B7B8E), label: 'Stress'),
+              _Bar(value: 3, color: Color(0xFFF4C500), label: 'Media'),
+              _Bar(value: 3, color: Color(0xFF0DAA97), label: 'Mood'),
+              _Bar(value: 3, color: Color(0xFF7E57E7), label: 'Location'),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        _tip(
+          'Your data shows that Boredom are your main triggers. Developing specific coping strategies f...',
+        ),
+      ],
+    ),
+  );
 
-                    // Kalender
+  Widget _donutPanel() => _panel(
+    child: Column(
+      children: [
+        const SizedBox(height: 4),
+        SizedBox(
+          height: 220,
+          child: CustomPaint(painter: _DonutPainter(), child: const Center()),
+        ),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.rotate_right, size: 14, color: Color(0xFF5D3FD3)),
+            SizedBox(width: 6),
+            Text(
+              'Evening (18-22)',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF4A5460),
+              ),
+            ),
+            SizedBox(width: 14),
+            Icon(Icons.rotate_right, size: 14, color: Color(0xFF3950C3)),
+            SizedBox(width: 6),
+            Text(
+              'Night (23-4)',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF4A5460),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14),
+        _tip(
+          'Night (9PM-5AM) is your highest risk period. Creating a specific routine during these hours c...',
+        ),
+      ],
+    ),
+  );
+
+  Widget _panel({required Widget child}) => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
+    decoration: BoxDecoration(
+      color: const Color(0xFFE2E9E5),
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF1F5F2),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: child,
+    ),
+  );
+
+  Widget _tip(String text) => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      color: const Color(0xFFE6EEEA),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      children: [
+        const Icon(Icons.info_outline, size: 16, color: Color(0xFF5D8D7F)),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Color(0xFF4E5A55),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+  Widget _historyPanel() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Relapse History',
+          style: TextStyle(
+            fontSize: 43 * 0.55,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        const Text(
+          'This is your relapse history for the last 90 days',
+          style: TextStyle(fontSize: 14, color: Color(0xFF9AA3AA)),
+        ),
+        const SizedBox(height: 20),
+        _historyTimelineItem(isFirst: true, isLast: false),
+        _historyTimelineItem(isFirst: false, isLast: false),
+        _historyTimelineItem(isFirst: false, isLast: true),
+      ],
+    );
+  }
+
+  Widget _historyTimelineItem({required bool isFirst, required bool isLast}) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            width: 24,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned(
+                  top: isFirst ? 14 : 0,
+                  bottom: isLast ? null : 0,
+                  child: Container(
+                    width: 4,
+                    color: const Color(0xFFE2E2E2),
+                  ),
+                ),
+                Positioned(
+                  top: 14,
+                  child: Container(
+                    width: 14,
+                    height: 14,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFD4D4D4),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEFFBEE),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     const Text(
-                      "Kalender Streak",
+                      'Wednesday, 11 April 2026',
                       style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF272727),
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'Saya relapse karena tidak kuat menahan nafsu',
+                      style: TextStyle(
+                        color: Color(0xFF2E5948),
+                        fontSize: 13,
+                      ),
                     ),
                     const SizedBox(height: 12),
-                    TableCalendar(
-                      firstDay: DateTime.utc(2020, 1, 1),
-                      lastDay: DateTime.utc(2030, 12, 31),
-                      focusedDay: _focusedDay,
-                      selectedDayPredicate: (day) =>
-                          isSameDay(_selectedDay, day),
-                      onDaySelected: (selectedDay, focusedDay) {
-                        setState(() {
-                          _selectedDay = selectedDay;
-                          _focusedDay = focusedDay;
-                        });
-                      },
-                      headerStyle: const HeaderStyle(
-                        formatButtonVisible: false,
-                        titleCentered: true,
-                      ),
-                      calendarStyle: CalendarStyle(
-                        todayDecoration: BoxDecoration(
-                          color: Colors.teal.withOpacity(0.5),
-                          shape: BoxShape.circle,
-                        ),
-                        selectedDecoration: BoxDecoration(
-                          color: Colors.orange,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      eventLoader: (day) {
-                        if (streakEvents
-                            .any((eventDate) => isSameDay(eventDate, day))) {
-                          return [Container()];
-                        }
-                        return [];
-                      },
-                      calendarBuilders: CalendarBuilders(
-                        markerBuilder: (context, day, events) {
-                          if (events.isNotEmpty) {
-                            return Positioned(
-                              bottom: 5,
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.green,
-                                  shape: BoxShape.circle,
-                                ),
-                                width: 7,
-                                height: 7,
-                              ),
-                            );
-                          }
-                          return null;
-                        },
-                      ),
+                    Row(
+                      children: [
+                        _tag('Boredom'),
+                        const SizedBox(width: 8),
+                        _tag('Media'),
+                      ],
                     ),
                   ],
                 ),
               ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
-    );
-  }
-
-  Widget _buildStreakCard(int currentStreak, int longestStreak, int totalDays) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.orange[400],
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "$currentStreak Hari Streak 🔥",
-            style: const TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            "Streak Terbaik kamu adalah $longestStreak hari",
-            style: const TextStyle(color: Colors.white),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            "Progress: $currentStreak / $totalDays Days",
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-          ),
-          const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: LinearProgressIndicator(
-              value: totalDays > 0 ? currentStreak / totalDays : 0,
-              backgroundColor: Colors.white30,
-              valueColor:
-                  const AlwaysStoppedAnimation<Color>(Colors.white),
-              minHeight: 8,
             ),
           ),
         ],
@@ -222,100 +722,88 @@ class _StatsPageState extends State<StatsPage> {
     );
   }
 
-  // ✅ Bagian yang diperbarui agar mirip dengan gambar contoh
-  Widget _buildDurationCard() {
-    final days = _timeSinceLastRelapse.inDays;
-    final hours = _timeSinceLastRelapse.inHours % 24;
-    final minutes = _timeSinceLastRelapse.inMinutes % 60;
-    final seconds = _timeSinceLastRelapse.inSeconds % 60;
-
+  Widget _tag(String text) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFF52C3BE),
-        borderRadius: BorderRadius.circular(20),
+        color: const Color(0xFF45B980),
+        borderRadius: BorderRadius.circular(4),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Anda Bebas Pornografi Selama",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 20),
-          _buildRoundedBar(
-            label: "$days Hari",
-            progress: days > 0 ? 1.0 : 0.0, // Bar penuh jika sudah lebih dari 0 hari
-            color: const Color(0xFF0D3B66),
-          ),
-          const SizedBox(height: 12),
-          _buildRoundedBar(
-            label: "$hours Jam",
-            progress: hours / 24, // Progres jam dalam sehari
-            color: const Color(0xFFFFB703),
-          ),
-          const SizedBox(height: 12),
-          _buildRoundedBar(
-            label: "$minutes Menit",
-            progress: minutes / 60, // Progres menit dalam satu jam
-            color: const Color(0xFF457B9D),
-          ),
-          const SizedBox(height: 12),
-          _buildRoundedBar(
-            label: "$seconds Detik",
-            progress: seconds / 60, // Progres detik dalam satu menit
-            color: const Color.fromARGB(255, 47, 144, 134),
-          ),
-        ],
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 8,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }
+}
 
-  Widget _buildRoundedBar({
-    required String label,
-    required double progress,
-    required Color color,
-  }) {
-    return Stack(
-      alignment: Alignment.centerLeft,
+class _Bar extends StatelessWidget {
+  const _Bar({required this.value, required this.color, required this.label});
+  final int value;
+  final Color color;
+  final String label;
+  @override
+  Widget build(BuildContext context) {
+    final h = value * 24.0;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        // Latar belakang bar
+        Text(
+          '$value',
+          style: const TextStyle(fontSize: 11, color: Color(0xFF56615B)),
+        ),
+        const SizedBox(height: 6),
         Container(
-          height: 28,
+          width: 18,
+          height: h,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(50),
+            color: color,
+            borderRadius: BorderRadius.circular(4),
           ),
         ),
-        // Bar progres yang memanjang
-        FractionallySizedBox(
-          widthFactor: progress.clamp(0.0, 1.0),
-          child: Container(
-            height: 28,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(50),
-            ),
-          ),
-        ),
-        // Teks label yang selalu terlihat di atas
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
         ),
       ],
     );
   }
 }
-  
+
+class _DonutPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final c = Offset(size.width / 2, size.height / 2);
+    final r = math.min(size.width, size.height) * 0.33;
+    final rect = Rect.fromCircle(center: c, radius: r);
+    final bg =
+        Paint()
+          ..color = const Color(0xFFE3E7F9)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 26
+          ..strokeCap = StrokeCap.round;
+    canvas.drawArc(rect, 0, math.pi * 2, false, bg);
+    final n =
+        Paint()
+          ..color = const Color(0xFF3950C3)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 26
+          ..strokeCap = StrokeCap.round;
+    final e =
+        Paint()
+          ..color = const Color(0xFF6A34C9)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 26
+          ..strokeCap = StrokeCap.round;
+    canvas.drawArc(rect, math.pi * 0.15, math.pi * 1.55, false, n);
+    canvas.drawArc(rect, math.pi * 1.95, math.pi * 0.45, false, e);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
