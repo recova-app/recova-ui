@@ -24,6 +24,7 @@ class _Question5State extends State<Question5> {
 
   void _continue() {
     if (selectedOption != null) {
+      OnboardingState().answers['Apakah frekuensi atau durasi menonton pornografi kamu meningkat seiring waktu?'] = options[selectedOption!];
       Navigator.pushNamed(context, '/question-6');
     }
   }

@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/checkin_cubit.dart';
+import 'package:recova/bloc/relapse_cubit.dart';
 import 'package:recova/pages/main_scaffold.dart';
 
-class CheckInPage extends StatefulWidget {
+class RelapsePage extends StatefulWidget {
   final int streakDays;
-  final bool hasCheckedInToday;
 
-  const CheckInPage({
+  const RelapsePage({
     super.key,
     required this.streakDays,
-    this.hasCheckedInToday = false,
   });
 
   @override
-  State<CheckInPage> createState() => _CheckInPageState();
+  State<RelapsePage> createState() => _RelapsePageState();
 }
 
-class _CheckInPageState extends State<CheckInPage>
+class _RelapsePageState extends State<RelapsePage>
     with SingleTickerProviderStateMixin {
-  late final TextEditingController _journalController;
+  late final TextEditingController _commitmentController;
   late final AnimationController _fadeController;
   late final Animation<double> _fadeAnimation;
 
   String? _selectedMood;
+  final Set<String> _selectedTriggers = {};
 
   final List<_MoodOption> _moods = const [
     _MoodOption(emoji: '😢', label: 'Sangat Buruk', value: 'sangat_buruk'),
@@ -33,17 +32,25 @@ class _CheckInPageState extends State<CheckInPage>
     _MoodOption(emoji: '🤩', label: 'Sangat Baik', value: 'sangat_baik'),
   ];
 
-  final List<String> _templates = [
-    'Aku merasa sangat tersiksa hari ini',
-    'Hari ini cukup menantang',
-    'Aku merasa lebih baik dari kemarin',
-    'Aku bangga bisa bertahan hari ini',
+  final List<_TriggerOption> _triggers = const [
+    _TriggerOption(icon: Icons.hourglass_empty_rounded, label: 'Boredom', value: 'Boredom'),
+    _TriggerOption(icon: Icons.psychology_rounded, label: 'Stress', value: 'Stress'),
+    _TriggerOption(icon: Icons.phone_android_rounded, label: 'Media', value: 'Media'),
+    _TriggerOption(icon: Icons.mood_rounded, label: 'Mood', value: 'Mood'),
+    _TriggerOption(icon: Icons.location_on_rounded, label: 'Location', value: 'Location'),
+  ];
+
+  final List<String> _commitmentTemplates = [
+    'Saya akan lebih kuat dari kemarin',
+    'Saya tidak akan menyerah',
+    'Setiap kejatuhan adalah pelajaran',
+    'Saya berkomitmen untuk bangkit kembali',
   ];
 
   @override
   void initState() {
     super.initState();
-    _journalController = TextEditingController();
+    _commitmentController = TextEditingController();
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
@@ -57,7 +64,7 @@ class _CheckInPageState extends State<CheckInPage>
 
   @override
   void dispose() {
-    _journalController.dispose();
+    _commitmentController.dispose();
     _fadeController.dispose();
     super.dispose();
   }
@@ -65,27 +72,11 @@ class _CheckInPageState extends State<CheckInPage>
   String _getTodayDate() {
     final now = DateTime.now();
     const months = [
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember',
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
     ];
     const days = [
-      'Senin',
-      'Selasa',
-      'Rabu',
-      'Kamis',
-      'Jumat',
-      'Sabtu',
-      'Minggu',
+      'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu',
     ];
     return '${days[now.weekday - 1]}, ${now.day} ${months[now.month - 1]} ${now.year}';
   }
@@ -94,14 +85,9 @@ class _CheckInPageState extends State<CheckInPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF),
-      body: BlocBuilder<CheckinCubit, CheckinState>(
+      body: BlocBuilder<RelapseCubit, RelapseState>(
         builder: (context, state) {
-          final isAlreadyCheckedIn =
-              widget.hasCheckedInToday || state is CheckinSuccess;
-          final displayStreak =
-              (state is CheckinSuccess)
-                  ? widget.streakDays + 1
-                  : widget.streakDays;
+          final isSubmitted = state is RelapseSuccess;
 
           return SafeArea(
             child: FadeTransition(
@@ -143,15 +129,13 @@ class _CheckInPageState extends State<CheckInPage>
                             color: Color(0xFF8B98A0),
                           ),
                         ),
-                        const SizedBox(
-                          width: 38,
-                        ), // spacer to balance back button
+                        const SizedBox(width: 38),
                       ],
                     ),
 
                     const SizedBox(height: 20),
 
-                    // ─── STREAK HEADER CARD ───
+                    // ─── RELAPSE HEADER CARD ───
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
@@ -168,41 +152,21 @@ class _CheckInPageState extends State<CheckInPage>
                       ),
                       child: Column(
                         children: [
+                          const SizedBox(height: 8),
+                          Image.asset('assets/images/maskots/learning-5.png', width: 200, height: 200,),
+                          const SizedBox(height: 8),
                           const Text(
-                            'Daily Check-In',
+                            'Tidak Apa-Apa',
                             style: TextStyle(
-                              color: Color(0xFFD1FAE5),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              height: 1.1,
                             ),
                           ),
                           const SizedBox(height: 4),
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 500),
-                            transitionBuilder:
-                                (child, animation) => FadeTransition(
-                                  opacity: animation,
-                                  child: SlideTransition(
-                                    position: Tween<Offset>(
-                                      begin: const Offset(0.0, -0.3),
-                                      end: Offset.zero,
-                                    ).animate(animation),
-                                    child: child,
-                                  ),
-                                ),
-                            child: Text(
-                              key: ValueKey<int>(displayStreak),
-                              '$displayStreak',
-                              style: const TextStyle(
-                                fontSize: 72,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                height: 1.1,
-                              ),
-                            ),
-                          ),
                           const Text(
-                            'Hari Tanpa Pornografi',
+                            'Jatuh bukan berarti gagal',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -220,13 +184,13 @@ class _CheckInPageState extends State<CheckInPage>
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Text(
-                              '"Saya akan berkomitmen untuk bebas dari pornografi, dan saya bersungguh-sungguh."',
+                              '"Yang penting adalah kamu jujur pada dirimu sendiri dan bangkit kembali."',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                                 fontStyle: FontStyle.italic,
-                                color: Color(0xFFD1FAE5),
+                                color: Color(0xFFEAF9F1),
                                 height: 1.4,
                               ),
                             ),
@@ -268,7 +232,7 @@ class _CheckInPageState extends State<CheckInPage>
                               final isSelected = _selectedMood == mood.value;
                               return GestureDetector(
                                 onTap:
-                                    isAlreadyCheckedIn
+                                    isSubmitted
                                         ? null
                                         : () {
                                           setState(() {
@@ -285,14 +249,14 @@ class _CheckInPageState extends State<CheckInPage>
                                   decoration: BoxDecoration(
                                     color:
                                         isSelected
-                                            ? const Color(0xFF38B768)
+                                            ? const Color(0xFF136E4D)
                                             : Colors.transparent,
                                     borderRadius: BorderRadius.circular(14),
                                     boxShadow:
                                         isSelected
                                             ? [
                                               const BoxShadow(
-                                                color: Color(0x3338B768),
+                                                color: Color(0x33DC2626),
                                                 blurRadius: 8,
                                                 offset: Offset(0, 2),
                                               ),
@@ -337,9 +301,9 @@ class _CheckInPageState extends State<CheckInPage>
 
                     const SizedBox(height: 24),
 
-                    // ─── JOURNAL SECTION ───
+                    // ─── RELAPSE TRIGGERS SECTION ───
                     const Text(
-                      'Jurnal Harian',
+                      'Apa Pemicu Relapse Kamu?',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
@@ -347,7 +311,113 @@ class _CheckInPageState extends State<CheckInPage>
                     ),
                     const SizedBox(height: 6),
                     const Text(
-                      'Ceritakan apa yang kamu rasakan hari ini',
+                      'Pilih satu atau lebih pemicu yang kamu rasakan',
+                      style: TextStyle(fontSize: 12, color: Color(0xFF8B98A0)),
+                    ),
+                    const SizedBox(height: 14),
+
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children:
+                          _triggers.map((trigger) {
+                            final isSelected = _selectedTriggers.contains(
+                              trigger.value,
+                            );
+                            return GestureDetector(
+                              onTap:
+                                  isSubmitted
+                                      ? null
+                                      : () {
+                                        setState(() {
+                                          if (isSelected) {
+                                            _selectedTriggers.remove(
+                                              trigger.value,
+                                            );
+                                          } else {
+                                            _selectedTriggers.add(
+                                              trigger.value,
+                                            );
+                                          }
+                                        });
+                                      },
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeInOut,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isSelected
+                                          ? const Color(0xFF136E4D)
+                                          : const Color(0xFFF9FAFB),
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color:
+                                        isSelected
+                                            ? const Color(0xFF136E4D)
+                                            : const Color(0xFFE5E7EB),
+                                    width: 1.5,
+                                  ),
+                                  boxShadow:
+                                      isSelected
+                                          ? [
+                                            const BoxShadow(
+                                              color: Color(0x33DC2626),
+                                              blurRadius: 8,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ]
+                                          : [],
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      trigger.icon,
+                                      size: 18,
+                                      color:
+                                          isSelected
+                                              ? Colors.white
+                                              : const Color(0xFF6B7280),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      trigger.label,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight:
+                                            isSelected
+                                                ? FontWeight.w700
+                                                : FontWeight.w500,
+                                        color:
+                                            isSelected
+                                                ? Colors.white
+                                                : const Color(0xFF374151),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // ─── COMMITMENT MESSAGE SECTION ───
+                    const Text(
+                      'Pesan Komitmen',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'Tulis komitmen kamu untuk bangkit kembali',
                       style: TextStyle(fontSize: 12, color: Color(0xFF8B98A0)),
                     ),
                     const SizedBox(height: 14),
@@ -362,15 +432,15 @@ class _CheckInPageState extends State<CheckInPage>
                         ),
                       ),
                       child: TextField(
-                        controller: _journalController,
-                        enabled: !isAlreadyCheckedIn,
-                        maxLines: 5,
+                        controller: _commitmentController,
+                        enabled: !isSubmitted,
+                        maxLines: 4,
                         style: const TextStyle(fontSize: 14, height: 1.5),
                         decoration: InputDecoration(
                           hintText:
-                              isAlreadyCheckedIn
-                                  ? 'Kamu sudah check-in hari ini. Sampai jumpa besok!'
-                                  : 'Tuliskan perasaan, perjuangan, atau pencapaianmu hari ini...',
+                              isSubmitted
+                                  ? 'Relapse sudah dicatat. Tetap semangat!'
+                                  : 'Tuliskan komitmen kamu untuk tetap berjuang...',
                           hintStyle: const TextStyle(
                             color: Color(0xFFB0B8C1),
                             fontSize: 14,
@@ -385,21 +455,21 @@ class _CheckInPageState extends State<CheckInPage>
 
                     const SizedBox(height: 12),
 
-                    // ─── TEMPLATE CHIPS ───
+                    // ─── COMMITMENT TEMPLATE CHIPS ───
                     _TemplateChips(
-                      templates: _templates,
-                      isEnabled: !isAlreadyCheckedIn,
-                      controller: _journalController,
+                      templates: _commitmentTemplates,
+                      isEnabled: !isSubmitted,
+                      controller: _commitmentController,
                     ),
 
                     const SizedBox(height: 24),
 
-                    // ─── INFO CARD ───
-                    if (isAlreadyCheckedIn)
+                    // ─── SUCCESS INFO CARD ───
+                    if (isSubmitted)
                       Container(
                         padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFEAF9F1),
+                          color: const Color(0xFFFEF2F2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
@@ -408,7 +478,7 @@ class _CheckInPageState extends State<CheckInPage>
                               width: 40,
                               height: 40,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF38B768),
+                                color: Color(0xFF136E4D),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
@@ -423,16 +493,16 @@ class _CheckInPageState extends State<CheckInPage>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Check-in Berhasil!',
+                                    'Relapse Dicatat',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
-                                      color: Color(0xFF136E4D),
+                                      color: Color(0xFFB91C1C),
                                     ),
                                   ),
                                   SizedBox(height: 2),
                                   Text(
-                                    'Kamu sudah check-in hari ini. Sampai jumpa besok!',
+                                    'Terima kasih atas kejujuranmu. Kamu bisa bangkit kembali!',
                                     style: TextStyle(
                                       fontSize: 11,
                                       color: Color(0xFF6B7280),
@@ -463,19 +533,19 @@ class _CheckInPageState extends State<CheckInPage>
             ),
           ],
         ),
-        child: BlocBuilder<CheckinCubit, CheckinState>(
+        child: BlocBuilder<RelapseCubit, RelapseState>(
           builder: (context, state) {
-            final isAlreadyCheckedIn =
-                widget.hasCheckedInToday || state is CheckinSuccess;
-            final isCheckingIn = state is CheckinLoading;
+            final isSubmitted = state is RelapseSuccess;
+            final isLoading = state is RelapseLoading;
 
             return SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed:
-                    (isCheckingIn || isAlreadyCheckedIn)
+                    (isLoading || isSubmitted)
                         ? null
                         : () async {
+                          // Validate mood
                           if (_selectedMood == null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -488,33 +558,50 @@ class _CheckInPageState extends State<CheckInPage>
                             return;
                           }
 
-                          await context.read<CheckinCubit>().performCheckIn(
-                            content:
-                                _journalController.text.isNotEmpty
-                                    ? _journalController.text
-                                    : 'Check-in harian',
+                          // Validate triggers
+                          if (_selectedTriggers.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Pilih minimal satu pemicu relapse',
+                                ),
+                                backgroundColor: Color(0xFFEF4444),
+                              ),
+                            );
+                            return;
+                          }
+
+                          // Validate commitment
+                          if (_commitmentController.text.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Tulis pesan komitmen kamu',
+                                ),
+                                backgroundColor: Color(0xFFEF4444),
+                              ),
+                            );
+                            return;
+                          }
+
+                          await context.read<RelapseCubit>().submitRelapse(
                             mood: _selectedMood!,
-                            commitment:
-                                'Saya akan berkomitmen untuk bebas dari pornografi, dan saya bersungguh-sungguh.',
+                            relapseTriggers: _selectedTriggers.toList(),
+                            commitment: _commitmentController.text,
                           );
                           if (!context.mounted) return;
 
                           final resultState =
-                              context.read<CheckinCubit>().state;
+                              context.read<RelapseCubit>().state;
 
-                          if (resultState is CheckinSuccess) {
-                            _journalController.clear();
+                          if (resultState is RelapseSuccess) {
+                            _commitmentController.clear();
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
-                                  'Berhasil check-in. Terima kasih!',
+                                  'Relapse dicatat. Tetap semangat!',
                                 ),
-                                backgroundColor: Color.fromARGB(
-                                  251,
-                                  56,
-                                  183,
-                                  105,
-                                ),
+                                backgroundColor: Color(0xFF136E4D),
                               ),
                             );
                             Navigator.pushReplacement(
@@ -523,19 +610,14 @@ class _CheckInPageState extends State<CheckInPage>
                                 builder: (_) => const MainScaffold(),
                               ),
                             );
-                          } else if (resultState is CheckinFailure) {
+                          } else if (resultState is RelapseFailure) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(resultState.error),
-                                backgroundColor: Color.fromARGB(
-                                  251,
-                                  56,
-                                  183,
-                                  105,
-                                ),
+                                backgroundColor: Color(0xFF136E4D),
                               ),
                             );
-                            Navigator.pushReplacement(
+                              Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (_) => const MainScaffold(),
@@ -545,7 +627,7 @@ class _CheckInPageState extends State<CheckInPage>
                         },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF136E4D),
-                  disabledBackgroundColor: const Color(0xFFB2DFDB),
+                  disabledBackgroundColor: const Color(0xFFEAF9F1),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
@@ -553,7 +635,7 @@ class _CheckInPageState extends State<CheckInPage>
                   ),
                 ),
                 child:
-                    isCheckingIn
+                    isLoading
                         ? const SizedBox(
                           height: 24,
                           width: 24,
@@ -565,17 +647,10 @@ class _CheckInPageState extends State<CheckInPage>
                         : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            if (!isAlreadyCheckedIn)
-                              const Icon(
-                                Icons.check_circle_outline_rounded,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            if (!isAlreadyCheckedIn) const SizedBox(width: 8),
                             Text(
-                              isAlreadyCheckedIn
-                                  ? 'Sudah Check-in'
-                                  : 'Check In Sekarang',
+                              isSubmitted
+                                  ? 'Relapse Sudah Dicatat'
+                                  : 'Relapse',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
@@ -601,6 +676,19 @@ class _MoodOption {
 
   const _MoodOption({
     required this.emoji,
+    required this.label,
+    required this.value,
+  });
+}
+
+// ─── Trigger Option Model ───
+class _TriggerOption {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _TriggerOption({
+    required this.icon,
     required this.label,
     required this.value,
   });
@@ -645,7 +733,7 @@ class _TemplateChipsState extends State<_TemplateChips> {
                           if (isSelected) widget.controller.text = text;
                         });
                       },
-              selectedColor: const Color(0xFF38B768),
+              selectedColor: const Color(0xFF136E4D),
               backgroundColor: const Color(0xFFF3F4F6),
               labelStyle: TextStyle(
                 color: selected ? Colors.white : const Color(0xFF374151),
@@ -658,7 +746,7 @@ class _TemplateChipsState extends State<_TemplateChips> {
                 side: BorderSide(
                   color:
                       selected
-                          ? const Color(0xFF38B768)
+                          ? const Color(0xFF136E4D)
                           : const Color(0xFFE5E7EB),
                   width: 1,
                 ),

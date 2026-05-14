@@ -51,7 +51,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF2EC4B6),
+        selectedItemColor: const Color(0xFF38B768),
         unselectedItemColor: const Color.fromARGB(255, 0, 0, 0),
         showSelectedLabels: false,
         showUnselectedLabels: false,
@@ -70,12 +70,16 @@ class _MainScaffoldState extends State<MainScaffold> {
             label: 'Stats',
           ),
           BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage('assets/images/menu/comm_icon.png')),
-            label: 'Community',
+            icon: ImageIcon(AssetImage('assets/images/menu/support_icon.png')),
+            label: 'support',
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/menu/book_icon.png')),
             label: 'Education',
+          ),
+          BottomNavigationBarItem(
+            icon: ImageIcon(AssetImage('assets/images/menu/setting_icon.png')),
+            label: 'Profile',
           ),
         ],
       ),

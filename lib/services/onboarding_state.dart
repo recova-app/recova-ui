@@ -6,14 +6,14 @@ class OnboardingState {
   String nickname = '';
   String recoveryReason = '';
   String dailyCheckinTime = '09:00';
-  String dependencyLevel = 'Medium';
+  String pornFreeGoal = '';
   Map<String, dynamic> answers = {};
 
   void reset() {
     nickname = '';
     recoveryReason = '';
     dailyCheckinTime = '09:00';
-    dependencyLevel = 'Medium';
+    pornFreeGoal = '';
     answers = {};
   }
 
@@ -22,7 +22,7 @@ class OnboardingState {
       'nickname': nickname,
       'recovery_reason': recoveryReason,
       'daily_checkin_time': dailyCheckinTime,
-      'dependency_level': dependencyLevel,
+      'porn_free_goal': pornFreeGoal,
       'answers': answers,
     };
   }

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recova/models/statistics_model.dart';
 import 'package:recova/models/user_model.dart';
+import 'package:recova/models/daily_content_model.dart';
 import 'package:recova/services/api_service.dart';
 import 'package:equatable/equatable.dart';
 
@@ -32,7 +33,15 @@ class HomeCubit extends Cubit<HomeState> {
         streakCalendar: List.from(stats.streakCalendar),
       );
 
-      emit(HomeLoadSuccess(user: user, statistics: updatedStats));
+      // Fetch daily content separately so failure doesn't block the page
+      DailyContent? dailyContent;
+      try {
+        dailyContent = await ApiService.getDailyContent();
+      } catch (_) {
+        // Silently ignore – insight section will show fallback text
+      }
+
+      emit(HomeLoadSuccess(user: user, statistics: updatedStats, dailyContent: dailyContent));
     } catch (e) {
       emit(HomeLoadFailure(e.toString().replaceFirst('Exception: ', '')));
     }
@@ -56,7 +65,7 @@ class HomeCubit extends Cubit<HomeState> {
         streakCalendar: newCalendar,
       );
 
-      emit(HomeLoadSuccess(user: currentState.user, statistics: updatedStats));
+      emit(HomeLoadSuccess(user: currentState.user, statistics: updatedStats, dailyContent: currentState.dailyContent));
     }
   }
 

@@ -24,6 +24,7 @@ class _Question9State extends State<Question9> {
 
   void _continue() {
     if (selectedOption != null) {
+      OnboardingState().answers['Apakah kamu pernah mencoba mengurangi menonton pornografi sebelumnya?'] = options[selectedOption!];
       Navigator.pushNamed(context, '/set-porn-free-day');
     }
   }

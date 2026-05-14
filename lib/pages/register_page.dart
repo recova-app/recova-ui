@@ -52,12 +52,12 @@ class _RegisterPageState extends State<RegisterPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) =>
+          builder: (_) => 
               onboardingCompleted ? const MainScaffold() : const Learning1(),
         ),
       );
     } catch (e) {
-       print(e);
+      print(e);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -68,6 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
+      
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

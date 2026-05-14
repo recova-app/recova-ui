@@ -31,9 +31,13 @@ class _StatsPageState extends State<StatsPage> {
                       color: const Color(0xFF22C55E),
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: const Icon(Icons.star, size: 16),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: 64,
+                      height: 64,
+                    ),
                   ),
-                  const Icon(Icons.notifications_none_rounded),
+                  const Icon(Icons.notifications_none_rounded, color: Color(0xFF6B7280),),
                 ],
               ),
               const SizedBox(height: 20),
@@ -134,14 +138,14 @@ class _StatsPageState extends State<StatsPage> {
               SizedBox(height: 8),
               Text(
                 'Satu langkah kecil setiap harinya',
-                style: TextStyle(color: Color(0xFFD1FAE5), fontSize: 11),
+                style: TextStyle(color: Color(0xFFD1FAE5), fontSize: 10),
               ),
             ],
           ),
         ),
         Positioned(
-          right: 0,
-          bottom: -20,
+          right: -35,
+          bottom: -50,
           child: Image.asset(
             'assets/images/home/task.png',
             width: 195,
@@ -246,11 +250,11 @@ class _StatsPageState extends State<StatsPage> {
                     ),
                   ),
                   Positioned(
-                    right: 10,
-                    bottom: -15,
+                    right: 25,
+                    bottom: -35,
                     child: Image.asset(
                       'assets/images/home/longStreak.png',
-                      width: 220, // Disesuaikan agar muat
+                      width: 200, // Disesuaikan agar muat
                       fit: BoxFit.contain,
                     ),
                   ),

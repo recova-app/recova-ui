@@ -21,7 +21,7 @@ class EducationContent {
       title: json['title'] ?? 'No Title',
       description: json['description'] ?? '',
       url: json['url'] ?? '',
-      thumbnailUrl: json['thumbnailUrl'] ?? '',
+      thumbnailUrl: json['thumbnail_url'] ?? '',
       // Memberikan nilai default jika kategori null atau kosong
       category: (json['category'] != null && json['category'].isNotEmpty)
           ? json['category']

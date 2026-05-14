@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
+import '../../services/onboarding_state.dart';
 import 'set-porn-free-day-result.dart';
 
 class SetPornFreeDayPage extends StatefulWidget {
@@ -22,6 +23,9 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
   void _setGoal() {
     // Get the selected goal text
     final selectedGoalText = goals[selectedGoal]['text'] as String;
+
+    // Save to OnboardingState
+    OnboardingState().pornFreeGoal = selectedGoalText;
 
     // Navigate to result page with the selected goal
     Navigator.push(
@@ -159,7 +163,7 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
                         'Tetapkan target bebas pornografi',
                         style: TextStyle(
                           fontFamily: 'Inter',
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),

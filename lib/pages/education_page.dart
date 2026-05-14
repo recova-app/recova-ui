@@ -21,153 +21,330 @@ class _EducationPageState extends State<EducationPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Widget ini hanya mengembalikan kontennya, tanpa Scaffold.
-    // Padding atas ditambahkan untuk ruang di bawah status bar.
-    return RefreshIndicator(
-      onRefresh: () => context.read<EducationCubit>().fetchEducationContents(),
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
-      child: Column( // Column dipertahankan karena strukturnya sudah benar
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Edukasi",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              const CircleAvatar(
-                radius: 18,
-                backgroundImage: AssetImage("assets/images/logo.png"),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-
-          // Quote Slider
-          Container(
-            height: 100,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.teal.shade300,
-              borderRadius: BorderRadius.circular(12),
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () =>
+              context.read<EducationCubit>().fetchEducationContents(),
+          color: const Color(0xFF38B768),
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
             ),
-            child: const Center(
-              child: Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Text(
-                  "“Perubahan kecil dalam kebiasaan sehari-hari bisa membawa perubahan besar dalam hidupmu.”- James Clear -",
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
-                      fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.center,
+            padding: const EdgeInsets.fromLTRB(22, 12, 22, 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Header (sama persis dengan HomePage) ──
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF22C55E),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        width: 64,
+                        height: 64,
+                      ),
+                    ),
+                    const Icon(Icons.notifications_none_rounded, color: Color(0xFF6B7280)),
+                  ],
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
+                const SizedBox(height: 18),
 
-          // AI Coach
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const CoachPage()),
-              );
-            },
-            child: Card(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: const ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  // Path diperbaiki agar sesuai dengan struktur proyek
-                  backgroundImage: AssetImage("assets/images/home/icon_coach.png"),
+                // ── Quote Card (mirip StreakCard style) ──
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF136E4D),
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x1A000000),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.fromLTRB(20, 24, 120, 24),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Quote Hari Ini',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              '"Perubahan kecil dalam kebiasaan sehari-hari bisa membawa perubahan besar dalam hidupmu."',
+                              style: TextStyle(
+                                color: Color(0xFFD1FAE5),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                                fontStyle: FontStyle.italic,
+                                height: 1.4,
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              '— James Clear',
+                              style: TextStyle(
+                                color: Color(0xFFA7F3D0),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        right: -10,
+                        bottom: -15,
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            bottomRight: Radius.circular(18),
+                          ),
+                          child: Image.asset(
+                            'assets/images/maskots/quote.png',
+                            width: 140,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                title: Text("Smart Personal AI Coach"),
-                subtitle: Text(
-                    "Dapatkan Insight untuk Keluhan atau Pertanyaanmu"),
-                trailing: Icon(Icons.arrow_forward_ios, size: 16),
-              ),
+                const SizedBox(height: 26),
+
+                // ── Fitur Edukasi section ──
+                const Text(
+                  'Fitur Edukasi',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 14),
+                InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const CoachPage(),
+                      ),
+                    );
+                  },
+                  child: const _EducationFeatureCard(
+                    title: 'Smart Personal AI Coach',
+                    subtitle:
+                        'Dapatkan Insight untuk Keluhan atau Pertanyaanmu',
+                    assetPath: 'assets/images/maskots/coach.png',
+                    bg: Color(0xFFEAF9F1),
+                    arrow: true,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const _EducationFeatureCard(
+                  title: 'Pahami Dampak Pornografi',
+                  subtitle:
+                      'Pelajari dampak pornografi pada otak dan kehidupanmu',
+                  assetPath: 'assets/images/maskots/dampak.png',
+                  bg: Color(0xFFEAF9F1),
+                ),
+                const SizedBox(height: 12),
+                const _EducationFeatureCard(
+                  title: 'Tips & Strategi Pemulihan',
+                  subtitle:
+                      'Tips praktis mengatasi urge dan membangun kebiasaan baru',
+                  assetPath: 'assets/images/maskots/pemulihan.png',
+                  bg: Color(0xFFEAF9F1),
+                ),
+                const SizedBox(height: 26),
+
+                // ── Video Library Section ──
+                const Text(
+                  'Video Library',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 14),
+
+                BlocBuilder<EducationCubit, EducationState>(
+                  builder: (context, state) {
+                    if (state is EducationLoading) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: Color(0xFF38B768),
+                          ),
+                        ),
+                      );
+                    }
+                    if (state is EducationLoadFailure) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              const Icon(Icons.error_outline,
+                                  size: 48, color: Colors.red),
+                              const SizedBox(height: 16),
+                              Text(
+                                state.error,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontSize: 14, color: Color(0xFF6B7280)),
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: () => context
+                                    .read<EducationCubit>()
+                                    .fetchEducationContents(),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF38B768),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: const Text('Coba Lagi'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+                    if (state is EducationLoadSuccess) {
+                      if (state.contents.isEmpty) {
+                        return Container(
+                          padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
+                          decoration: BoxDecoration(
+                            color: const Color(0x1A000000),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Belum ada konten edukasi.',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  height: 1.25,
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'Konten edukasi akan segera tersedia. Stay tuned!',
+                                style: TextStyle(
+                                    fontSize: 10, color: Color(0xFF7A7A7A)),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                      // Kelompokkan konten berdasarkan kategori
+                      final groupedContent = <String, List<EducationContent>>{};
+                      for (var content in state.contents) {
+                        (groupedContent[content.category] ??= []).add(content);
+                      }
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: groupedContent.entries.map((entry) {
+                          return _buildVideoCategory(entry.key, entry.value);
+                        }).toList(),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+
+                const SizedBox(height: 26),
+
+                // ── Today Insight (sama style dengan HomePage) ──
+                const Text(
+                  'Insight Edukasi',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 14),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEAF9F1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Tahukah kamu? Otak manusia memiliki kemampuan neuroplastisitas — artinya kamu bisa melatih ulang otakmu untuk melepaskan kebiasaan lama dan membangun jalur saraf baru yang lebih sehat.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          height: 1.25,
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Insight ini berdasarkan riset neurosains tentang pemulihan dari kecanduan',
+                        style:
+                            TextStyle(fontSize: 10, color: Color(0xFF7A7A7A)),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
-
-          // Video Library Section
-          const Text(
-            "Video Library",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-
-          BlocBuilder<EducationCubit, EducationState>(
-            builder: (context, state) {
-              if (state is EducationLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (state is EducationLoadFailure) {
-                return Center(child: Text('Gagal memuat konten: ${state.error}'));
-              }
-              if (state is EducationLoadSuccess) {
-                if (state.contents.isEmpty) {
-                  return const Center(child: Text('Belum ada konten edukasi.'));
-                }
-                // Kelompokkan konten berdasarkan kategori
-                final groupedContent = <String, List<EducationContent>>{};
-                for (var content in state.contents) {
-                  (groupedContent[content.category] ??= []).add(content);
-                }
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: groupedContent.entries.map((entry) {
-                    return buildVideoCategory(entry.key, entry.value);
-                  }).toList(),
-                );
-              }
-              return const SizedBox.shrink();
-            },
-          ),
-        ],
-      ),
+        ),
       ),
     );
   }
 
-  Widget buildVideoCategory(String title, List<EducationContent> items) {
+  Widget _buildVideoCategory(String title, List<EducationContent> items) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-        const SizedBox(height: 8),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+        const SizedBox(height: 10),
         SizedBox(
-          height: 150, // Tinggi disesuaikan untuk gambar
+          height: 165,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
             itemCount: items.length,
             itemBuilder: (context, index) {
-              return VideoCard(content: items[index]);
+              return _VideoCard(content: items[index]);
             },
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
       ],
     );
   }
 }
 
-class VideoCard extends StatelessWidget {
+// ── Video Card (redesigned to match app style) ──
+class _VideoCard extends StatelessWidget {
   final EducationContent content;
 
-  const VideoCard({
-    super.key,
-    required this.content,
-  });
+  const _VideoCard({required this.content});
 
   Future<void> _launchURL(String urlString) async {
     final Uri url = Uri.parse(urlString);
@@ -184,14 +361,14 @@ class VideoCard extends StatelessWidget {
         width: 200,
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: const Color(0xFFEAF9F1),
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Color(0x0D000000),
               blurRadius: 8,
-              offset: const Offset(0, 4),
-            )
+              offset: Offset(0, 4),
+            ),
           ],
         ),
         child: Column(
@@ -199,36 +376,52 @@ class VideoCard extends StatelessWidget {
           children: [
             // Thumbnail
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
               child: Image.network(
                 content.thumbnailUrl,
-                height: 100,
+                height: 110,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                // Placeholder dan error handling untuk gambar
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Container(
-                    height: 100,
-                    color: Colors.grey.shade200,
-                    child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                    height: 110,
+                    color: const Color(0xFFE5E7EB),
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Color(0xFF38B768),
+                      ),
+                    ),
                   );
                 },
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    height: 100,
-                    color: Colors.grey.shade200,
-                    child: const Icon(Icons.broken_image, color: Colors.grey),
+                    height: 110,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFE5E7EB),
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(12)),
+                    ),
+                    child: const Center(
+                      child: Icon(Icons.play_circle_outline,
+                          color: Color(0xFF8B98A0), size: 36),
+                    ),
                   );
                 },
               ),
             ),
-            // Judul
+            // Title
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
               child: Text(
                 content.title,
-                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                  color: Color(0xFF111111),
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -236,6 +429,88 @@ class VideoCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ── Feature Card (sama persis dengan _FeatureCard di HomePage) ──
+class _EducationFeatureCard extends StatelessWidget {
+  const _EducationFeatureCard({
+    required this.title,
+    required this.subtitle,
+    required this.assetPath,
+    required this.bg,
+    this.arrow = false,
+    this.titleColor = const Color(0xFF111111),
+    this.subtitleColor = const Color(0xFF454545),
+  });
+  final String title;
+  final String subtitle;
+  final String assetPath;
+  final Color bg;
+  final bool arrow;
+  final Color titleColor;
+  final Color subtitleColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.antiAlias,
+      children: [
+        // Layer 1: Background dan Konten Utama
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 31 * 0.42,
+                        color: titleColor,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 18 * 0.42,
+                        color: subtitleColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (arrow) Icon(Icons.chevron_right, color: titleColor),
+            ],
+          ),
+        ),
+
+        // Layer 2: Gambar yang diposisikan (Positioned)
+        Positioned(
+          right: -10,
+          bottom: -15,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomRight: Radius.circular(12),
+            ),
+            child: Image.asset(
+              assetPath,
+              width: 80,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

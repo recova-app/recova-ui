@@ -24,6 +24,7 @@ class _Question4State extends State<Question4> {
 
   void _continue() {
     if (selectedOption != null) {
+      OnboardingState().answers['Apakah pornografi yang kamu tonton menjadi lebih ekstrem?'] = options[selectedOption!];
       Navigator.pushNamed(context, '/question-5');
     }
   }

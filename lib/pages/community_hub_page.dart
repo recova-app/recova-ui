@@ -9,7 +9,7 @@ class CommunityHubPage extends StatelessWidget {
       backgroundColor: const Color(0xFFF2F2F2),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 14, 24, 24),
+          padding: const EdgeInsets.fromLTRB(22, 12, 22, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -23,9 +23,13 @@ class CommunityHubPage extends StatelessWidget {
                       color: const Color(0xFF22C55E),
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: const Icon(Icons.star, size: 16),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      width: 64,
+                      height: 64,
+                    ),
                   ),
-                  const Icon(Icons.notifications_none_rounded),
+                  const Icon(Icons.notifications_none_rounded,  color: Color(0xFF6B7280),),
                 ],
               ),
               const SizedBox(height: 24),
@@ -68,11 +72,11 @@ class CommunityHubPage extends StatelessWidget {
                     ),
                     Positioned(
                       right: -5,
-                      bottom: 0,
+                      bottom: -34,
                       child: Image.asset(
                         'assets/images/home/headHub.png',
-                        width: 140,
-                        height: 140,
+                        width: 150,
+                        height: 150,
                       ),
                     ),
                   ],

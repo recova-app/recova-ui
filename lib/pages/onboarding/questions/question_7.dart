@@ -24,6 +24,7 @@ class _Question7State extends State<Question7> {
 
   void _continue() {
     if (selectedOption != null) {
+      OnboardingState().answers['Apakah kamu menonton pornografi untuk menghindari perasaan sedih?'] = options[selectedOption!];
       Navigator.pushNamed(context, '/question-8');
     }
   }

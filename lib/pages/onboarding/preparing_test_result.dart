@@ -17,6 +17,7 @@ class _PreparingTestResultPageState extends State<PreparingTestResultPage>
   late AnimationController _progressController;
   late Animation<double> _rotationAnimation;
   late Animation<double> _progressAnimation;
+  Map<String, dynamic>? _onboardingResult;
 
   @override
   void initState() {
@@ -57,14 +58,20 @@ class _PreparingTestResultPageState extends State<PreparingTestResultPage>
     try {
       final authService = AuthService();
       final data = OnboardingState().toJson();
-      await authService.submitOnboarding(data);
+      print('Onboarding payload: $data');
+      _onboardingResult = await authService.submitOnboarding(data);
+      print('Onboarding result: $_onboardingResult');
     } catch (e) {
       print('Error submitting onboarding data: $e');
     } finally {
       // Ensure we navigate after at least 4 seconds for the animation
       await Future.delayed(const Duration(seconds: 4));
       if (mounted) {
-        Navigator.pushReplacementNamed(context, '/results');
+        Navigator.pushReplacementNamed(
+          context,
+          '/results',
+          arguments: _onboardingResult,
+        );
       }
     }
   }

@@ -26,6 +26,7 @@ class _Question3State extends State<Question3> {
 
   void _continue() {
     if (selectedOption != null) {
+      OnboardingState().answers['Seberapa sering kamu menonton pornografi?'] = options[selectedOption!];
       Navigator.pushNamed(context, '/question-4');
     }
   }

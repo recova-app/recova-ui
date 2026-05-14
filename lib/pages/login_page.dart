@@ -65,22 +65,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<void> _handleGoogleLogin() async {
-    setState(() => _isGoogleLoading = true);
-
-    try {
-      final data = await _authService.signInWithGoogle();
-      if (!mounted) return;
-      if (data == null) return; // user cancelled
-      _navigateAfterAuth(data);
-    } catch (e) {
-      if (!mounted) return;
-      _showError(e.toString().replaceFirst('Exception: ', ''));
-    } finally {
-      if (mounted) setState(() => _isGoogleLoading = false);
-    }
-  }
-
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

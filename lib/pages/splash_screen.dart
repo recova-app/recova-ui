@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:recova/pages/main_scaffold.dart';
 import 'package:recova/pages/login_page.dart';
 import 'package:recova/pages/onboarding/set_name.dart';
+import 'package:recova/pages/onboarding/learning_1.dart';
 import 'package:recova/services/auth_service.dart';
 
 class SplashPage extends StatefulWidget {
@@ -34,8 +35,7 @@ class _SplashPageState extends State<SplashPage> {
     } else {
       // Token exists – check if onboarding was completed
       final onboarded = await authService.isOnboardingCompleted();
-      // page = onboarded ? const MainScaffold() : const SetNamePage();
-      page =  const MainScaffold();
+      page = onboarded ? const MainScaffold() : const Learning1();
     }
 
     if (!mounted) return;

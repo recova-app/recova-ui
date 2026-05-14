@@ -14,11 +14,12 @@ class HomeLoading extends HomeState {}
 class HomeLoadSuccess extends HomeState {
   final User user;
   final Statistics statistics;
+  final DailyContent? dailyContent;
 
-  const HomeLoadSuccess({required this.user, required this.statistics});
+  const HomeLoadSuccess({required this.user, required this.statistics, this.dailyContent});
 
   @override
-  List<Object> get props => [user, statistics];
+  List<Object> get props => [user, statistics, if (dailyContent != null) dailyContent!];
 }
 
 class HomeLoadFailure extends HomeState {

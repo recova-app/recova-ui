@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:recova/pages/splash_screen.dart';
 import 'package:recova/pages/community_hub_page.dart';
@@ -7,6 +8,7 @@ import 'package:recova/bloc/education_cubit.dart';
 import 'package:recova/bloc/home_cubit.dart';
 import 'package:recova/bloc/community_cubit.dart';
 import 'package:recova/bloc/checkin_cubit.dart';
+import 'package:recova/bloc/relapse_cubit.dart';
 import 'package:recova/pages/login_page.dart';
 import 'package:recova/pages/main_scaffold.dart';
 import 'package:recova/pages/onboarding/learning_2.dart';
@@ -36,7 +38,23 @@ import 'package:recova/pages/onboarding/learning_1.dart';
 import 'package:recova/theme/app_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+/// Global override so *every* HttpClient instance in the app
+/// (including ones created internally by the `http` package)
+/// accepts self-signed / mismatched certificates.
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..idleTimeout = const Duration(seconds: 0)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 void main() async {
+  // Apply BEFORE any HTTP traffic, including WidgetsFlutterBinding
+  HttpOverrides.global = MyHttpOverrides();
+
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -72,7 +90,8 @@ void main() async {
       MultiBlocProvider(
         providers: [
           BlocProvider<HomeCubit>(create: (context) => HomeCubit()),
-          BlocProvider<CheckinCubit>(create: (context) => CheckinCubit()),
+          BlocProvider<CheckinCubit>(create: (context) => CheckinCubit(homeCubit: context.read<HomeCubit>())),
+          BlocProvider<RelapseCubit>(create: (context) => RelapseCubit(homeCubit: context.read<HomeCubit>())),
           BlocProvider<CommunityCubit>(create: (context) => CommunityCubit()),
           BlocProvider<EducationCubit>(create: (context) => EducationCubit()),
         ],

@@ -26,7 +26,7 @@ class _Question1State extends State<Question1> {
 
   void _continue() {
     if (selectedAnswer != null) {
-      OnboardingState().answers['question_1'] = selectedAnswer;
+      OnboardingState().answers['Diumur berapa kamu menonton pornografi untuk pertama kalinya?'] = selectedAnswer;
       Navigator.pushNamed(context, '/question-2');
     }
   }
