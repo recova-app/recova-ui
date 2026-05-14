@@ -53,8 +53,10 @@ class _MainScaffoldState extends State<MainScaffold> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: const Color(0xFF38B768),
         unselectedItemColor: const Color.fromARGB(255, 0, 0, 0),
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        selectedFontSize: 12,
+        unselectedFontSize: 10,
         onTap: (index) {
           setState(() {
             _currentIndex = index;
@@ -71,7 +73,7 @@ class _MainScaffoldState extends State<MainScaffold> {
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/menu/support_icon.png')),
-            label: 'support',
+            label: 'Support',
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/menu/book_icon.png')),
