@@ -33,10 +33,9 @@ class RelapseCubit extends Cubit<RelapseState> {
 
     emit(RelapseLoading());
     try {
-      final result = await ApiService.checkIn(
+      final result = await ApiService.relapse(
         content: 'Relapse report',
         mood: mood,
-        isSuccessful: false, // relapse → always false
         commitment: commitment,
         relapseTrigger: relapseTriggers,
       );

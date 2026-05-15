@@ -15,7 +15,7 @@ class _BenefitsPageState extends State<BenefitsPage>
   final List<BenefitItem> _benefits = [
     BenefitItem(
       emoji: '💛',
-      title: 'Hubungan yang lebih erat',
+      title: 'Hubungan sosial yang lebih erat',
     ),
     BenefitItem(
       emoji: '⭐',

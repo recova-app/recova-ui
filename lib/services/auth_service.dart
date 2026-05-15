@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
+import 'package:recova/services/onboarding_state.dart';
 import 'dart:developer' as developer;
 
 class AuthService {
@@ -102,6 +103,12 @@ class AuthService {
       key: 'onboarding_completed',
       value: onboardingCompleted ? 'true' : 'false',
     );
+
+    // Persist nickname from the auth response into OnboardingState
+    final nickname = user['nickname'] as String? ?? '';
+    if (nickname.isNotEmpty) {
+      OnboardingState().nickname = nickname;
+    }
 
     return data;
   }

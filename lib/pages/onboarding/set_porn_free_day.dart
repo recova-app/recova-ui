@@ -13,19 +13,19 @@ class SetPornFreeDayPage extends StatefulWidget {
 class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
   int selectedGoal = 1; // Default to "1 day (recommended)"
   final List<Map<String, dynamic>> goals = [
-    {'text': '12 jam', 'value': 0.5, 'recommended': false},
-    {'text': '1 hari', 'value': 1, 'recommended': true},
-    {'text': '3 hari', 'value': 3, 'recommended': false},
     {'text': '7 hari', 'value': 7, 'recommended': false},
-    {'text': '14 hari', 'value': 14, 'recommended': false},
+    {'text': '14 hari', 'value': 14, 'recommended': true},
+    {'text': '30 hari', 'value': 30, 'recommended': false},
+    {'text': '69 hari', 'value': 69, 'recommended': false},
   ];
 
   void _setGoal() {
     // Get the selected goal text
     final selectedGoalText = goals[selectedGoal]['text'] as String;
+    final selectedGoalValue = goals[selectedGoal]['value'] as int;
 
     // Save to OnboardingState
-    OnboardingState().pornFreeGoal = selectedGoalText;
+    OnboardingState().pornFreeGoal = selectedGoalValue;
 
     // Navigate to result page with the selected goal
     Navigator.push(

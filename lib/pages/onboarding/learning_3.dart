@@ -47,7 +47,7 @@ class Learning3 extends StatelessWidget {
 
                     // Description
                     Text(
-                      'Seiring waktu, otak kamu mulai mengaitkan pornografi dengan kesenangan. Hal ini dapatmenyebabkan kurangnya minat  pada pasangan potensial, penurunan libido, dan masalah hubungan.',
+                      'Seiring waktu, otak kamu mulai mengaitkan pornografi dengan kesenangan. Hal ini dapat menyebabkan kurangnya minat  pada pasangan potensial, penurunan libido, dan masalah hubungan.',
                       textAlign: TextAlign.center,
                       style: AppText.body.copyWith(
                         color: AppTheme.textGrey,

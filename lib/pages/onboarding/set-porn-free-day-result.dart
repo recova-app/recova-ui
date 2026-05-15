@@ -86,7 +86,7 @@ class _SetPornFreeDayResultPageState extends State<SetPornFreeDayResultPage>
                       ),
                     ),
                     child: Text(
-                      '${widget.selectedGoal} goal set!',
+                      '${widget.selectedGoal} goal berhasil diset!',
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 32,

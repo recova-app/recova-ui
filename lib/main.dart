@@ -9,6 +9,7 @@ import 'package:recova/bloc/home_cubit.dart';
 import 'package:recova/bloc/community_cubit.dart';
 import 'package:recova/bloc/checkin_cubit.dart';
 import 'package:recova/bloc/relapse_cubit.dart';
+import 'package:recova/bloc/stats_cubit.dart';
 import 'package:recova/pages/login_page.dart';
 import 'package:recova/pages/main_scaffold.dart';
 import 'package:recova/pages/onboarding/learning_2.dart';
@@ -94,6 +95,7 @@ void main() async {
           BlocProvider<RelapseCubit>(create: (context) => RelapseCubit(homeCubit: context.read<HomeCubit>())),
           BlocProvider<CommunityCubit>(create: (context) => CommunityCubit()),
           BlocProvider<EducationCubit>(create: (context) => EducationCubit()),
+          BlocProvider<StatsCubit>(create: (context) => StatsCubit()),
         ],
         child: const MyApp(),
       ),

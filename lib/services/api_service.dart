@@ -6,6 +6,7 @@ import 'package:http/io_client.dart';
 import 'package:recova/services/auth_service.dart';
 import 'package:recova/models/user_model.dart';
 import 'package:recova/models/statistics_model.dart';
+import 'package:recova/models/relapse_statistics_model.dart';
 import 'package:recova/models/checkin_result_model.dart';
 import 'package:recova/models/post_model.dart';
 import 'package:recova/models/education_model.dart';
@@ -190,6 +191,39 @@ class ApiService {
     String mood = '',
     bool isSuccessful = true,
     String commitment = '',
+  }) async {
+    http.Response? response;
+    try {
+      final payload = <String, dynamic>{
+        'mood': mood,
+        "is_successful": true,
+        'commitment': commitment,
+        'content': content,
+      };
+
+      response = await _request(
+        'POST',
+        Uri.parse('$baseUrl/routine/checkin'),
+        body: jsonEncode(payload),
+        timeoutSeconds: 15,
+      );
+      if (response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return CheckInResult.fromJson(data['data']);
+      }
+      await _check401(response);
+      throw Exception(_handleError(null, response));
+    } catch (e) {
+      if (e is Exception && e.toString().contains('Sesi berakhir')) rethrow;
+      throw Exception(_handleError(e, response));
+    }
+  }
+
+    static Future<CheckInResult> relapse({
+    required String content,
+    String mood = '',
+    bool isSuccessful = true,
+    String commitment = '',
     List<String>? relapseTrigger,
   }) async {
     http.Response? response;
@@ -219,6 +253,7 @@ class ApiService {
       throw Exception(_handleError(e, response));
     }
   }
+
 
   // === COMMUNITY ===
   static Future<List<Post>> getCommunityPosts() async {
@@ -349,6 +384,27 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return DailyContent.fromJson(data['data'] ?? data);
+      }
+      await _check401(response);
+      throw Exception(_handleError(null, response));
+    } catch (e) {
+      if (e is Exception && e.toString().contains('Sesi berakhir')) rethrow;
+      throw Exception(_handleError(e, response));
+    }
+  }
+
+  // === RELAPSE STATISTICS ===
+  static Future<RelapseStatisticsResponse> getRelapseStatistics() async {
+    http.Response? response;
+    try {
+      response = await _request(
+        'GET',
+        Uri.parse('$baseUrl/routine/relapses/statistics'),
+        timeoutSeconds: 15,
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return RelapseStatisticsResponse.fromJson(data['data'] ?? data);
       }
       await _check401(response);
       throw Exception(_handleError(null, response));

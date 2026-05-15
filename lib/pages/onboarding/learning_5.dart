@@ -72,10 +72,9 @@ class Learning5 extends StatelessWidget {
                       height: 56,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Navigate to main app or complete learning
                           Navigator.pushNamedAndRemoveUntil(
                             context,
-                            '/set-name',
+                            '/question-1',
                             (route) => false,
                           );
                         },

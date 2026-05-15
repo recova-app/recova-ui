@@ -45,12 +45,13 @@ class ProfilePage extends StatelessWidget {
 
   // ── Goal options ──
   static const List<Map<String, dynamic>> _goals = [
-    {'text': '12 jam', 'value': 0.5},
-    {'text': '1 hari', 'value': 1},
-    {'text': '3 hari', 'value': 3},
     {'text': '7 hari', 'value': 7},
     {'text': '14 hari', 'value': 14},
     {'text': '30 hari', 'value': 30},
+    {'text': '69 hari', 'value': 69},
+    {'text': '120 hari', 'value': 120},
+    {'text': '365 hari', 'value': 365},
+    {'text': '1000 hari', 'value': 1000},
   ];
 
   // ════════════════════════════════════════════════════════

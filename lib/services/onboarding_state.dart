@@ -6,14 +6,14 @@ class OnboardingState {
   String nickname = '';
   String recoveryReason = '';
   String dailyCheckinTime = '09:00';
-  String pornFreeGoal = '';
+  int pornFreeGoal = 0;
   Map<String, dynamic> answers = {};
 
   void reset() {
     nickname = '';
     recoveryReason = '';
     dailyCheckinTime = '09:00';
-    pornFreeGoal = '';
+    pornFreeGoal = 0;
     answers = {};
   }
 
