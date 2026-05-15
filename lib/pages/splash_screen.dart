@@ -20,26 +20,41 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _checkAuthStatus() async {
-    // Wait 3 seconds for splash screen effect
-    await Future.delayed(const Duration(seconds: 5));
+    // Wait for splash screen effect
+    await Future.delayed(const Duration(seconds: 3));
 
-    final AuthService authService = AuthService();
-    final String? token = await authService.getToken();
+    try {
+      final AuthService authService = AuthService();
 
-    if (!mounted) return;
+      // Add a timeout so a hanging secure-storage read never freezes the app
+      final String? token = await authService
+          .getToken()
+          .timeout(const Duration(seconds: 10));
 
-    Widget page;
-    if (token == null) {
-      page = const LoginPage();
-    } else {
-      // Token exists – check if onboarding was completed
-      final onboarded = await authService.isOnboardingCompleted();
-      page = onboarded ? const MainScaffold() : const Learning1();
+      if (!mounted) return;
+
+      Widget page;
+      if (token == null) {
+        page = const LoginPage();
+      } else {
+        // Token exists – check if onboarding was completed
+        final onboarded = await authService
+            .isOnboardingCompleted()
+            .timeout(const Duration(seconds: 10));
+        page = onboarded ? const MainScaffold() : const Learning1();
+      }
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => page));
+    } catch (e) {
+      // On any error (storage hang, timeout, etc.) fall back to login
+      debugPrint('SplashPage auth check failed: $e');
+      if (!mounted) return;
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()));
     }
-
-    if (!mounted) return;
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => page));
   }
 
   @override

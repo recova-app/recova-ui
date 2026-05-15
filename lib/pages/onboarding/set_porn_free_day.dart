@@ -20,14 +20,11 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
   ];
 
   void _setGoal() {
-    // Get the selected goal text
     final selectedGoalText = goals[selectedGoal]['text'] as String;
     final selectedGoalValue = goals[selectedGoal]['value'] as int;
 
-    // Save to OnboardingState
     OnboardingState().pornFreeGoal = selectedGoalValue;
 
-    // Navigate to result page with the selected goal
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -47,134 +44,120 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.large),
-          child: ListView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Main Content
-              Expanded(
-                flex: 4,
-                child: Column(
-                  children: [
-                    const SizedBox(height: AppSpacing.large),
+              const SizedBox(height: AppSpacing.large),
 
-                      Container(
-                      width: 200,
-                      height: 200,
-                      child: Image.asset(
-                        'assets/images/maskots/set-porn-free-day.png',
-                        width: 220,
-                        height: 220,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-
-                    const SizedBox(height: AppSpacing.large),
-
-                    const SizedBox(height: AppSpacing.large),
-
-                    // Main instruction
-                    Text(
-                      'Mari mulai dengan target kecil untuk membangun momentum.',
-                      textAlign: TextAlign.center,
-                      style: AppText.h2.copyWith(
-                        height: 1.2,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 28,
-                        fontFamily: 'Inter',
-                        color: const Color(0xFF1A1A1A),
-                      ),
-                    ),
-
-                    const SizedBox(height: AppSpacing.large * 2),
-
-                    // Goal Options
-                    Column(
-                      children: goals.asMap().entries.map((entry) {
-                        final index = entry.key;
-                        final goal = entry.value;
-                        final isSelected = selectedGoal == index;
-                        final isRecommended = goal['recommended'] as bool;
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.medium),
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedGoal = index;
-                              });
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(AppSpacing.large),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? const Color(0xFF4CAF50).withOpacity(0.1)
-                                    : const Color(0xFFF5F5F5),
-                                borderRadius: BorderRadius.circular(AppRadius.medium),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? const Color(0xFF4CAF50)
-                                      : const Color(0xFFDDDDDD),
-                                  width: isSelected ? 2 : 1,
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  goal['text'] as String,
-                                  style: AppText.body.copyWith(
-                                    fontSize: 18,
-                                    fontFamily: 'Inter',
-                                    fontWeight: isRecommended ? FontWeight.w600 : FontWeight.w500,
-                                    color: isSelected
-                                        ? const Color(0xFF1B5E20)
-                                        : (isRecommended
-                                            ? const Color(0xFF1A1A1A)
-                                            : const Color(0xFF777777)),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
+              SizedBox(
+                width: 200,
+                height: 200,
+                child: Image.asset(
+                  'assets/images/maskots/set-porn-free-day.png',
+                  width: 220,
+                  height: 220,
+                  fit: BoxFit.contain,
                 ),
               ),
 
-              // Bottom Buttons
+              const SizedBox(height: AppSpacing.large),
+
+              // Main instruction
+              Text(
+                'Mari mulai dengan target kecil untuk membangun momentum.',
+                textAlign: TextAlign.center,
+                style: AppText.h2.copyWith(
+                  height: 1.2,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 28,
+                  fontFamily: 'Inter',
+                  color: const Color(0xFF1A1A1A),
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.large * 2),
+
+              // Goal Options
               Column(
-                children: [
-                  // Set Goal Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: _setGoal,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1B5E20),
-                        shadowColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(32),
+                children: goals.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final goal = entry.value;
+                  final isSelected = selectedGoal == index;
+                  final isRecommended = goal['recommended'] as bool;
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.medium),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedGoal = index;
+                        });
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(AppSpacing.large),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? const Color(0xFF4CAF50).withOpacity(0.1)
+                              : const Color(0xFFF5F5F5),
+                          borderRadius: BorderRadius.circular(AppRadius.medium),
+                          border: Border.all(
+                            color: isSelected
+                                ? const Color(0xFF4CAF50)
+                                : const Color(0xFFDDDDDD),
+                            width: isSelected ? 2 : 1,
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        'Tetapkan target bebas pornografi',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                        child: Center(
+                          child: Text(
+                            goal['text'] as String,
+                            style: AppText.body.copyWith(
+                              fontSize: 18,
+                              fontFamily: 'Inter',
+                              fontWeight: isRecommended
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
+                              color: isSelected
+                                  ? const Color(0xFF1B5E20)
+                                  : (isRecommended
+                                      ? const Color(0xFF1A1A1A)
+                                      : const Color(0xFF777777)),
+                            ),
+                          ),
                         ),
                       ),
                     ),
+                  );
+                }).toList(),
+              ),
+
+              const SizedBox(height: AppSpacing.large),
+
+              // Set Goal Button
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: _setGoal,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1B5E20),
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
+                    ),
                   ),
-
-                  const SizedBox(height: AppSpacing.medium),
-
-                  // Skip Button
-                ],
+                  child: const Text(
+                    'Tetapkan target bebas pornografi',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
 
               const SizedBox(height: AppSpacing.medium),

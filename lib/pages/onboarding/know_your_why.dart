@@ -58,123 +58,94 @@ class _KnowYourWhyPageState extends State<KnowYourWhyPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.large),
-          child: ListView(
-            children: [
-              // Main Content
-              Expanded(
-                flex: 4,
-                child: Column(
-                  children: [
-                    const SizedBox(height: AppSpacing.large),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: AppSpacing.large),
 
-                    Container(
-                      width: 220,
-                      height: 220,
-                      child: Image.asset(
-                        'assets/images/maskots/know-your-why.png',
-                        width: 220,
-                        height: 220,
-                        fit: BoxFit.contain,
+                SizedBox(
+                  width: 220,
+                  height: 220,
+                  child: Image.asset(
+                    'assets/images/maskots/know-your-why.png',
+                    width: 220,
+                    height: 220,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.large),
+
+                // Main instruction
+                Text(
+                  'Tuliskan SATU alasan mengapa kamu memilih untuk berhenti menonton pornografi.',
+                  textAlign: TextAlign.center,
+                  style: AppText.h2.copyWith(
+                    height: 1.2,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 28,
+                    fontFamily: 'Inter',
+                    color: const Color(0xFF1A1A1A),
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.large),
+
+                // Text Input
+                Container(
+                  padding: const EdgeInsets.all(AppSpacing.small),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: const Color(0xFFDDDDDD),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(AppRadius.medium),
+                  ),
+                  child: TextField(
+                    controller: _reasonController,
+                    maxLines: 3,
+                    style: AppText.body.copyWith(fontSize: 16, height: 1.4),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Tulis alasanmu di sini...',
+                    ),
+                    onChanged: (_) => _updateButtonState(),
+                  ),
+                ),
+
+                const SizedBox(height: AppSpacing.large * 2),
+
+                // Bottom Save Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: _isButtonEnabled ? _saveWhy : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isButtonEnabled
+                          ? const Color(0xFF1B5E20)
+                          : const Color(0xFFBDBDBD),
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(32),
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.large),
-
-                    const SizedBox(height: AppSpacing.large),
-
-                    // Main instruction
-                    Text(
-                      'Tuliskan SATU alasan mengapa kamu memilih untuk berhenti menonton pornografi.',
-                      textAlign: TextAlign.center,
-                      style: AppText.h2.copyWith(
-                        height: 1.2,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 28,
+                    child: const Text(
+                      'Simpan alasan saya',
+                      style: TextStyle(
                         fontFamily: 'Inter',
-                        color: const Color(0xFF1A1A1A),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
-                    ),
-
-                    const SizedBox(height: AppSpacing.medium),
-
-                    const SizedBox(height: AppSpacing.large),
-
-                    // Text Input
-                    Container(
-                      padding: const EdgeInsets.all(AppSpacing.small),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: const Color(0xFFDDDDDD),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(AppRadius.medium),
-                      ),
-                      child: TextField(
-                        controller: _reasonController,
-                        maxLines: 3,
-                        style: AppText.body.copyWith(fontSize: 16, height: 1.4),
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Tulis alasanmu di sini...',
-                        ),
-                        onChanged: (_) => _updateButtonState(),
-                      ),
-                    ),
-
-                    const SizedBox(height: AppSpacing.large),
-
-                    // Helper buttons row
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.medium,
-                        vertical: AppSpacing.small,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF5F5F5),
-                        borderRadius: BorderRadius.circular(AppRadius.medium),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(width: AppSpacing.large),
-
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              SizedBox(height: AppSpacing.large),
-
-              // Bottom Save Button
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: _isButtonEnabled ? _saveWhy : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _isButtonEnabled
-                        ? const Color(0xFF1B5E20)
-                        : const Color(0xFFBDBDBD),
-                    shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                  ),
-                  child: const Text(
-                    'Simpan alasan saya',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
                     ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: AppSpacing.medium),
-            ],
+                const SizedBox(height: AppSpacing.medium),
+              ],
+            ),
           ),
         ),
       ),
