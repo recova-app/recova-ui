@@ -7,11 +7,13 @@ part 'community_state.dart';
 
 class CommunityCubit extends Cubit<CommunityState> {
   CommunityCubit() : super(CommunityInitial());
+  List<Post> _cachedPosts = const <Post>[];
 
-  Future<void> fetchPosts() async {
+  Future<void> fetchPosts({String? category}) async {
     try {
       emit(CommunityLoading());
-      final posts = await ApiService.getCommunityPosts();
+      final posts = await ApiService.getCommunityPosts(category: category);
+      _cachedPosts = posts;
       emit(CommunityLoadSuccess(posts));
     } catch (e) {
       emit(CommunityLoadFailure(e.toString().replaceFirst('Exception: ', '')));
@@ -23,21 +25,26 @@ class CommunityCubit extends Cubit<CommunityState> {
     required String content,
     required String category,
   }) async {
-    // Emit state untuk menunjukkan proses pengiriman
-    emit(CommunitySubmitting());
+    // Emit state untuk menunjukkan proses pengiriman tanpa kehilangan data list.
+    emit(CommunitySubmitting(_cachedPosts));
     try {
       await ApiService.createPost(
         title: title,
         content: content,
         category: category,
       );
-      // Setelah berhasil, emit state sukses
-      emit(CommunitySubmitSuccess());
+      // Setelah berhasil, emit state sukses singkat lalu muat ulang list.
+      emit(CommunitySubmitSuccess(_cachedPosts));
       // Kemudian, muat ulang semua postingan untuk menampilkan yang baru
       await fetchPosts();
     } catch (e) {
       // Jika gagal, emit state error
-      emit(CommunitySubmitFailure(e.toString().replaceFirst('Exception: ', '')));
+      emit(
+        CommunitySubmitFailure(
+          e.toString().replaceFirst('Exception: ', ''),
+          _cachedPosts,
+        ),
+      );
     }
   }
 

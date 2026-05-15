@@ -454,7 +454,7 @@ class _StatsPageState extends State<StatsPage> {
             Icon(Icons.celebration, size: 40, color: Color(0xFF22C55E)),
             SizedBox(height: 8),
             Text('Belum ada relapse!', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF2E5948))),
-            Text('Pertahankan progresmu 💪', style: TextStyle(color: Color(0xFF5C6761))),
+            Text('Pertahankan progresmu', style: TextStyle(color: Color(0xFF5C6761))),
           ]),
         )
       else

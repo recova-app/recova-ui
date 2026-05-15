@@ -6,6 +6,7 @@ import 'package:recova/bloc/relapse_cubit.dart';
 import 'package:recova/models/daily_content_model.dart';
 import 'package:recova/models/statistics_model.dart';
 import 'package:recova/pages/checkin_page.dart';
+import 'package:recova/pages/coach_page.dart';
 import 'package:recova/pages/emergency_page.dart';
 import 'package:recova/pages/login_page.dart';
 import 'package:recova/pages/relapse_page.dart';
@@ -256,11 +257,17 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                     const SizedBox(height: 12),
-                    const _FeatureCard(
+                    _FeatureCard(
                       title: 'Smart Personal AI Coach',
                       subtitle: 'Dapatkan Insight untuk Keluhan atau Pertanyaanmu',
                       assetPath: 'assets/images/maskots/coach.png',
                       bg: Color(0xFFEAF9F1),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const CoachPage()),
+                        );
+                      },
                     ),
                     const SizedBox(height: 26),
                     const Text(

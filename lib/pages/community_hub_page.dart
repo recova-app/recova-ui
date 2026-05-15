@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:recova/pages/coach_page.dart';
+import 'package:recova/pages/community_page.dart';
 
 class CommunityHubPage extends StatelessWidget {
   const CommunityHubPage({super.key});
@@ -90,17 +92,29 @@ class CommunityHubPage extends StatelessWidget {
                 imageWidth: 70, // Atur ukuran lebar gambar billy di sini
                 imageHeight: 70, // Atur ukuran tinggi gambar billy di sini
                 // Atur posisi gambar billy (geser X dan Y) di sini
-                imageOffset: const Offset(-5, 0), 
+                imageOffset: const Offset(-5, 0),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CoachPage()),
+                  );
+                },
               ),
               const SizedBox(height: 14),
               _MenuCard(
                 title: 'Temukan Komunitas',
-                subtitle: 'temukan teman seperjuangan di komunitas',
+                subtitle: 'Temukan teman seperjuangan kamu di komunitas',
                 assetPath: 'assets/images/home/community.png',
                 imageWidth: 70, // Atur ukuran lebar gambar billy di sini
                 imageHeight: 70, // Atur ukuran tinggi gambar billy di sini
                 // Atur posisi gambar billy (geser X dan Y) di sini
-                imageOffset: const Offset(0, 0), 
+                imageOffset: const Offset(0, 0),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CommunityPage()),
+                  );
+                },
               ),
               // const SizedBox(height: 14),
               // const _MenuCard(
@@ -124,6 +138,7 @@ class _MenuCard extends StatelessWidget {
     this.imageWidth = 56,
     this.imageHeight = 56,
     this.imageOffset = Offset.zero,
+    this.onTap,
   });
 
   final String title;
@@ -132,53 +147,58 @@ class _MenuCard extends StatelessWidget {
   final double imageWidth;
   final double imageHeight;
   final Offset imageOffset;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      decoration: BoxDecoration(
-        color: const Color(0xFFDDE8E2),
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Row(
-        children: [
-          Transform.translate(
-            offset: imageOffset,
-            child: Image.asset(
-              assetPath, 
-              width: imageWidth, 
-              height: imageHeight,
-              fit: BoxFit.contain,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        decoration: BoxDecoration(
+          color: const Color(0xFFDDE8E2),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Row(
+          children: [
+            Transform.translate(
+              offset: imageOffset,
+              child: Image.asset(
+                assetPath,
+                width: imageWidth,
+                height: imageHeight,
+                fit: BoxFit.contain,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 48 * 0.42,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF111111),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 48 * 0.42,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF111111),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    fontSize: 11.5,
-                    color: Color(0xFF2F2F2F),
-                    height: 1.2,
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 11.5,
+                      color: Color(0xFF2F2F2F),
+                      height: 1.2,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
