@@ -26,19 +26,24 @@ class Post {
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
+    final author = json['author'] ?? json['user'] ?? {};
+    final categoryValue = (json['category'] ?? 'Nasihat').toString();
+
     return Post(
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
-      content: json['content'] ?? '',
+      id: (json['id'] ?? '').toString(),
+      title: (json['title'] ?? '').toString(),
+      content: (json['content'] ?? '').toString(),
       // Asumsi backend mengirim 'category'
-      category: json['category'] ?? 'Nasihat',
-      commentCount: json['commentCount'] ?? 0,
-      likeCount: json['likeCount'] ?? 0,
-      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
-      userId: json['userId'] ?? '',
+      category: categoryValue.isEmpty ? 'Nasihat' : categoryValue,
+      commentCount: _readInt(json['commentCount'] ?? json['comment_count']),
+      likeCount: _readInt(json['likeCount'] ?? json['like_count']),
+      createdAt: _parseServerDateTime(
+        json['createdAt'] ?? json['created_at'],
+      ),
+      userId: (json['userId'] ?? json['user_id'] ?? '').toString(),
       // Jika backend mengirim data user, kita bisa parse di sini
-      username: json['user'] != null ? json['user']['nickname'] : 'Anonim',
-      userStreak: json['user'] != null ? json['user']['currentStreak'] : 0,
+      username: (author['nickname'] ?? author['username'] ?? 'Anonim').toString(),
+      userStreak: _readInt(author['currentStreak'] ?? author['current_streak']),
       // Asumsi backend mengirim field 'isLiked'
       isLiked: json['isLiked'] ?? false,
     );
@@ -75,5 +80,19 @@ class Post {
   // Helper untuk mengubah Post menjadi Map yang bisa dipakai di PostCard
   Map<String, dynamic> toPostCardMap() {
     return {'id': id, 'username': username, 'likes': likeCount, 'text': content, 'streak': userStreak, 'category': category, 'isLiked': isLiked};
+  }
+
+  static int _readInt(dynamic value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
+  static DateTime _parseServerDateTime(dynamic value) {
+    final raw = (value ?? '').toString();
+    final parsed = DateTime.tryParse(raw);
+    if (parsed == null) return DateTime.now();
+    return parsed.toLocal();
   }
 }

@@ -3,6 +3,8 @@ part of 'community_cubit.dart';
 abstract class CommunityState extends Equatable {
   const CommunityState();
 
+  List<Post> get posts => const <Post>[];
+
   @override
   List<Object> get props => [];
 }
@@ -29,11 +31,39 @@ class CommunityLoadFailure extends CommunityState {
   List<Object> get props => [error];
 }
 
-class CommunitySubmitting extends CommunityState {}
-class CommunitySubmitSuccess extends CommunityState {}
+class CommunitySubmitting extends CommunityState {
+  final List<Post> previousPosts;
+
+  const CommunitySubmitting(this.previousPosts);
+
+  @override
+  List<Post> get posts => previousPosts;
+
+  @override
+  List<Object> get props => [previousPosts];
+}
+
+class CommunitySubmitSuccess extends CommunityState {
+  final List<Post> previousPosts;
+
+  const CommunitySubmitSuccess(this.previousPosts);
+
+  @override
+  List<Post> get posts => previousPosts;
+
+  @override
+  List<Object> get props => [previousPosts];
+}
+
 class CommunitySubmitFailure extends CommunityState {
   final String error;
-  const CommunitySubmitFailure(this.error);
+  final List<Post> previousPosts;
+
+  const CommunitySubmitFailure(this.error, this.previousPosts);
+
   @override
-  List<Object> get props => [error];
+  List<Post> get posts => previousPosts;
+
+  @override
+  List<Object> get props => [error, previousPosts];
 }
