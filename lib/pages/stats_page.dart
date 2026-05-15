@@ -112,8 +112,8 @@ class _StatsPageState extends State<StatsPage> {
     height: 36, padding: const EdgeInsets.all(3),
     decoration: BoxDecoration(color: const Color(0xFFE1E1E1), borderRadius: BorderRadius.circular(30)),
     child: Row(children: [
-      _tabItem('Analysis', _isAnalysisTab, () => setState(() => _isAnalysisTab = true)),
-      _tabItem('History', !_isAnalysisTab, () => setState(() => _isAnalysisTab = false)),
+      _tabItem('Analisis', _isAnalysisTab, () => setState(() => _isAnalysisTab = true)),
+      _tabItem('Histori Relapse', !_isAnalysisTab, () => setState(() => _isAnalysisTab = false)),
     ]),
   );
 
@@ -134,15 +134,15 @@ class _StatsPageState extends State<StatsPage> {
     final cleanDays = stats.streakCalendar.length;
     final successPercent = (stats.successRate * 100).round();
     return [
-      _sectionTitle('Your Statistics', 'This is your overview for the last 90 days'),
+      _sectionTitle('Statistik Kamu', 'Ini adalah ringkasan untuk 90 hari terakhir'),
       const SizedBox(height: 12),
       _statCards(stats, cleanDays, successPercent),
       const SizedBox(height: 22),
-      _sectionTitle('Streak Calendar', 'This is your Streak calendar'),
+      _sectionTitle('Kalender Streak', 'Ini adalah catatan kalender Streak Kamu'),
       const SizedBox(height: 14),
       _calendar(stats),
       const SizedBox(height: 22),
-      _sectionTitle('Time Of Day', 'When relapses occur throughout the day'),
+      _sectionTitle('Waktu Relapse', 'Analisis Waktu ketika kamu mengalami relapse'),
       const SizedBox(height: 12),
       _donutPanel(data),
     ];
@@ -336,10 +336,10 @@ class _StatsPageState extends State<StatsPage> {
 
     // Build legend items
     final segments = <_DonutSegment>[
-      _DonutSegment('Morning (5-11)', morning, const Color(0xFFF59E0B)),
-      _DonutSegment('Afternoon (12-16)', afternoon, const Color(0xFF3B82F6)),
-      _DonutSegment('Evening (17-21)', evening, const Color(0xFF6A34C9)),
-      _DonutSegment('Night (22-4)', night, const Color(0xFF3950C3)),
+      _DonutSegment('Pagi (5-11)', morning, const Color(0xFFF59E0B)),
+      _DonutSegment('Siang (12-16)', afternoon, const Color(0xFF3B82F6)),
+      _DonutSegment('Sore (17-21)', evening, const Color(0xFF6A34C9)),
+      _DonutSegment('Malam (22-4)', night, const Color(0xFF3950C3)),
     ];
 
     // Peak hours text
@@ -444,7 +444,7 @@ class _StatsPageState extends State<StatsPage> {
   // ── History Tab ──────────────────────────────────────────────────────────
   Widget _historyPanel(List<RelapseEntry> relapses) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _sectionTitle('Relapse History', 'This is your relapse history'),
+      _sectionTitle('Histori Relapse', 'Ini adalah histori relapse kamu'),
       const SizedBox(height: 20),
       if (relapses.isEmpty)
         Container(

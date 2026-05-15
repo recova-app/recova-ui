@@ -399,7 +399,7 @@ class _CoachPageState extends State<CoachPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Billy',
+          'Chat With Billy ',
           style: TextStyle(
             color: Color(0xFF0F172A),
             fontSize: 20,
@@ -411,7 +411,7 @@ class _CoachPageState extends State<CoachPage> {
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: CircleAvatar(
-              backgroundColor: const Color(0xFFF1F5F9),
+              backgroundColor: const Color.fromARGB(0, 241, 245, 249),
               child: Image.asset(
                 _selectedPersona.avatarPath,
                 width: _avatarSize,
@@ -542,8 +542,8 @@ class _CoachPageState extends State<CoachPage> {
           if (_isDropdownOpen && availablePersonas.isNotEmpty)
             Container(
               decoration: BoxDecoration(
-                color: const Color(0xFF0F8C72),
-                borderRadius: BorderRadius.circular(16),
+                color: const Color.fromARGB(255, 206, 206, 206),
+                borderRadius: BorderRadius.circular(4),
               ),
               child: Column(
                 children: availablePersonas.asMap().entries.map((entry) {
@@ -562,7 +562,7 @@ class _CoachPageState extends State<CoachPage> {
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: persona.color,
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(4),
                         border: Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
                       ),
                       child: Row(
@@ -758,6 +758,9 @@ class _CoachPageState extends State<CoachPage> {
                       fontSize: 14,
                     ),
                     border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 12,

@@ -45,7 +45,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = const Color(0xFF2EC4B6);
+    final themeColor = const Color(0xFF0B9A63) ;
 
     return BlocListener<CommunityCubit, CommunityState>(
       listener: (context, state) {

@@ -65,23 +65,23 @@ class _MainScaffoldState extends State<MainScaffold> {
         items: const [
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/menu/home_icon.png')),
-            label: 'Home',
+            label: 'Beranda',
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/menu/stat_icon.png')),
-            label: 'Stats',
+            label: 'Statistik',
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/menu/support_icon.png')),
-            label: 'Support',
+            label: 'Bantuan',
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/menu/book_icon.png')),
-            label: 'Education',
+            label: 'Edukasi',
           ),
           BottomNavigationBarItem(
             icon: ImageIcon(AssetImage('assets/images/menu/setting_icon.png')),
-            label: 'Profile',
+            label: 'Profil',
           ),
         ],
       ),

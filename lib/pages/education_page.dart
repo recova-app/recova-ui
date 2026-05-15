@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recova/bloc/education_cubit.dart';
 import 'package:recova/models/education_model.dart';
 import 'package:recova/pages/coach_page.dart';
+import 'package:recova/pages/article_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class EducationPage extends StatefulWidget {
@@ -156,26 +157,56 @@ class _EducationPageState extends State<EducationPage> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const _EducationFeatureCard(
-                  title: 'Pahami Dampak Pornografi',
-                  subtitle:
-                      'Pelajari dampak pornografi pada otak dan kehidupanmu',
-                  assetPath: 'assets/images/maskots/dampak.png',
-                  bg: Color(0xFFEAF9F1),
+                InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ArticlePage(
+                          title: 'Pahami Dampak Pornografi',
+                          category: 'Dampak pornografi',
+                        ),
+                      ),
+                    );
+                  },
+                  child: const _EducationFeatureCard(
+                    title: 'Pahami Dampak Pornografi',
+                    subtitle:
+                        'Pelajari dampak pornografi pada otak dan kehidupanmu',
+                    assetPath: 'assets/images/maskots/dampak.png',
+                    bg: Color(0xFFEAF9F1),
+                    arrow: true,
+                  ),
                 ),
                 const SizedBox(height: 12),
-                const _EducationFeatureCard(
-                  title: 'Tips & Strategi Pemulihan',
-                  subtitle:
-                      'Tips praktis mengatasi urge dan membangun kebiasaan baru',
-                  assetPath: 'assets/images/maskots/pemulihan.png',
-                  bg: Color(0xFFEAF9F1),
+                InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ArticlePage(
+                          title: 'Tips & Strategi Pemulihan',
+                          category: 'Pemulihan',
+                        ),
+                      ),
+                    );
+                  },
+                  child: const _EducationFeatureCard(
+                    title: 'Tips & Strategi Pemulihan',
+                    subtitle:
+                        'Tips praktis mengatasi urge dan membangun kebiasaan baru',
+                    assetPath: 'assets/images/maskots/pemulihan.png',
+                    bg: Color(0xFFEAF9F1),
+                    arrow: true,
+                  ),
                 ),
                 const SizedBox(height: 26),
 
                 // ── Video Library Section ──
                 const Text(
-                  'Video Library',
+                  'Video Edukasi',
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: 14),
@@ -258,6 +289,9 @@ class _EducationPageState extends State<EducationPage> {
                       // Kelompokkan konten berdasarkan kategori
                       final groupedContent = <String, List<EducationContent>>{};
                       for (var content in state.contents) {
+                        if (content.category == 'Dampak Pornografi' || content.category == 'Pemulihan') {
+                          continue;
+                        }
                         (groupedContent[content.category] ??= []).add(content);
                       }
 

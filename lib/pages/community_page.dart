@@ -444,7 +444,12 @@ class _CommunityPostCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              _CommunityActionButton(
+            ],
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+                   _CommunityActionButton(
                 onTap: onComments,
                 count: post.commentCount,
                 icon: Icons.chat_bubble_outline,
@@ -457,7 +462,7 @@ class _CommunityPostCard extends StatelessWidget {
                 iconColor: post.isLiked ? Colors.redAccent : const Color(0xFF6B7280),
               ),
             ],
-          ),
+          )
         ],
       ),
     );
@@ -483,9 +488,9 @@ class _CommunityActionButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        constraints: const BoxConstraints(minWidth: 64),
+        constraints: const BoxConstraints(minWidth:36),
         height: 36,
-        padding: const EdgeInsets.symmetric(horizontal: 9),
+        padding: const EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
           color: const Color(0xFFF7F9FC),
           borderRadius: BorderRadius.circular(10),

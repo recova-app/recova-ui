@@ -67,7 +67,7 @@ class ProfilePage extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _SheetScaffold(
-        title: 'Edit Check-In Time',
+        title: 'Atur Ulang Check-In Time',
         subtitle: 'Kapan waktu daily check-in kamu?',
         asset: 'assets/images/maskots/set-checkin-time.png',
         buttonLabel: 'Simpan Waktu Check-In',
@@ -178,7 +178,7 @@ class ProfilePage extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (sheetCtx) => _SheetScaffold(
-        title: 'Edit Manifesto',
+        title: 'Tulis Ulang Manifesto',
         subtitle: 'Tulis surat kemenangan untuk dirimu.',
         asset: 'assets/images/maskots/set-victory-letter.png',
         buttonLabel: 'Simpan Manifesto',
@@ -401,7 +401,7 @@ class ProfilePage extends StatelessWidget {
 
                 _ProfileSettingCard(
                   icon: Icons.access_time_filled_rounded,
-                  title: 'Edit Check-In Time',
+                  title: 'Atur Ulang Check-In Time',
                   subtitle: 'Atur jadwal check-in harian kamu',
                   assetPath: 'assets/images/maskots/set-checkin-time.png',
                   onTap: () => _showCheckinTimeSheet(context, user.dailyCheckinTime),
@@ -417,7 +417,7 @@ class ProfilePage extends StatelessWidget {
                 const SizedBox(height: 12),
                 _ProfileSettingCard(
                   icon: Icons.auto_stories_rounded,
-                  title: 'Edit Manifesto',
+                  title: 'Tulis Ulang Manifesto',
                   subtitle: 'Perbarui surat kemenangan kamu',
                   assetPath: 'assets/images/maskots/set-victory-letter.png',
                   onTap: () => _showManifestoSheet(context, user.recoveryReason),

@@ -5,6 +5,8 @@ class EducationContent {
   final String url;
   final String thumbnailUrl;
   final String category;
+  final String type;
+  final String? publishedAt;
 
   EducationContent({
     required this.id,
@@ -13,6 +15,8 @@ class EducationContent {
     required this.url,
     required this.thumbnailUrl,
     required this.category,
+    required this.type,
+    this.publishedAt,
   });
 
   factory EducationContent.fromJson(Map<String, dynamic> json) {
@@ -26,6 +30,8 @@ class EducationContent {
       category: (json['category'] != null && json['category'].isNotEmpty)
           ? json['category']
           : 'General',
+      type: json['type'] ?? 'video',
+      publishedAt: json['published_at'],
     );
   }
 }

@@ -145,8 +145,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(height: 4),
                     const Text(
-                      'Proud of you for showing up today',
-                      style: TextStyle(fontSize: 34 * 0.42, color: Color(0xFF8B98A0)),
+                      'Apapun usahamu hari ini, kami bangga kepadamu',
+                      style: TextStyle(fontSize: 30 * 0.42, color: Color(0xFF8B98A0)),
                     ),
                     const SizedBox(height: 18),
                     _StreakCard(
@@ -271,7 +271,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(height: 26),
                     const Text(
-                      'Today Insight',
+                      'Insight Hari Ini',
                       style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 14),
