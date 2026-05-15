@@ -8,6 +8,7 @@ import 'package:recova/models/user_model.dart';
 import 'package:recova/models/statistics_model.dart';
 import 'package:recova/models/checkin_result_model.dart';
 import 'package:recova/models/post_model.dart';
+import 'package:recova/models/community_comment_model.dart';
 import 'package:recova/models/education_model.dart';
 import 'package:recova/models/daily_content_model.dart';
 
@@ -15,6 +16,28 @@ class ApiService {
   // Ganti ini dengan URL backend kamu
   static const String baseUrl = 'https://recova.salmanabdurrahman.my.id/api/v1';
   static final AuthService _authService = AuthService();
+
+  static String _normalizeCommunityCategory(String category) {
+    final normalized = category.toLowerCase().trim();
+    switch (normalized) {
+      case 'nasihat':
+      case 'advice':
+      case 'saran':
+        return 'saran';
+      case 'bantuan':
+      case 'help':
+        return 'bantuan';
+      case 'motivasi':
+      case 'motivation':
+        return 'motivasi';
+      case 'cerita':
+        return 'cerita';
+      case 'pertanyaan':
+        return 'pertanyaan';
+      default:
+        return normalized;
+    }
+  }
 
   /// Returns a fresh [IOClient] that accepts the server's SSL certificate.
   static IOClient _buildClient() {
@@ -221,10 +244,16 @@ class ApiService {
   }
 
   // === COMMUNITY ===
-  static Future<List<Post>> getCommunityPosts() async {
+  static Future<List<Post>> getCommunityPosts({String? category}) async {
     http.Response? response;
     try {
-      response = await _request('GET', Uri.parse('$baseUrl/community'), timeoutSeconds: 15);
+      final normalizedCategory = category == null || category.isEmpty
+          ? null
+          : _normalizeCommunityCategory(category);
+      final uri = normalizedCategory == null || normalizedCategory.isEmpty
+          ? Uri.parse('$baseUrl/community')
+          : Uri.parse('$baseUrl/community?category=$normalizedCategory');
+      response = await _request('GET', uri, timeoutSeconds: 15);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final list = data['data'] as List;
@@ -241,13 +270,14 @@ class ApiService {
   static Future<Post> createPost({required String title, required String content, required String category}) async {
     http.Response? response;
     try {
+      final normalizedCategory = _normalizeCommunityCategory(category);
       response = await _request(
         'POST',
         Uri.parse('$baseUrl/community'),
         body: jsonEncode({
           'title': title,
           'content': content,
-          'category': category, // Mengirim kategori ke backend
+          'category': normalizedCategory, // Selalu kirim nilai kategori yang valid ke backend.
         }),
         timeoutSeconds: 15,
       );
@@ -284,6 +314,80 @@ class ApiService {
         throw Exception(_handleError(null, response));
       }
     } catch (e) {
+      throw Exception(_handleError(e, response));
+    }
+  }
+
+  static Future<List<CommunityComment>> getPostComments({
+    required String postId,
+    int limit = 100,
+  }) async {
+    http.Response? response;
+    try {
+      response = await _request(
+        'GET',
+        Uri.parse('$baseUrl/community/$postId/comments?limit=$limit'),
+        timeoutSeconds: 15,
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final thread = data['data'];
+        final comments = thread is Map ? thread['comments'] : null;
+        final list = comments is List ? comments : const [];
+        return list
+            .whereType<Map>()
+            .map((e) => CommunityComment.fromJson(Map<String, dynamic>.from(e)))
+            .toList();
+      }
+      await _check401(response);
+      throw Exception(_handleError(null, response));
+    } catch (e) {
+      if (e is Exception && e.toString().contains('Sesi berakhir')) rethrow;
+      throw Exception(_handleError(e, response));
+    }
+  }
+
+  static Future<void> addPostComment({
+    required String postId,
+    required String content,
+  }) async {
+    http.Response? response;
+    try {
+      response = await _request(
+        'POST',
+        Uri.parse('$baseUrl/community/$postId/comments'),
+        body: jsonEncode({'content': content}),
+        timeoutSeconds: 15,
+      );
+      if (response.statusCode != 201 && response.statusCode != 200) {
+        await _check401(response);
+        throw Exception(_handleError(null, response));
+      }
+    } catch (e) {
+      if (e is Exception && e.toString().contains('Sesi berakhir')) rethrow;
+      throw Exception(_handleError(e, response));
+    }
+  }
+
+  static Future<void> addCommentReply({
+    required String postId,
+    required String commentId,
+    required String content,
+  }) async {
+    http.Response? response;
+    try {
+      response = await _request(
+        'POST',
+        Uri.parse('$baseUrl/community/$postId/comments/$commentId/replies'),
+        body: jsonEncode({'content': content}),
+        timeoutSeconds: 15,
+      );
+      if (response.statusCode != 201 && response.statusCode != 200) {
+        await _check401(response);
+        throw Exception(_handleError(null, response));
+      }
+    } catch (e) {
+      if (e is Exception && e.toString().contains('Sesi berakhir')) rethrow;
       throw Exception(_handleError(e, response));
     }
   }
@@ -352,6 +456,100 @@ class ApiService {
       }
       await _check401(response);
       throw Exception(_handleError(null, response));
+    } catch (e) {
+      if (e is Exception && e.toString().contains('Sesi berakhir')) rethrow;
+      throw Exception(_handleError(e, response));
+    }
+  }
+
+  // === AI COACH ===
+  static Future<List<Map<String, dynamic>>> getAiChatHistory({int limit = 50}) async {
+    http.Response? response;
+    try {
+      response = await _request(
+        'GET',
+        Uri.parse('$baseUrl/ai/chat-history?limit=$limit'),
+        timeoutSeconds: 15,
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final raw = data['data'];
+        if (raw is List) {
+          return raw.whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
+        }
+        return [];
+      }
+      await _check401(response);
+      throw Exception(_handleError(null, response));
+    } catch (e) {
+      if (e is Exception && e.toString().contains('Sesi berakhir')) rethrow;
+      throw Exception(_handleError(e, response));
+    }
+  }
+
+  static Future<Map<String, dynamic>> askAiCoach({required String message}) async {
+    http.Response? response;
+    try {
+      response = await _request(
+        'POST',
+        Uri.parse('$baseUrl/ai/ask-coach'),
+        body: jsonEncode({'message': message}),
+        timeoutSeconds: 25,
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final payload = data['data'];
+        if (payload is Map) {
+          return Map<String, dynamic>.from(payload);
+        }
+        return {};
+      }
+      await _check401(response);
+      throw Exception(_handleError(null, response));
+    } catch (e) {
+      if (e is Exception && e.toString().contains('Sesi berakhir')) rethrow;
+      throw Exception(_handleError(e, response));
+    }
+  }
+
+  static Future<String> getAiPersonaPreference() async {
+    http.Response? response;
+    try {
+      response = await _request(
+        'GET',
+        Uri.parse('$baseUrl/ai/persona-preferences'),
+        timeoutSeconds: 15,
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final persona = data['data']?['persona'];
+        if (persona is String && persona.isNotEmpty) {
+          return persona;
+        }
+      } else {
+        await _check401(response);
+        throw Exception(_handleError(null, response));
+      }
+    } catch (e) {
+      if (e is Exception && e.toString().contains('Sesi berakhir')) rethrow;
+      throw Exception(_handleError(e, response));
+    }
+    return 'supportive';
+  }
+
+  static Future<void> updateAiPersonaPreference({required String persona}) async {
+    http.Response? response;
+    try {
+      response = await _request(
+        'PUT',
+        Uri.parse('$baseUrl/ai/persona-preferences'),
+        body: jsonEncode({'persona': persona}),
+        timeoutSeconds: 15,
+      );
+      if (response.statusCode != 200) {
+        await _check401(response);
+        throw Exception(_handleError(null, response));
+      }
     } catch (e) {
       if (e is Exception && e.toString().contains('Sesi berakhir')) rethrow;
       throw Exception(_handleError(e, response));
