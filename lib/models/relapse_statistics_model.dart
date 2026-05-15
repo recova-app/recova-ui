@@ -3,20 +3,24 @@ class RelapseStatisticsResponse {
   final RelapseStats statistics;
   final List<RelapseEntry> relapses;
   final List<HourlyRelapseDistribution> hourlyRelapseDistribution;
+  final List<RelapseTriggerDistribution> relapseTriggerDistribution;
   final List<int> peakRelapseHoursUtc;
   final int peakRelapseCount;
   final String aiSummary;
   final RelapseTimeSummary? relapseTimeSummary;
+  final RelapseTimeSummary? relapseTimeriggerSummary;
   final RelapseTimeSummary? latestRelapseSolution;
 
   RelapseStatisticsResponse({
     required this.statistics,
     required this.relapses,
     required this.hourlyRelapseDistribution,
+    required this.relapseTriggerDistribution,
     required this.peakRelapseHoursUtc,
     required this.peakRelapseCount,
     required this.aiSummary,
     this.relapseTimeSummary,
+    this.relapseTimeriggerSummary,
     this.latestRelapseSolution,
   });
 
@@ -32,12 +36,20 @@ class RelapseStatisticsResponse {
                   ?.map((e) => HourlyRelapseDistribution.fromJson(e))
                   .toList() ??
               [],
+      relapseTriggerDistribution:
+          (json['relapse_triggers_distribution'] as List?)
+                  ?.map((e) => RelapseTriggerDistribution.fromJson(e))
+                  .toList() ??
+              [],
       peakRelapseHoursUtc:
           List<int>.from(json['peak_relapse_hours_utc'] ?? []),
       peakRelapseCount: json['peak_relapse_count'] ?? 0,
       aiSummary: json['ai_summary'] ?? '',
       relapseTimeSummary: json['relapse_time_summary'] != null
           ? RelapseTimeSummary.fromJson(json['relapse_time_summary'])
+          : null,
+      relapseTimeriggerSummary: json['relapse_trigger_summary'] != null
+          ? RelapseTimeSummary.fromJson(json['relapse_trigger_summary'])
           : null,
       latestRelapseSolution: json['latest_relapse_solution'] != null
           ? RelapseTimeSummary.fromJson(json['latest_relapse_solution'])
@@ -308,6 +320,23 @@ class RelapseTimeSummary {
       analysis: json['analysis'] ?? '',
       summary: json['summary'] ?? '',
       generatedAt: json['generated_at'],
+    );
+  }
+}
+
+class RelapseTriggerDistribution {
+  final String relapseTrigger;
+  final int relapseTriggerCount;
+
+  RelapseTriggerDistribution({
+    required this.relapseTrigger,
+    required this.relapseTriggerCount,
+  });
+
+  factory RelapseTriggerDistribution.fromJson(Map<String, dynamic> json) {
+    return RelapseTriggerDistribution(
+      relapseTrigger: json['relapse_trigger'] ?? '',
+      relapseTriggerCount: json['relapse_trigger_count'] ?? 0,
     );
   }
 }

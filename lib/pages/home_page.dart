@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recova/pages/notification_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recova/bloc/checkin_cubit.dart';
 import 'package:recova/bloc/home_cubit.dart';
@@ -12,6 +13,7 @@ import 'package:recova/pages/login_page.dart';
 import 'package:recova/pages/relapse_page.dart';
 import 'package:recova/services/api_service.dart';
 import 'package:recova/services/auth_service.dart';
+import 'package:recova/services/notification_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,6 +34,26 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _homeCubit.fetchHomeData();
     });
+
+    // Request izin notifikasi, lalu jadwalkan daily reminder
+    // berdasarkan waktu check-in yang diambil dari profil user (/users/me).
+    _initNotifications();
+  }
+
+  /// Meminta izin notifikasi dan menjadwalkan daily reminder.
+  /// Waktu reminder diambil dari field `daily_checkin_time` milik user.
+  Future<void> _initNotifications() async {
+    await NotificationService.requestPermission();
+    try {
+      final user = await ApiService.getUserMe();
+      await NotificationService.scheduleDailyNotification(
+        checkinTime: user.dailyCheckinTime,
+      );
+    } catch (e) {
+      // Jika fetch user gagal, gunakan waktu fallback default (09:15)
+      debugPrint('[HomePage] Gagal fetch user untuk notifikasi: $e');
+      await NotificationService.scheduleDailyNotification();
+    }
   }
 
   Future<void> _handleLogout(BuildContext context) async {
@@ -57,7 +79,8 @@ class _HomePageState extends State<HomePage> {
         lastCheckInDate.day == now.day;
   }
 
-  void _showDailyChallengePopup(BuildContext context, DailyChallenge? challenge) {
+  void _showDailyChallengePopup(
+      BuildContext context, DailyChallenge? challenge) {
     showDialog(
       context: context,
       barrierColor: Colors.black54,
@@ -82,12 +105,14 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                    const Icon(Icons.error_outline,
+                        size: 48, color: Colors.red),
                     const SizedBox(height: 16),
                     Text(
                       state.error,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
+                      style: const TextStyle(
+                          fontSize: 14, color: Color(0xFF6B7280)),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
@@ -132,7 +157,15 @@ class _HomePageState extends State<HomePage> {
                             height: 64,
                           ),
                         ),
-                        const Icon(Icons.notifications_none_rounded, color: Color(0xFF6B7280),),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const NotificationPage()),
+                          ),
+                          child: const Icon(Icons.notifications_none_rounded,
+                              color: Color(0xFF6B7280)),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 14),
@@ -146,19 +179,22 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 4),
                     const Text(
                       'Apapun usahamu hari ini, kami bangga kepadamu',
-                      style: TextStyle(fontSize: 30 * 0.42, color: Color(0xFF8B98A0)),
+                      style: TextStyle(
+                          fontSize: 30 * 0.42, color: Color(0xFF8B98A0)),
                     ),
                     const SizedBox(height: 18),
                     _StreakCard(
                       currentStreak: stats.currentStreak,
                       progress: stats.streakGoalComparison?.progressRate ?? 0.0,
                       streakCalendar: stats.streakCalendar,
+                      relapseCalendar: successState.relapseCalendar,
                       goalDays: user.pornFreeGoal ?? 0,
                     ),
                     const SizedBox(height: 24),
                     const Text(
                       'Daily Routine',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 14),
                     InkWell(
@@ -169,14 +205,13 @@ class _HomePageState extends State<HomePage> {
                         final result = await Navigator.push<bool>(
                           context,
                           MaterialPageRoute(
-                            builder:
-                                (_) => BlocProvider.value(
-                                  value: checkinCubit,
-                                  child: CheckInPage(
-                                    streakDays: stats.currentStreak,
-                                    hasCheckedInToday: _hasCheckedInToday(stats),
-                                  ),
-                                ),
+                            builder: (_) => BlocProvider.value(
+                              value: checkinCubit,
+                              child: CheckInPage(
+                                streakDays: stats.currentStreak,
+                                hasCheckedInToday: _hasCheckedInToday(stats),
+                              ),
+                            ),
                           ),
                         );
                         // Refresh home data when returning from a successful check-in
@@ -185,7 +220,8 @@ class _HomePageState extends State<HomePage> {
                         }
                       },
                       child: _FeatureCard(
-                        title: 'Check-In Harian Diatur Saat ${user.dailyCheckinTime ?? "6pm"}',
+                        title:
+                            'Check-In Harian Diatur Saat ${user.dailyCheckinTime ?? "6pm"}',
                         subtitle: 'Klik untuk Check-In lebih awal',
                         assetPath: 'assets/images/maskots/set-checkin-time.png',
                         bg: const Color(0xFFEAF9F1),
@@ -237,7 +273,8 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 26),
                     const Text(
                       'Bantu Pemulihan',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 14),
                     _FeatureCard(
@@ -259,7 +296,8 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 12),
                     _FeatureCard(
                       title: 'Smart Personal AI Coach',
-                      subtitle: 'Dapatkan Insight untuk Keluhan atau Pertanyaanmu',
+                      subtitle:
+                          'Dapatkan Insight untuk Keluhan atau Pertanyaanmu',
                       assetPath: 'assets/images/maskots/coach.png',
                       bg: Color(0xFFEAF9F1),
                       onTap: () {
@@ -272,7 +310,8 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 26),
                     const Text(
                       'Insight Hari Ini',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
                     ),
                     const SizedBox(height: 14),
                     Container(
@@ -294,7 +333,8 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           if (successState.dailyContent?.challenge != null &&
-                              successState.dailyContent!.challenge!.isNotEmpty) ...[
+                              successState
+                                  .dailyContent!.challenge!.isNotEmpty) ...[
                             const SizedBox(height: 12),
                             Container(
                               width: double.infinity,
@@ -306,14 +346,18 @@ class _HomePageState extends State<HomePage> {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text('🎯 ', style: TextStyle(fontSize: 16)),
+                                  const Text('🎯 ',
+                                      style: TextStyle(fontSize: 16)),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          successState.dailyContent!.challenge!.title.isNotEmpty
-                                              ? successState.dailyContent!.challenge!.title
+                                          successState.dailyContent!.challenge!
+                                                  .title.isNotEmpty
+                                              ? successState.dailyContent!
+                                                  .challenge!.title
                                               : 'Tantangan Hari Ini',
                                           style: const TextStyle(
                                             fontSize: 12,
@@ -321,10 +365,15 @@ class _HomePageState extends State<HomePage> {
                                             color: Color(0xFF136E4D),
                                           ),
                                         ),
-                                        if (successState.dailyContent!.challenge!.description.isNotEmpty) ...[
+                                        if (successState
+                                            .dailyContent!
+                                            .challenge!
+                                            .description
+                                            .isNotEmpty) ...[
                                           const SizedBox(height: 2),
                                           Text(
-                                            successState.dailyContent!.challenge!.description,
+                                            successState.dailyContent!
+                                                .challenge!.description,
                                             style: const TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.w600,
@@ -342,7 +391,8 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(height: 12),
                           const Text(
                             'Insight ini disesuaikan dari journal harian yang kamu tulis dan aktivitas daily check-in kamu',
-                            style: TextStyle(fontSize: 10, color: Color(0xFF7A7A7A)),
+                            style: TextStyle(
+                                fontSize: 10, color: Color(0xFF7A7A7A)),
                           ),
                         ],
                       ),
@@ -383,8 +433,8 @@ class _FeatureCard extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Stack(
-        clipBehavior:
-            Clip.antiAlias, // Memastikan gambar terpotong sesuai border radius kontainer
+        clipBehavior: Clip
+            .antiAlias, // Memastikan gambar terpotong sesuai border radius kontainer
         children: [
           // Layer 1: Background dan Konten Utama
           Container(
@@ -399,9 +449,8 @@ class _FeatureCard extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize:
-                        MainAxisSize
-                            .min, // Agar kontainer tidak memaksa tinggi maksimal
+                    mainAxisSize: MainAxisSize
+                        .min, // Agar kontainer tidak memaksa tinggi maksimal
                     children: [
                       Text(
                         title,
@@ -458,10 +507,12 @@ class _StreakCard extends StatelessWidget {
     required this.progress,
     required this.streakCalendar,
     required this.goalDays,
+    this.relapseCalendar = const [],
   });
   final int currentStreak;
   final double progress;
   final List<String> streakCalendar;
+  final List<String> relapseCalendar;
   final int goalDays;
   @override
   Widget build(BuildContext context) {
@@ -551,15 +602,20 @@ class _StreakCard extends StatelessWidget {
                     final now = DateTime.now();
                     final today = DateTime(now.year, now.month, now.day);
                     // DateTime.monday == 1, so (weekday - 1) gives offset from Monday
-                    final monday = today.subtract(Duration(days: now.weekday - 1));
+                    final monday =
+                        today.subtract(Duration(days: now.weekday - 1));
 
                     // Parse streak calendar dates into a Set for O(1) lookup
-                    final checkedDates = streakCalendar
-                        .map((s) {
-                          final d = DateTime.parse(s);
-                          return DateTime(d.year, d.month, d.day);
-                        })
-                        .toSet();
+                    final checkedDates = streakCalendar.map((s) {
+                      final d = DateTime.parse(s);
+                      return DateTime(d.year, d.month, d.day);
+                    }).toSet();
+
+                    // Parse relapse calendar dates into a Set for O(1) lookup
+                    final relapseDates = relapseCalendar.map((s) {
+                      final d = DateTime.parse(s);
+                      return DateTime(d.year, d.month, d.day);
+                    }).toSet();
 
                     final dayLabels = ['S', 'S', 'R', 'K', 'J', 'S', 'M'];
 
@@ -568,7 +624,9 @@ class _StreakCard extends StatelessWidget {
                       children: List.generate(7, (index) {
                         final dayDate = monday.add(Duration(days: index));
                         final isToday = dayDate == today;
-                        final isCheckedIn = checkedDates.contains(dayDate);
+                        final isRelapse = relapseDates.contains(dayDate);
+                        final isCheckedIn =
+                            checkedDates.contains(dayDate) && !isRelapse;
 
                         return Column(
                           children: [
@@ -577,14 +635,28 @@ class _StreakCard extends StatelessWidget {
                               style: TextStyle(
                                 fontWeight:
                                     isToday ? FontWeight.w800 : FontWeight.w600,
-                                color:
-                                    isToday
-                                        ? const Color(0xFF111111)
-                                        : const Color(0xFF8B98A0),
+                                color: isToday
+                                    ? const Color(0xFF111111)
+                                    : const Color(0xFF8B98A0),
                               ),
                             ),
                             const SizedBox(height: 16),
-                            if (isCheckedIn)
+                            if (isRelapse)
+                              // Relapse day: solid red circle with X icon
+                              Container(
+                                width: 26,
+                                height: 26,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFEF4444),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              )
+                            else if (isCheckedIn)
                               // Checked-in day: solid green circle with white check
                               Container(
                                 width: 26,
@@ -753,7 +825,8 @@ class _DailyChallengeDialogState extends State<_DailyChallengeDialog>
         scale: _scaleAnimation,
         child: Dialog(
           backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
           child: Container(
             constraints: const BoxConstraints(maxWidth: 400),
             decoration: BoxDecoration(
@@ -874,7 +947,8 @@ class _DailyChallengeDialogState extends State<_DailyChallengeDialog>
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
           children: [
-            const Icon(Icons.cloud_off_rounded, size: 36, color: Color(0xFFD1D5DB)),
+            const Icon(Icons.cloud_off_rounded,
+                size: 36, color: Color(0xFFD1D5DB)),
             const SizedBox(height: 8),
             Text(
               _error!,

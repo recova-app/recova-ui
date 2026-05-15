@@ -110,7 +110,8 @@ class _CommunityPageState extends State<CommunityPage> {
         ),
         leading: IconButton(
           onPressed: () => Navigator.of(context).maybePop(),
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1E293B), size: 24),
+          icon:
+              const Icon(Icons.arrow_back, color: Color(0xFF1E293B), size: 24),
         ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1),
@@ -141,10 +142,14 @@ class _CommunityPageState extends State<CommunityPage> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
-                        color: selected ? const Color(0xFF0B9A63) : const Color(0xFFDDE3EC),
+                        color: selected
+                            ? const Color(0xFF0B9A63)
+                            : const Color(0xFFDDE3EC),
                         borderRadius: BorderRadius.circular(13),
                         border: Border.all(
-                          color: selected ? const Color(0xFF0B9A63) : const Color(0xFFD0D7E2),
+                          color: selected
+                              ? const Color(0xFF0B9A63)
+                              : const Color(0xFFD0D7E2),
                         ),
                         boxShadow: selected
                             ? const [
@@ -162,7 +167,8 @@ class _CommunityPageState extends State<CommunityPage> {
                           if (selected)
                             const Padding(
                               padding: EdgeInsets.only(right: 8),
-                              child: Icon(Icons.circle, size: 7, color: Colors.white),
+                              child: Icon(Icons.circle,
+                                  size: 7, color: Colors.white),
                             ),
                           Text(
                             label,
@@ -181,7 +187,8 @@ class _CommunityPageState extends State<CommunityPage> {
             Expanded(
               child: BlocBuilder<CommunityCubit, CommunityState>(
                 builder: (context, state) {
-                  if ((state is CommunityLoading || state is CommunityInitial) &&
+                  if ((state is CommunityLoading ||
+                          state is CommunityInitial) &&
                       state.posts.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
@@ -199,7 +206,8 @@ class _CommunityPageState extends State<CommunityPage> {
                   }
 
                   final posts = state.posts
-                      .where((p) => _categoryMatches(p.category, _selectedFilter))
+                      .where(
+                          (p) => _categoryMatches(p.category, _selectedFilter))
                       .toList();
 
                   if (posts.isEmpty) {
@@ -260,7 +268,8 @@ class _CommunityPageState extends State<CommunityPage> {
                       final post = posts[index];
                       return _CommunityPostCard(
                         post: post,
-                        onLike: () => context.read<CommunityCubit>().toggleLike(post.id),
+                        onLike: () =>
+                            context.read<CommunityCubit>().toggleLike(post.id),
                         onComments: () => _openCommentsSheet(post),
                       );
                     },
@@ -439,7 +448,8 @@ class _CommunityPostCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 2),
-                    const Icon(Icons.local_fire_department, size: 12, color: Color(0xFFF59E0B)),
+                    const Icon(Icons.local_fire_department,
+                        size: 12, color: Color(0xFFF59E0B)),
                   ],
                 ),
               ),
@@ -449,7 +459,7 @@ class _CommunityPostCard extends StatelessWidget {
           const SizedBox(height: 14),
           Row(
             children: [
-                   _CommunityActionButton(
+              _CommunityActionButton(
                 onTap: onComments,
                 count: post.commentCount,
                 icon: Icons.chat_bubble_outline,
@@ -459,7 +469,8 @@ class _CommunityPostCard extends StatelessWidget {
                 onTap: onLike,
                 count: post.likeCount,
                 icon: post.isLiked ? Icons.favorite : Icons.favorite_border,
-                iconColor: post.isLiked ? Colors.redAccent : const Color(0xFF6B7280),
+                iconColor:
+                    post.isLiked ? Colors.redAccent : const Color(0xFF6B7280),
               ),
             ],
           )
@@ -488,7 +499,7 @@ class _CommunityActionButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        constraints: const BoxConstraints(minWidth:36),
+        constraints: const BoxConstraints(minWidth: 36),
         height: 36,
         padding: const EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
@@ -575,7 +586,8 @@ class _CommentsSheetState extends State<_CommentsSheet> {
     });
     try {
       if (_replyTarget == null) {
-        await ApiService.addPostComment(postId: widget.post.id, content: content);
+        await ApiService.addPostComment(
+            postId: widget.post.id, content: content);
       } else {
         await ApiService.addCommentReply(
           postId: widget.post.id,
@@ -608,7 +620,8 @@ class _CommentsSheetState extends State<_CommentsSheet> {
     }
   }
 
-  List<Widget> _buildCommentNodes(List<CommunityComment> comments, {double indent = 0}) {
+  List<Widget> _buildCommentNodes(List<CommunityComment> comments,
+      {double indent = 0}) {
     final widgets = <Widget>[];
     for (final c in comments) {
       widgets.add(
@@ -753,15 +766,19 @@ class _CommentsSheetState extends State<_CommentsSheet> {
                         color: Color(0xFF1F2937),
                       ),
                       decoration: InputDecoration(
-                        hintText: _replyTarget == null ? 'Tulis komentar...' : 'Tulis balasan...',
+                        hintText: _replyTarget == null
+                            ? 'Tulis komentar...'
+                            : 'Tulis balasan...',
                         hintStyle: const TextStyle(
                           fontSize: 14,
                           color: Color(0xFF9AA3B2),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFFD9DEE6)),
+                          borderSide:
+                              const BorderSide(color: Color(0xFFD9DEE6)),
                         ),
                       ),
                     ),
@@ -774,7 +791,9 @@ class _CommentsSheetState extends State<_CommentsSheet> {
                       width: 42,
                       height: 42,
                       decoration: BoxDecoration(
-                        color: _sending ? const Color(0xFF91C9B3) : const Color(0xFF0B9A63),
+                        color: _sending
+                            ? const Color(0xFF91C9B3)
+                            : const Color(0xFF0B9A63),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: _sending
@@ -782,10 +801,12 @@ class _CommentsSheetState extends State<_CommentsSheet> {
                               padding: EdgeInsets.all(11),
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
                             )
-                          : const Icon(Icons.send, color: Colors.white, size: 20),
+                          : const Icon(Icons.send,
+                              color: Colors.white, size: 20),
                     ),
                   ),
                 ],

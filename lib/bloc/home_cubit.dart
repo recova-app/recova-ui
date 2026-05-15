@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recova/models/statistics_model.dart';
+import 'package:recova/models/relapse_statistics_model.dart';
 import 'package:recova/models/user_model.dart';
 import 'package:recova/models/daily_content_model.dart';
 import 'package:recova/services/api_service.dart';
@@ -41,7 +42,16 @@ class HomeCubit extends Cubit<HomeState> {
         // Silently ignore – insight section will show fallback text
       }
 
-      emit(HomeLoadSuccess(user: user, statistics: updatedStats, dailyContent: dailyContent));
+      // Fetch relapse calendar separately so failure doesn't block the page
+      List<String> relapseCalendar = [];
+      try {
+        final relapseStats = await ApiService.getRelapseStatistics();
+        relapseCalendar = relapseStats.statistics.relapseCalendar;
+      } catch (_) {
+        // Silently ignore – weekly status will just not show relapse indicators
+      }
+
+      emit(HomeLoadSuccess(user: user, statistics: updatedStats, dailyContent: dailyContent, relapseCalendar: relapseCalendar));
     } catch (e) {
       emit(HomeLoadFailure(e.toString().replaceFirst('Exception: ', '')));
     }
@@ -65,7 +75,7 @@ class HomeCubit extends Cubit<HomeState> {
         streakCalendar: newCalendar,
       );
 
-      emit(HomeLoadSuccess(user: currentState.user, statistics: updatedStats, dailyContent: currentState.dailyContent));
+      emit(HomeLoadSuccess(user: currentState.user, statistics: updatedStats, dailyContent: currentState.dailyContent, relapseCalendar: currentState.relapseCalendar));
     }
   }
 

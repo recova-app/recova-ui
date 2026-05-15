@@ -1,9 +1,12 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:recova/pages/notification_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recova/bloc/home_cubit.dart';
 import 'package:recova/pages/login_page.dart';
 import 'package:recova/services/auth_service.dart';
 import 'package:recova/services/api_service.dart';
+import 'package:recova/services/notification_service.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -323,7 +326,13 @@ class ProfilePage extends StatelessWidget {
                       ),
                       child: Image.asset('assets/images/logo.png', width: 64, height: 64),
                     ),
-                    const Icon(Icons.notifications_outlined, color: Color(0xFF6B7280)),
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const NotificationPage()),
+                      ),
+                      child: const Icon(Icons.notifications_outlined, color: Color(0xFF6B7280)),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 14),
@@ -429,14 +438,8 @@ class ProfilePage extends StatelessWidget {
                 const Text('Notifications', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
                 const SizedBox(height: 14),
 
-                _ProfileSettingCard(
-                  icon: Icons.notifications_active_rounded,
-                  title: 'Set Your Reminder Time',
-                  subtitle: 'Atur pengingat harian kamu',
-                  assetPath: 'assets/images/maskots/why-checkin.png',
-                  onTap: () => _showReminderSheet(context),
-                ),
-
+                _NotificationToggleCard(checkinTime: user.dailyCheckinTime),
+                const SizedBox(height: 12),
                 const SizedBox(height: 26),
 
                 // ── Logout Button ──
@@ -590,6 +593,148 @@ class _SheetScaffoldState extends State<_SheetScaffold> {
           ),
         ),
       ),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  Notification toggle card
+// ════════════════════════════════════════════════════════
+
+class _NotificationToggleCard extends StatefulWidget {
+  const _NotificationToggleCard({this.checkinTime});
+
+  final String? checkinTime;
+
+  @override
+  State<_NotificationToggleCard> createState() => _NotificationToggleCardState();
+}
+
+class _NotificationToggleCardState extends State<_NotificationToggleCard> {
+  bool _isEnabled = false;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadState();
+  }
+
+  Future<void> _loadState() async {
+    final scheduled = await AwesomeNotifications().listScheduledNotifications();
+    if (mounted) {
+      setState(() {
+        _isEnabled = scheduled.isNotEmpty;
+        _loading = false;
+      });
+    }
+  }
+
+  Future<void> _toggle(bool value) async {
+    setState(() => _loading = true);
+    if (value) {
+      await NotificationService.requestPermission();
+      await NotificationService.scheduleDailyNotification(
+        checkinTime: widget.checkinTime,
+      );
+    } else {
+      await NotificationService.cancelAll();
+    }
+    if (mounted) {
+      setState(() {
+        _isEnabled = value;
+        _loading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            value
+                ? 'Pengingat harian diaktifkan 🔔'
+                : 'Pengingat harian dinonaktifkan 🔕',
+          ),
+          backgroundColor:
+              value ? const Color(0xFF22C55E) : const Color(0xFF6B7280),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.antiAlias,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEAF9F1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFEAF9F1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(
+                  _isEnabled
+                      ? Icons.notifications_active_rounded
+                      : Icons.notifications_off_rounded,
+                  color: const Color(0xFF38B768),
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 14),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Reminder Time',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                        color: Color(0xFF111111),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Aktifkan Atau Nonaktifkan Pengingat Harian Kamu',
+                      style: TextStyle(fontSize: 7.5, color: Color(0xFF454545)),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              _loading
+                  ? const SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: Color(0xFF38B768),
+                      ),
+                    )
+                  : Switch(
+                      value: _isEnabled,
+                      onChanged: _toggle,
+                      activeColor: Colors.white,
+                      activeTrackColor: const Color(0xFF38B768),
+                      inactiveThumbColor: Colors.white,
+                      inactiveTrackColor: const Color(0xFFCBD5E1),
+                    ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

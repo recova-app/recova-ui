@@ -15,11 +15,12 @@ class HomeLoadSuccess extends HomeState {
   final User user;
   final Statistics statistics;
   final DailyContent? dailyContent;
+  final List<String> relapseCalendar;
 
-  const HomeLoadSuccess({required this.user, required this.statistics, this.dailyContent});
+  const HomeLoadSuccess({required this.user, required this.statistics, this.dailyContent, this.relapseCalendar = const []});
 
   @override
-  List<Object> get props => [user, statistics, if (dailyContent != null) dailyContent!];
+  List<Object> get props => [user, statistics, relapseCalendar, if (dailyContent != null) dailyContent!];
 }
 
 class HomeLoadFailure extends HomeState {

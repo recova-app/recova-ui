@@ -38,6 +38,7 @@ import 'package:recova/pages/splash_screen.dart';
 import 'package:recova/pages/onboarding/learning_1.dart';
 import 'package:recova/theme/app_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:recova/services/notification_service.dart';
 
 /// Global override so *every* HttpClient instance in the app
 /// (including ones created internally by the `http` package)
@@ -58,6 +59,9 @@ void main() async {
 
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    // Inisialisasi notification service sebelum runApp
+    await NotificationService.initialize();
 
     // Load environment variables
     await dotenv.load(fileName: ".env");
@@ -91,8 +95,12 @@ void main() async {
       MultiBlocProvider(
         providers: [
           BlocProvider<HomeCubit>(create: (context) => HomeCubit()),
-          BlocProvider<CheckinCubit>(create: (context) => CheckinCubit(homeCubit: context.read<HomeCubit>())),
-          BlocProvider<RelapseCubit>(create: (context) => RelapseCubit(homeCubit: context.read<HomeCubit>())),
+          BlocProvider<CheckinCubit>(
+              create: (context) =>
+                  CheckinCubit(homeCubit: context.read<HomeCubit>())),
+          BlocProvider<RelapseCubit>(
+              create: (context) =>
+                  RelapseCubit(homeCubit: context.read<HomeCubit>())),
           BlocProvider<CommunityCubit>(create: (context) => CommunityCubit()),
           BlocProvider<EducationCubit>(create: (context) => EducationCubit()),
           BlocProvider<StatsCubit>(create: (context) => StatsCubit()),

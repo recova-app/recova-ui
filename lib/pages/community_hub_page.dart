@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recova/pages/notification_page.dart';
 import 'package:recova/pages/coach_page.dart';
 import 'package:recova/pages/community_page.dart';
 
@@ -31,7 +32,13 @@ class CommunityHubPage extends StatelessWidget {
                       height: 64,
                     ),
                   ),
-                  const Icon(Icons.notifications_none_rounded,  color: Color(0xFF6B7280),),
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const NotificationPage()),
+                    ),
+                    child: const Icon(Icons.notifications_none_rounded, color: Color(0xFF6B7280)),
+                  ),
                 ],
               ),
               const SizedBox(height: 24),
