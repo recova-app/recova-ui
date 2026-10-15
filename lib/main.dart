@@ -17,31 +17,31 @@ import 'package:recova/features/community/data/datasources/community_remote_data
 import 'package:recova/features/community/data/repositories/community_repository_impl.dart';
 import 'package:recova/features/community/domain/repositories/community_repository.dart';
 import 'package:recova/services/auth_service.dart';
-import 'package:recova/pages/login_page.dart';
+import 'package:recova/features/auth/presentation/pages/login_page.dart';
+import 'package:recova/features/auth/presentation/pages/register_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/learning_1_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/learning_2_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/learning_3_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/learning_4_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/learning_5_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/set_name_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/questions/question_1_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/questions/question_2_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/questions/question_3_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/questions/question_4_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/questions/question_5_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/questions/question_6_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/questions/question_7_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/questions/question_8_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/questions/question_9_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/know_your_why_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/set_porn_free_day_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/set_checkin_time_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/why_checkin_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/preparing_test_result_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/results_page.dart';
+import 'package:recova/features/onboarding/presentation/pages/benefits_page.dart';
 import 'package:recova/pages/main_scaffold.dart';
-import 'package:recova/pages/onboarding/learning_2.dart';
-import 'package:recova/pages/onboarding/learning_3.dart';
-import 'package:recova/pages/onboarding/learning_4.dart';
-import 'package:recova/pages/onboarding/learning_5.dart';
-import 'package:recova/pages/onboarding/questions/question_1.dart';
-import 'package:recova/pages/onboarding/questions/question_2.dart';
-import 'package:recova/pages/onboarding/questions/question_3.dart';
-import 'package:recova/pages/onboarding/questions/question_4.dart';
-import 'package:recova/pages/onboarding/questions/question_5.dart';
-import 'package:recova/pages/onboarding/questions/question_6.dart';
-import 'package:recova/pages/onboarding/questions/question_7.dart';
-import 'package:recova/pages/onboarding/questions/question_8.dart';
-import 'package:recova/pages/onboarding/questions/question_9.dart';
-import 'package:recova/pages/onboarding/set_name.dart';
-import 'package:recova/pages/onboarding/know_your_why.dart';
-import 'package:recova/pages/onboarding/set_porn_free_day.dart';
-import 'package:recova/pages/onboarding/set_checkin_time.dart';
-import 'package:recova/pages/onboarding/preparing_test_result.dart';
-import 'package:recova/pages/onboarding/results.dart';
-import 'package:recova/pages/onboarding/benefits.dart';
-import 'package:recova/pages/onboarding/why-checkin.dart';
-import 'package:recova/pages/register_page.dart';
-import 'package:recova/pages/onboarding/learning_1.dart';
 import 'package:recova/theme/app_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:recova/services/notification_service.dart';
@@ -169,8 +169,8 @@ class MyApp extends StatelessWidget {
       builder: (context, themeState) {
         return MaterialApp(
           theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.lightTheme,
-          themeMode: ThemeMode.light,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeState.themeMode,
           debugShowCheckedModeBanner: false,
           routes: {
             '/': (context) => const SplashPage(),
