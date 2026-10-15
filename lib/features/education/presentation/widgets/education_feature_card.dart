@@ -1,0 +1,96 @@
+import 'package:flutter/material.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
+
+/// Feature link card on the education dashboard.
+class EducationFeatureCard extends StatelessWidget {
+  const EducationFeatureCard({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.assetPath,
+    this.bg,
+    this.arrow = false,
+    this.titleColor,
+    this.subtitleColor,
+    this.onTap,
+  });
+
+  final String title;
+  final String subtitle;
+  final String assetPath;
+  final Color? bg;
+  final bool arrow;
+  final Color? titleColor;
+  final Color? subtitleColor;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg =
+        bg != null
+            ? (isDark ? context.recoveryTheme.accentSurface : bg!)
+            : context.recoveryTheme.accentSurface;
+    final effectiveTitleColor = titleColor ?? colorScheme.onSurface;
+    final effectiveSubtitleColor =
+        subtitleColor ?? colorScheme.onSurfaceVariant;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
+        clipBehavior: Clip.antiAlias,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: cardBg,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 31 * 0.42,
+                          color: effectiveTitleColor,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontSize: 18 * 0.42,
+                          color: effectiveSubtitleColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (arrow)
+                  Icon(Icons.chevron_right, color: effectiveTitleColor),
+              ],
+            ),
+          ),
+          Positioned(
+            right: -10,
+            bottom: -15,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomRight: Radius.circular(12),
+              ),
+              child: Image.asset(assetPath, width: 80, fit: BoxFit.contain),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
