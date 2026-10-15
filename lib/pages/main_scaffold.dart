@@ -15,14 +15,7 @@ class MainScaffold extends StatefulWidget {
 
 class _MainScaffoldState extends State<MainScaffold> {
   int _currentIndex = 0;
-
-  final List<Widget> _pages = [
-    const HomePage(),
-    const StatsPage(),
-    const CommunityHubPage(),
-    const EducationPage(),
-    const ProfilePage(),
-  ];
+  final Set<int> _loadedPages = {0};
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +24,25 @@ class _MainScaffoldState extends State<MainScaffold> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      // Gunakan IndexedStack untuk menjaga state setiap halaman
-      body: IndexedStack(index: _currentIndex, children: _pages),
+      // Gunakan IndexedStack untuk menjaga state setiap halaman secara lazy
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          const HomePage(),
+          _loadedPages.contains(1)
+              ? const StatsPage()
+              : const SizedBox.shrink(),
+          _loadedPages.contains(2)
+              ? const CommunityHubPage()
+              : const SizedBox.shrink(),
+          _loadedPages.contains(3)
+              ? const EducationPage()
+              : const SizedBox.shrink(),
+          _loadedPages.contains(4)
+              ? const ProfilePage()
+              : const SizedBox.shrink(),
+        ],
+      ),
       floatingActionButton:
           _currentIndex == -1
               ? FloatingActionButton(
@@ -62,6 +72,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         onTap: (index) {
           setState(() {
             _currentIndex = index;
+            _loadedPages.add(index);
           });
         },
         items: const [

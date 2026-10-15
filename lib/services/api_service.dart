@@ -46,8 +46,8 @@ class ApiService {
   static IOClient _buildClient() {
     final inner =
         HttpClient()
-          ..connectionTimeout = const Duration(seconds: 30)
-          ..idleTimeout = const Duration(seconds: 0);
+          ..connectionTimeout = const Duration(seconds: 15)
+          ..idleTimeout = const Duration(seconds: 15);
     return IOClient(inner);
   }
 
@@ -66,8 +66,10 @@ class ApiService {
     if (e is SocketException) {
       return 'Tidak ada koneksi internet. Periksa jaringan Anda.';
     }
-    if (e is TimeoutException) {
-      return 'Koneksi ke server terputus. Silakan coba lagi.';
+    if (e is TimeoutException ||
+        (e != null &&
+            e.toString().toLowerCase().contains('timeoutexception'))) {
+      return 'Koneksi ke server timeout. Silakan coba lagi.';
     }
     if (response != null) {
       try {
@@ -94,15 +96,15 @@ class ApiService {
     String method,
     Uri uri, {
     String? body,
-    int timeoutSeconds = 15,
-    int maxRetries = 5,
+    int timeoutSeconds = 30,
+    int maxRetries = 2,
   }) async {
     final headers = await getHeaders();
     Object? lastError;
 
     for (int attempt = 0; attempt < maxRetries; attempt++) {
       if (attempt > 0) {
-        // Exponential back-off: 1s, 2s, 3s, 4s …
+        // Exponential back-off: 1s, 2s …
         await Future<void>.delayed(Duration(milliseconds: 1000 * attempt));
       }
       final client = _buildClient();
@@ -139,31 +141,29 @@ class ApiService {
         }
         return response;
       } on HandshakeException catch (e) {
-        print('[ApiService] HandshakeException on attempt ${attempt + 1}: $e');
         lastError = e;
       } on SocketException catch (e) {
-        print('[ApiService] SocketException on attempt ${attempt + 1}: $e');
         lastError = e;
       } on http.ClientException catch (e) {
         final msg = e.message.toLowerCase();
         if (msg.contains('connection reset') ||
             msg.contains('connection closed') ||
             msg.contains('connection terminated')) {
-          print('[ApiService] ClientException on attempt ${attempt + 1}: $e');
           lastError = e;
         } else {
           rethrow;
         }
       } on TimeoutException catch (e) {
-        print('[ApiService] Timeout on attempt ${attempt + 1}: $e');
         lastError = e;
+        // Do not retry repeatedly on timeout to avoid multi-minute freezes
+        break;
       } finally {
         client.close();
       }
     }
     throw Exception(
       'Gagal terhubung ke server setelah $maxRetries percobaan. '
-      'Periksa koneksi internet kamu. (${lastError})',
+      'Periksa koneksi internet kamu. ($lastError)',
     );
   }
 
@@ -182,7 +182,7 @@ class ApiService {
       response = await _request(
         'GET',
         Uri.parse('$baseUrl/users/me'),
-        timeoutSeconds: 10,
+        timeoutSeconds: 20,
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -203,7 +203,7 @@ class ApiService {
       response = await _request(
         'GET',
         Uri.parse('$baseUrl/routine/statistics'),
-        timeoutSeconds: 10,
+        timeoutSeconds: 20,
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -458,7 +458,6 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print(data);
         final list = data['data'] as List;
         return list.map((e) => EducationContent.fromJson(e)).toList();
       }
@@ -511,7 +510,7 @@ class ApiService {
       response = await _request(
         'GET',
         Uri.parse('$baseUrl/content/daily'),
-        timeoutSeconds: 10,
+        timeoutSeconds: 20,
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -564,7 +563,7 @@ class ApiService {
         'POST',
         Uri.parse('$baseUrl/ai/ask-coach'),
         body: jsonEncode({'message': message}),
-        timeoutSeconds: 25,
+        timeoutSeconds: 60,
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -635,7 +634,7 @@ class ApiService {
       response = await _request(
         'GET',
         Uri.parse('$baseUrl/routine/relapses/statistics'),
-        timeoutSeconds: 15,
+        timeoutSeconds: 45,
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

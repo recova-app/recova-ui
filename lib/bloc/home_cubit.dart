@@ -44,13 +44,15 @@ class HomeCubit extends Cubit<HomeState> {
         // Silently ignore – insight section will show fallback text
       }
 
-      // Fetch relapse calendar separately so failure doesn't block the page
-      List<String> relapseCalendar = [];
-      try {
-        final relapseStats = await ApiService.getRelapseStatistics();
-        relapseCalendar = relapseStats.statistics.relapseCalendar;
-      } catch (_) {
-        // Silently ignore – weekly status will just not show relapse indicators
+      // Use relapse calendar from statistics model; fallback to separate query if empty
+      List<String> relapseCalendar = stats.relapseCalendar;
+      if (relapseCalendar.isEmpty) {
+        try {
+          final relapseStats = await ApiService.getRelapseStatistics();
+          relapseCalendar = relapseStats.statistics.relapseCalendar;
+        } catch (_) {
+          // Silently ignore – weekly status will just not show relapse indicators
+        }
       }
 
       emit(
