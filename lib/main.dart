@@ -12,6 +12,9 @@ import 'package:recova/features/routine/data/repositories/routine_repository_imp
 import 'package:recova/features/routine/domain/repositories/routine_repository.dart';
 import 'package:recova/features/routine/presentation/cubit/checkin_cubit.dart';
 import 'package:recova/features/routine/presentation/cubit/relapse_cubit.dart';
+import 'package:recova/features/community/data/datasources/community_remote_data_source.dart';
+import 'package:recova/features/community/data/repositories/community_repository_impl.dart';
+import 'package:recova/features/community/domain/repositories/community_repository.dart';
 import 'package:recova/services/auth_service.dart';
 import 'package:recova/pages/login_page.dart';
 import 'package:recova/pages/main_scaffold.dart';
@@ -92,10 +95,23 @@ void main() async {
       final routineRepository = RoutineRepositoryImpl(
         remoteDataSource: routineRemoteDataSource,
       );
+      final communityRemoteDataSource = CommunityRemoteDataSourceImpl(
+        apiClient: apiClient,
+      );
+      final communityRepository = CommunityRepositoryImpl(
+        remoteDataSource: communityRemoteDataSource,
+      );
 
       runApp(
-        RepositoryProvider<RoutineRepository>.value(
-          value: routineRepository,
+        MultiRepositoryProvider(
+          providers: [
+            RepositoryProvider<RoutineRepository>.value(
+              value: routineRepository,
+            ),
+            RepositoryProvider<CommunityRepository>.value(
+              value: communityRepository,
+            ),
+          ],
           child: MultiBlocProvider(
             providers: [
               BlocProvider<HomeCubit>(create: (context) => HomeCubit()),
@@ -114,7 +130,10 @@ void main() async {
                     ),
               ),
               BlocProvider<CommunityCubit>(
-                create: (context) => CommunityCubit(),
+                create:
+                    (context) => CommunityCubit(
+                      communityRepository: communityRepository,
+                    ),
               ),
               BlocProvider<EducationCubit>(
                 create: (context) => EducationCubit(),

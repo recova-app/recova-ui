@@ -1,4 +1,6 @@
-class Post {
+import 'package:equatable/equatable.dart';
+
+class Post extends Equatable {
   final String id;
   final String title;
   final String content;
@@ -11,7 +13,7 @@ class Post {
   final int? userStreak; // Opsional, jika backend mengirimkannya
   final bool isLiked; // Untuk melacak apakah post ini sudah di-like oleh user
 
-  Post({
+  const Post({
     required this.id,
     required this.title,
     required this.content,
@@ -45,7 +47,7 @@ class Post {
           (author['nickname'] ?? author['username'] ?? 'Anonim').toString(),
       userStreak: _readInt(author['currentStreak'] ?? author['current_streak']),
       // Asumsi backend mengirim field 'isLiked'
-      isLiked: json['isLiked'] ?? json['is_liked'] ?? false,
+      isLiked: _parseBool(json['isLiked'] ?? json['is_liked']),
     );
   }
 
@@ -97,12 +99,38 @@ class Post {
     return 0;
   }
 
+  static bool _parseBool(dynamic value, {bool defaultValue = false}) {
+    if (value is bool) return value;
+    if (value is num) return value != 0;
+    if (value is String) {
+      final lower = value.toLowerCase().trim();
+      if (lower == 'true' || lower == '1') return true;
+      if (lower == 'false' || lower == '0') return false;
+    }
+    return defaultValue;
+  }
+
   static DateTime _parseServerDateTime(dynamic value) {
     final raw = (value ?? '').toString();
     final parsed = DateTime.tryParse(raw);
     if (parsed == null) return DateTime.now();
     return parsed.toLocal();
   }
+
+  @override
+  List<Object?> get props => [
+    id,
+    title,
+    content,
+    category,
+    commentCount,
+    likeCount,
+    createdAt,
+    userId,
+    username,
+    userStreak,
+    isLiked,
+  ];
 }
 
 typedef CommunityPostData = Post;

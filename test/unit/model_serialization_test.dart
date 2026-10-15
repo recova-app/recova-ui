@@ -3,6 +3,7 @@ import 'package:recova/models/checkin_result_model.dart';
 import 'package:recova/models/statistics_model.dart';
 import 'package:recova/models/user_model.dart';
 import 'package:recova/models/post_model.dart';
+import 'package:recova/models/community_like_data.dart';
 
 void main() {
   group('OpenAPI Envelope Model Deserialization', () {
@@ -328,6 +329,32 @@ void main() {
           Map<String, dynamic>.from(dynamicMap),
         );
         expect(checkInResult.isActive, isTrue);
+      },
+    );
+
+    test(
+      'CommunityLikeData deserializes OpenAPI payload and handles dynamic types',
+      () {
+        final json = {'liked_count': 14, 'is_liked': true};
+
+        final data = CommunityLikeData.fromJson(json);
+        expect(data.likedCount, 14);
+        expect(data.isLiked, isTrue);
+        expect(data.toJson(), {'liked_count': 14, 'is_liked': true});
+
+        final copy = data.copyWith(likedCount: 15, isLiked: false);
+        expect(copy.likedCount, 15);
+        expect(copy.isLiked, isFalse);
+
+        final dynamicJson = <dynamic, dynamic>{
+          'liked_count': '7',
+          'is_liked': 1,
+        };
+        final parsedDynamic = CommunityLikeData.fromJson(
+          Map<String, dynamic>.from(dynamicJson),
+        );
+        expect(parsedDynamic.likedCount, 7);
+        expect(parsedDynamic.isLiked, isTrue);
       },
     );
   });

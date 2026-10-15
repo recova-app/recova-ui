@@ -10,6 +10,7 @@ import 'package:recova/models/statistics_model.dart';
 import 'package:recova/models/relapse_statistics_model.dart';
 import 'package:recova/models/checkin_result_model.dart';
 import 'package:recova/models/post_model.dart';
+import 'package:recova/models/community_like_data.dart';
 import 'package:recova/models/community_comment_model.dart';
 import 'package:recova/models/education_model.dart';
 import 'package:recova/models/daily_content_model.dart';
@@ -343,7 +344,7 @@ class ApiService {
     }
   }
 
-  static Future<void> likePost(String postId) async {
+  static Future<CommunityLikeData> toggleLikePost(String postId) async {
     http.Response? response;
     try {
       response = await _request(
@@ -351,30 +352,26 @@ class ApiService {
         Uri.parse('$baseUrl/community/$postId/like'),
         timeoutSeconds: 10,
       );
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        throw Exception(_handleError(null, response));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        final rawData = data is Map<String, dynamic> ? data['data'] : null;
+        if (rawData is Map<String, dynamic>) {
+          return CommunityLikeData.fromJson(rawData);
+        } else if (rawData is Map) {
+          return CommunityLikeData.fromJson(Map<String, dynamic>.from(rawData));
+        }
+        return const CommunityLikeData(likedCount: 0, isLiked: false);
       }
+      await _check401(response);
+      throw Exception(_handleError(null, response));
     } catch (e) {
+      if (e is Exception && e.toString().contains('Sesi berakhir')) rethrow;
       throw Exception(_handleError(e, response));
     }
   }
 
-  static Future<void> unlikePost(String postId) async {
-    http.Response? response;
-    try {
-      // Umumnya, unlike menggunakan metode DELETE
-      response = await _request(
-        'DELETE',
-        Uri.parse('$baseUrl/community/$postId/like'),
-        timeoutSeconds: 10,
-      );
-      if (response.statusCode != 200) {
-        throw Exception(_handleError(null, response));
-      }
-    } catch (e) {
-      throw Exception(_handleError(e, response));
-    }
-  }
+  static Future<CommunityLikeData> likePost(String postId) =>
+      toggleLikePost(postId);
 
   static Future<List<CommunityComment>> getPostComments({
     required String postId,
