@@ -16,17 +16,19 @@ class RecovaTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         if (leftIcon != null)
           Container(
             decoration: BoxDecoration(
-              color: const Color(0xFFF1F1F1),
+              color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(
-              icon: Icon(leftIcon, color: const Color(0xFF1A1A1A)),
+              icon: Icon(leftIcon, color: colorScheme.onSurface),
               onPressed: onLeftPressed,
             ),
           )
@@ -37,12 +39,12 @@ class RecovaTopBar extends StatelessWidget {
           'assets/images/logo.png', // Fallback just in case
           height: 32,
           errorBuilder:
-              (context, error, stackTrace) => const Text(
+              (context, error, stackTrace) => Text(
                 'Recova',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF0E6B52),
+                  color: colorScheme.primary,
                 ),
               ),
         ),
@@ -50,11 +52,11 @@ class RecovaTopBar extends StatelessWidget {
         if (rightIcon != null)
           Container(
             decoration: BoxDecoration(
-              color: const Color(0xFFF1F1F1),
+              color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(
-              icon: Icon(rightIcon, color: const Color(0xFF1A1A1A)),
+              icon: Icon(rightIcon, color: colorScheme.onSurface),
               onPressed: onRightPressed,
             ),
           )
@@ -158,6 +160,8 @@ class RecovaFeatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
@@ -187,18 +191,18 @@ class RecovaFeatureCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1A1A1A),
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: Color(0xFF5A6268),
+                      color: colorScheme.onSurfaceVariant,
                       height: 1.2,
                     ),
                   ),

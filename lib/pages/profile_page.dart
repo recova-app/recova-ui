@@ -437,14 +437,21 @@ class ProfilePage extends StatelessWidget {
                 const SizedBox(height: 14),
 
                 // ── Page Title ──
-                const Text(
+                Text(
                   'Pengaturan',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800),
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w800,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                Text(
                   'Kelola akun dan preferensi kamu',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF8B98A0)),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 18),
 
@@ -569,9 +576,13 @@ class ProfilePage extends StatelessWidget {
                 const SizedBox(height: 26),
 
                 // ── Manage Section ──
-                const Text(
+                Text(
                   'Manage',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 14),
 
@@ -605,9 +616,13 @@ class ProfilePage extends StatelessWidget {
                 const SizedBox(height: 26),
 
                 // ── Notifications Section ──
-                const Text(
+                Text(
                   'Notifications',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 14),
 
@@ -746,9 +761,11 @@ class _SheetScaffoldState extends State<_SheetScaffold> {
     return StatefulBuilder(
       builder:
           (ctx, setS) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
             ),
             padding: EdgeInsets.fromLTRB(
               24,
@@ -1012,6 +1029,10 @@ class _ProfileSettingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF1B3D30) : const Color(0xFFEAF9F1);
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -1021,7 +1042,7 @@ class _ProfileSettingCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: const Color(0xFFEAF9F1),
+              color: cardBg,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -1042,18 +1063,18 @@ class _ProfileSettingCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 13,
-                          color: Color(0xFF111111),
+                          color: colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         subtitle,
-                        style: const TextStyle(
-                          fontSize: 7.5,
-                          color: Color(0xFF454545),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],

@@ -45,7 +45,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = const Color(0xFF0B9A63);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final themeColor = colorScheme.primary;
 
     return BlocListener<CommunityCubit, CommunityState>(
       listener: (context, state) {
@@ -67,15 +69,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF9FAFB),
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Colors.white,
-          title: const Text(
+          backgroundColor: colorScheme.surface,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: Text(
             'Buat Postingan Baru',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: colorScheme.onSurface,
             ),
           ),
           centerTitle: true,
@@ -86,11 +92,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Kategori
-              const Text(
+              Text(
                 'Kategori',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: colorScheme.onSurface,
                   fontSize: 16,
                 ),
               ),
@@ -98,15 +104,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
               DropdownButtonFormField<String>(
                 value: _selectedCategory,
                 icon: const Icon(Icons.arrow_drop_down_rounded),
-                dropdownColor: Colors.white,
+                dropdownColor: colorScheme.surface,
+                style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 12,
                   ),
+                  filled: true,
+                  fillColor: colorScheme.surface,
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    borderSide: BorderSide(color: colorScheme.outline),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -121,7 +130,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         .map(
                           (value) => DropdownMenuItem(
                             value: value,
-                            child: Text(value),
+                            child: Text(
+                              value,
+                              style: TextStyle(color: colorScheme.onSurface),
+                            ),
                           ),
                         )
                         .toList(),
@@ -130,28 +142,34 @@ class _CreatePostPageState extends State<CreatePostPage> {
               const SizedBox(height: 24),
 
               // Judul
-              const Text(
+              Text(
                 'Judul',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: colorScheme.onSurface,
                   fontSize: 16,
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: _titleController,
+                style: TextStyle(color: colorScheme.onSurface),
                 decoration: InputDecoration(
                   hintText: 'Tulis judul postinganmu...',
+                  hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: colorScheme.surface,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -163,11 +181,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
               const SizedBox(height: 24),
 
               // Isi
-              const Text(
+              Text(
                 'Isi Postingan',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: colorScheme.onSurface,
                   fontSize: 16,
                 ),
               ),
@@ -177,17 +195,23 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 maxLines: 10,
                 minLines: 6,
                 textAlignVertical: TextAlignVertical.top,
+                style: TextStyle(color: colorScheme.onSurface),
                 decoration: InputDecoration(
                   hintText: 'Apa yang ingin kamu bagikan?',
+                  hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: colorScheme.surface,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                    borderSide: BorderSide(color: colorScheme.outline),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: colorScheme.outline),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),

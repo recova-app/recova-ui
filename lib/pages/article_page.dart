@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:recova/bloc/education_cubit.dart';
 import 'package:recova/models/education_model.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -31,24 +32,27 @@ class _ArticlePageState extends State<ArticlePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFFFF),
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new,
-            color: Color(0xFF111111),
+            color: colorScheme.onSurface,
             size: 20,
           ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           widget.title,
-          style: const TextStyle(
-            color: Color(0xFF111111),
+          style: TextStyle(
+            color: colorScheme.onSurface,
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
@@ -199,11 +203,14 @@ class _ArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 0,
-      color: const Color(0xFFEAF9F1),
+      color: isDark ? const Color(0xFF1B3D30) : const Color(0xFFEAF9F1),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -211,16 +218,19 @@ class _ArticleCard extends StatelessWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF111111),
+                color: colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               subtitle,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF454545)),
+              style: TextStyle(
+                fontSize: 13,
+                color: colorScheme.onSurfaceVariant,
+              ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -251,6 +261,30 @@ class _ArticleCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Reusable markdown viewer for article content and education summaries.
+class ArticleMarkdownView extends StatelessWidget {
+  final String data;
+  final bool selectable;
+  final void Function(String text, String? href, String title)? onTapLink;
+
+  const ArticleMarkdownView({
+    super.key,
+    required this.data,
+    this.selectable = false,
+    this.onTapLink,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return MarkdownBody(
+      data: data,
+      selectable: selectable,
+      onTapLink: onTapLink,
+      styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)),
     );
   }
 }

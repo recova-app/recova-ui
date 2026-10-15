@@ -26,7 +26,7 @@ class _StatsPageState extends State<StatsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F2F2),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: BlocBuilder<StatsCubit, StatsState>(
           builder: (context, state) {
@@ -173,7 +173,10 @@ class _StatsPageState extends State<StatsPage> {
     height: 36,
     padding: const EdgeInsets.all(3),
     decoration: BoxDecoration(
-      color: const Color(0xFFE1E1E1),
+      color:
+          Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.surfaceContainerHighest
+              : const Color(0xFFE1E1E1),
       borderRadius: BorderRadius.circular(30),
     ),
     child: Row(
@@ -192,26 +195,30 @@ class _StatsPageState extends State<StatsPage> {
     ),
   );
 
-  Widget _tabItem(String label, bool active, VoidCallback onTap) => Expanded(
-    child: GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: active ? const Color(0xFF0C7A57) : Colors.transparent,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: active ? Colors.white : const Color(0xFF444444),
-              fontWeight: active ? FontWeight.w700 : FontWeight.w600,
+  Widget _tabItem(String label, bool active, VoidCallback onTap) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: active ? const Color(0xFF0C7A57) : Colors.transparent,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: active ? Colors.white : colorScheme.onSurfaceVariant,
+                fontWeight: active ? FontWeight.w700 : FontWeight.w600,
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 
   List<Widget> _buildAnalysis(
     RelapseStats stats,
@@ -250,22 +257,27 @@ class _StatsPageState extends State<StatsPage> {
     ];
   }
 
-  Widget _sectionTitle(String title, String subtitle) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        title,
-        style: const TextStyle(
-          fontSize: 43 * 0.55,
-          fontWeight: FontWeight.w800,
+  Widget _sectionTitle(String title, String subtitle) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 43 * 0.55,
+            fontWeight: FontWeight.w800,
+            color: colorScheme.onSurface,
+          ),
         ),
-      ),
-      Text(
-        subtitle,
-        style: const TextStyle(fontSize: 14, color: Color(0xFF9AA3AA)),
-      ),
-    ],
-  );
+        Text(
+          subtitle,
+          style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant),
+        ),
+      ],
+    );
+  }
 
   Widget _statCards(RelapseStats stats, int cleanDays, int successPercent) =>
       Column(
@@ -484,7 +496,7 @@ class _StatsPageState extends State<StatsPage> {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF4F4F4),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -852,22 +864,30 @@ class _StatsPageState extends State<StatsPage> {
     ),
   );
 
-  Widget _panel({required Widget child}) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
-    decoration: BoxDecoration(
-      color: const Color(0xFFE2E9E5),
-      borderRadius: BorderRadius.circular(16),
-    ),
-    child: Container(
-      padding: const EdgeInsets.all(10),
+  Widget _panel({required Widget child}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF1F5F2),
+        color:
+            isDark
+                ? colorScheme.surfaceContainerHighest
+                : const Color(0xFFE2E9E5),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: child,
-    ),
-  );
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: isDark ? colorScheme.surface : const Color(0xFFF1F5F2),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: child,
+      ),
+    );
+  }
 
   Widget _tip(String text) => Container(
     width: double.infinity,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
 import 'package:recova/pages/notification_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recova/bloc/checkin_cubit.dart';
@@ -92,8 +93,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           if (state is HomeLoading || state is HomeInitial) {
@@ -182,17 +185,18 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 14),
                     Text(
                       'Halo, ${user.nickname}!',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 38 * 0.8,
                         fontWeight: FontWeight.w800,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    Text(
                       'Apapun usahamu hari ini, kami bangga kepadamu',
                       style: TextStyle(
                         fontSize: 30 * 0.42,
-                        color: Color(0xFF8B98A0),
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: 18),
@@ -204,11 +208,12 @@ class _HomePageState extends State<HomePage> {
                       goalDays: user.pornFreeGoal ?? 0,
                     ),
                     const SizedBox(height: 24),
-                    const Text(
+                    Text(
                       'Daily Routine',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -290,11 +295,12 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     const SizedBox(height: 26),
-                    const Text(
+                    Text(
                       'Bantu Pemulihan',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -449,22 +455,32 @@ class _FeatureCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.assetPath,
-    required this.bg,
+    this.bg,
     this.arrow = false,
     this.onTap,
-    this.titleColor = const Color(0xFF111111),
-    this.subtitleColor = const Color(0xFF454545),
+    this.titleColor,
+    this.subtitleColor,
   });
   final String title;
   final String subtitle;
   final String assetPath;
-  final Color bg;
+  final Color? bg;
   final bool arrow;
   final VoidCallback? onTap;
-  final Color titleColor;
-  final Color subtitleColor;
+  final Color? titleColor;
+  final Color? subtitleColor;
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg =
+        bg != null
+            ? (isDark ? context.recoveryTheme.accentSurface : bg!)
+            : context.recoveryTheme.accentSurface;
+    final effectiveTitleColor = titleColor ?? colorScheme.onSurface;
+    final effectiveSubtitleColor =
+        subtitleColor ?? colorScheme.onSurfaceVariant;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -476,7 +492,7 @@ class _FeatureCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: bg,
+              color: cardBg,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -494,7 +510,7 @@ class _FeatureCard extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 31 * 0.42,
-                          color: titleColor,
+                          color: effectiveTitleColor,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -502,14 +518,15 @@ class _FeatureCard extends StatelessWidget {
                         subtitle,
                         style: TextStyle(
                           fontSize: 18 * 0.42,
-                          color: subtitleColor,
+                          color: effectiveSubtitleColor,
                         ),
                       ),
                     ],
                   ),
                 ),
                 // Jika ada arrow, tampilkan di depan gambar atau di sampingnya
-                if (arrow) Icon(Icons.chevron_right, color: titleColor),
+                if (arrow)
+                  Icon(Icons.chevron_right, color: effectiveTitleColor),
               ],
             ),
           ),
@@ -625,7 +642,7 @@ class _StreakCard extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(
                 18,
               ), // Melengkungkan container putih seperti gambar
@@ -677,8 +694,12 @@ class _StreakCard extends StatelessWidget {
                                     isToday ? FontWeight.w800 : FontWeight.w600,
                                 color:
                                     isToday
-                                        ? const Color(0xFF111111)
-                                        : const Color(0xFF8B98A0),
+                                        ? Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface
+                                        : Theme.of(
+                                          context,
+                                        ).colorScheme.onSurfaceVariant,
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -742,8 +763,9 @@ class _StreakCard extends StatelessWidget {
                               Container(
                                 width: 26,
                                 height: 26,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFE5E7EB),
+                                decoration: BoxDecoration(
+                                  color:
+                                      context.recoveryTheme.progressBackground,
                                   shape: BoxShape.circle,
                                 ),
                               ),
@@ -758,9 +780,9 @@ class _StreakCard extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Progress: $currentStreak / $goalDays Days',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF6B7280),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -771,7 +793,7 @@ class _StreakCard extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: progress,
                     minHeight: 14,
-                    backgroundColor: const Color(0xFFE5E7EB),
+                    backgroundColor: context.recoveryTheme.progressBackground,
                     valueColor: const AlwaysStoppedAnimation<Color>(
                       Color(0xFF38B768),
                     ),

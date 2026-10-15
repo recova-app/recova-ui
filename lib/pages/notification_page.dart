@@ -60,8 +60,11 @@ class NotificationPage extends StatelessWidget {
       ),
     ];
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -81,13 +84,13 @@ class NotificationPage extends StatelessWidget {
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF2F2F2),
+                            color: colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.arrow_back_ios_new_rounded,
                             size: 18,
-                            color: Color(0xFF333333),
+                            color: colorScheme.onSurface,
                           ),
                         ),
                       ),
@@ -109,19 +112,20 @@ class NotificationPage extends StatelessWidget {
                   const SizedBox(height: 18),
 
                   // Page title
-                  const Text(
+                  Text(
                     'Notifikasi',
                     style: TextStyle(
                       fontSize: 38 * 0.8,
                       fontWeight: FontWeight.w800,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
+                  Text(
                     'Tetap terhubung dengan progres pemulihanmu',
                     style: TextStyle(
                       fontSize: 30 * 0.42,
-                      color: Color(0xFF8B98A0),
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 18),
@@ -228,18 +232,27 @@ class _NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color:
             notification.isRead
-                ? const Color(0xFFF7F7F7)
-                : const Color(0xFFEAF9F1),
+                ? (isDark ? colorScheme.surface : const Color(0xFFF7F7F7))
+                : (isDark ? const Color(0xFF1B3D30) : const Color(0xFFEAF9F1)),
         borderRadius: BorderRadius.circular(14),
         border:
             notification.isRead
                 ? null
-                : Border.all(color: const Color(0xFFD1FAE5), width: 1),
+                : Border.all(
+                  color:
+                      isDark
+                          ? colorScheme.primary.withOpacity(0.4)
+                          : const Color(0xFFD1FAE5),
+                  width: 1,
+                ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,7 +289,7 @@ class _NotificationCard extends StatelessWidget {
                                   ? FontWeight.w600
                                   : FontWeight.w700,
                           fontSize: 14,
-                          color: const Color(0xFF111111),
+                          color: colorScheme.onSurface,
                         ),
                       ),
                     ),
@@ -294,18 +307,18 @@ class _NotificationCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   notification.body,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12.5,
-                    color: Color(0xFF6B7280),
+                    color: colorScheme.onSurfaceVariant,
                     height: 1.35,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   notification.time,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11,
-                    color: Color(0xFFB0B8C1),
+                    color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

@@ -99,24 +99,30 @@ class _CommunityPageState extends State<CommunityPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F7),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F5F7),
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         centerTitle: true,
-        title: const Text('Komunitas', style: _CommunityTypography.pageTitle),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).maybePop(),
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Color(0xFF1E293B),
-            size: 24,
+        title: Text(
+          'Komunitas',
+          style: TextStyle(
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
           ),
         ),
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: Divider(height: 1, color: Color(0xFFD9DEE6)),
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).maybePop(),
+          icon: Icon(Icons.arrow_back, color: colorScheme.onSurface, size: 24),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(height: 1, color: colorScheme.outline),
         ),
       ),
       body: RefreshIndicator(
@@ -145,22 +151,22 @@ class _CommunityPageState extends State<CommunityPage> {
                       decoration: BoxDecoration(
                         color:
                             selected
-                                ? const Color(0xFF0B9A63)
-                                : const Color(0xFFDDE3EC),
+                                ? colorScheme.primary
+                                : colorScheme.surface,
                         borderRadius: BorderRadius.circular(13),
                         border: Border.all(
                           color:
                               selected
-                                  ? const Color(0xFF0B9A63)
-                                  : const Color(0xFFD0D7E2),
+                                  ? colorScheme.primary
+                                  : colorScheme.outline,
                         ),
                         boxShadow:
                             selected
-                                ? const [
+                                ? [
                                   BoxShadow(
-                                    color: Color(0x220B9A63),
+                                    color: colorScheme.primary.withOpacity(0.2),
                                     blurRadius: 12,
-                                    offset: Offset(0, 5),
+                                    offset: const Offset(0, 5),
                                   ),
                                 ]
                                 : const [],
@@ -179,10 +185,15 @@ class _CommunityPageState extends State<CommunityPage> {
                             ),
                           Text(
                             label,
-                            style:
-                                selected
-                                    ? _CommunityTypography.filterSelected
-                                    : _CommunityTypography.filterDefault,
+                            style: TextStyle(
+                              color:
+                                  selected
+                                      ? Colors.white
+                                      : colorScheme.onSurfaceVariant,
+                              fontWeight:
+                                  selected ? FontWeight.w600 : FontWeight.w500,
+                              fontSize: 14,
+                            ),
                           ),
                         ],
                       ),
@@ -409,36 +420,52 @@ class _CommunityPostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 14),
       padding: const EdgeInsets.fromLTRB(16, 16, 14, 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE6EAF0)),
-        boxShadow: const [
+        border: Border.all(color: colorScheme.outline),
+        boxShadow: [
           BoxShadow(
-            color: Color(0x0A0F172A),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 16,
-            offset: Offset(0, 6),
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(post.content, style: _CommunityTypography.postContent),
+          Text(
+            post.content,
+            style: TextStyle(
+              fontSize: 14,
+              color: colorScheme.onSurface,
+              height: 1.45,
+            ),
+          ),
           const SizedBox(height: 14),
           Row(
             children: [
               Text(
                 _maskCommunityName(post.username),
-                style: _CommunityTypography.userName,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  color: colorScheme.onSurface,
+                ),
               ),
               const SizedBox(width: 8),
               Text(
                 '• ${_formatRelativeCommunityTime(post.createdAt)}',
-                style: _CommunityTypography.metaCount,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
               const SizedBox(width: 10),
               Container(

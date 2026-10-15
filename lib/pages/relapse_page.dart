@@ -112,8 +112,10 @@ class _RelapsePageState extends State<RelapsePage>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: BlocBuilder<RelapseCubit, RelapseState>(
         builder: (context, state) {
           final isSubmitted = state is RelapseSuccess;
@@ -235,11 +237,12 @@ class _RelapsePageState extends State<RelapsePage>
                     const SizedBox(height: 24),
 
                     // ─── MOOD SECTION ───
-                    const Text(
+                    Text(
                       'Bagaimana Mood Kamu?',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -335,11 +338,12 @@ class _RelapsePageState extends State<RelapsePage>
                     const SizedBox(height: 24),
 
                     // ─── RELAPSE TRIGGERS SECTION ───
-                    const Text(
+                    Text(
                       'Apa Pemicu Relapse Kamu?',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -441,11 +445,12 @@ class _RelapsePageState extends State<RelapsePage>
                     const SizedBox(height: 24),
 
                     // ─── COMMITMENT MESSAGE SECTION ───
-                    const Text(
+                    Text(
                       'Pesan Komitmen',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 6),

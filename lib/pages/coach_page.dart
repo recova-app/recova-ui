@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:recova/services/api_service.dart';
 
@@ -392,20 +392,23 @@ class _CoachPageState extends State<CoachPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1E293B)),
+          icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Chat With Billy ',
           style: TextStyle(
-            color: Color(0xFF0F172A),
+            color: colorScheme.onSurface,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -623,6 +626,8 @@ class _CoachPageState extends State<CoachPage> {
 
   Widget _buildMessageBubble(_ChatMessage message) {
     final timeLabel = _formatTimestamp(message.createdAt);
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (!message.isAI) {
       return Padding(
@@ -633,13 +638,16 @@ class _CoachPageState extends State<CoachPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFFF1F5F9),
+                color:
+                    isDark
+                        ? colorScheme.surfaceContainerHighest
+                        : const Color(0xFFF1F5F9),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
                 message.text,
-                style: const TextStyle(
-                  color: Color(0xFF1E293B),
+                style: TextStyle(
+                  color: colorScheme.onSurface,
                   fontSize: 14,
                   height: 1.5,
                 ),
@@ -648,8 +656,8 @@ class _CoachPageState extends State<CoachPage> {
             const SizedBox(height: 8),
             Text(
               timeLabel,
-              style: const TextStyle(
-                color: Color(0xFF94A3B8),
+              style: TextStyle(
+                color: colorScheme.onSurfaceVariant,
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
               ),
@@ -679,10 +687,10 @@ class _CoachPageState extends State<CoachPage> {
               Expanded(
                 child: Text(
                   personaTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
-                    color: Color(0xFF475569),
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -692,16 +700,17 @@ class _CoachPageState extends State<CoachPage> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             decoration: BoxDecoration(
-              color: const Color(0xFFF4F8FA),
+              color: isDark ? colorScheme.surface : const Color(0xFFF4F8FA),
               borderRadius: BorderRadius.circular(16),
+              border: isDark ? Border.all(color: colorScheme.outline) : null,
             ),
             child: _buildMarkdownMessage(message.text),
           ),
           const SizedBox(height: 8),
           Text(
             timeLabel,
-            style: const TextStyle(
-              color: Color(0xFF94A3B8),
+            style: TextStyle(
+              color: colorScheme.onSurfaceVariant,
               fontSize: 10,
               fontWeight: FontWeight.w600,
             ),
@@ -712,25 +721,27 @@ class _CoachPageState extends State<CoachPage> {
   }
 
   Widget _buildMarkdownMessage(String text) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return MarkdownBody(
       data: text,
       selectable: false,
       styleSheet: MarkdownStyleSheet(
-        p: const TextStyle(color: Color(0xFF1E293B), fontSize: 14, height: 1.5),
-        strong: const TextStyle(
-          color: Color(0xFF1E293B),
+        p: TextStyle(color: colorScheme.onSurface, fontSize: 14, height: 1.5),
+        strong: TextStyle(
+          color: colorScheme.onSurface,
           fontSize: 14,
           height: 1.5,
           fontWeight: FontWeight.w700,
         ),
-        em: const TextStyle(
-          color: Color(0xFF1E293B),
+        em: TextStyle(
+          color: colorScheme.onSurface,
           fontSize: 14,
           height: 1.5,
           fontStyle: FontStyle.italic,
         ),
-        listBullet: const TextStyle(
-          color: Color(0xFF1E293B),
+        listBullet: TextStyle(
+          color: colorScheme.onSurface,
           fontSize: 14,
           height: 1.5,
         ),
@@ -739,13 +750,16 @@ class _CoachPageState extends State<CoachPage> {
   }
 
   Widget _buildInputField() {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(color: Colors.white),
+      decoration: BoxDecoration(color: colorScheme.surface),
       child: SafeArea(
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            color: colorScheme.surface,
+            border: Border.all(color: colorScheme.outline),
             borderRadius: BorderRadius.circular(32),
           ),
           child: Row(
@@ -754,12 +768,13 @@ class _CoachPageState extends State<CoachPage> {
                 child: TextField(
                   controller: _messageController,
                   enabled: !_isSending,
+                  style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
                   textInputAction: TextInputAction.send,
                   onSubmitted: (_) => _sendMessage(),
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Reply ...',
                     hintStyle: TextStyle(
-                      color: Color(0xFF94A3B8),
+                      color: colorScheme.onSurfaceVariant,
                       fontSize: 14,
                     ),
                     border: InputBorder.none,

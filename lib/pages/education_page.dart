@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recova/bloc/education_cubit.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
 import 'package:recova/models/education_model.dart';
 import 'package:recova/pages/coach_page.dart';
 import 'package:recova/pages/article_page.dart';
@@ -22,8 +23,10 @@ class _EducationPageState extends State<EducationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh:
@@ -135,9 +138,13 @@ class _EducationPageState extends State<EducationPage> {
                 const SizedBox(height: 26),
 
                 // ── Fitur Edukasi section ──
-                const Text(
+                Text(
                   'Fitur Edukasi',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 14),
                 InkWell(
@@ -208,9 +215,13 @@ class _EducationPageState extends State<EducationPage> {
                 const SizedBox(height: 26),
 
                 // ── Video Library Section ──
-                const Text(
+                Text(
                   'Video Edukasi',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 14),
 
@@ -368,12 +379,18 @@ class _EducationPageState extends State<EducationPage> {
   }
 
   Widget _buildVideoCategory(String title, List<EducationContent> items) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: colorScheme.onSurface,
+          ),
         ),
         const SizedBox(height: 10),
         SizedBox(
@@ -497,21 +514,31 @@ class _EducationFeatureCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.assetPath,
-    required this.bg,
+    this.bg,
     this.arrow = false,
-    this.titleColor = const Color(0xFF111111),
-    this.subtitleColor = const Color(0xFF454545),
+    this.titleColor,
+    this.subtitleColor,
   });
   final String title;
   final String subtitle;
   final String assetPath;
-  final Color bg;
+  final Color? bg;
   final bool arrow;
-  final Color titleColor;
-  final Color subtitleColor;
+  final Color? titleColor;
+  final Color? subtitleColor;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg =
+        bg != null
+            ? (isDark ? context.recoveryTheme.accentSurface : bg!)
+            : context.recoveryTheme.accentSurface;
+    final effectiveTitleColor = titleColor ?? colorScheme.onSurface;
+    final effectiveSubtitleColor =
+        subtitleColor ?? colorScheme.onSurfaceVariant;
+
     return Stack(
       clipBehavior: Clip.antiAlias,
       children: [
@@ -519,7 +546,7 @@ class _EducationFeatureCard extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: bg,
+            color: cardBg,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -534,7 +561,7 @@ class _EducationFeatureCard extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 31 * 0.42,
-                        color: titleColor,
+                        color: effectiveTitleColor,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -542,13 +569,13 @@ class _EducationFeatureCard extends StatelessWidget {
                       subtitle,
                       style: TextStyle(
                         fontSize: 18 * 0.42,
-                        color: subtitleColor,
+                        color: effectiveSubtitleColor,
                       ),
                     ),
                   ],
                 ),
               ),
-              if (arrow) Icon(Icons.chevron_right, color: titleColor),
+              if (arrow) Icon(Icons.chevron_right, color: effectiveTitleColor),
             ],
           ),
         ),

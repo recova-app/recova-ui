@@ -26,8 +26,11 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8F8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       // Gunakan IndexedStack untuk menjaga state setiap halaman
       body: IndexedStack(index: _currentIndex, children: _pages),
       floatingActionButton:
@@ -41,7 +44,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                     ),
                   );
                 },
-                backgroundColor: const Color(0xFF2EC4B6),
+                backgroundColor: colorScheme.secondary,
                 shape: const CircleBorder(),
                 child: const Icon(Icons.add, color: Colors.white),
               )
@@ -49,8 +52,9 @@ class _MainScaffoldState extends State<MainScaffold> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF38B768),
-        unselectedItemColor: const Color.fromARGB(255, 0, 0, 0),
+        backgroundColor: colorScheme.surface,
+        selectedItemColor: colorScheme.primary,
+        unselectedItemColor: colorScheme.onSurfaceVariant,
         showSelectedLabels: true,
         showUnselectedLabels: true,
         selectedFontSize: 12,

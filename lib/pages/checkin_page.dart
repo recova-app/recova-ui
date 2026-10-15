@@ -92,8 +92,10 @@ class _CheckInPageState extends State<CheckInPage>
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: BlocBuilder<CheckinCubit, CheckinState>(
         builder: (context, state) {
           final isAlreadyCheckedIn =
@@ -238,11 +240,12 @@ class _CheckInPageState extends State<CheckInPage>
                     const SizedBox(height: 24),
 
                     // ─── MOOD SECTION ───
-                    const Text(
+                    Text(
                       'Bagaimana Mood Kamu?',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -338,11 +341,12 @@ class _CheckInPageState extends State<CheckInPage>
                     const SizedBox(height: 24),
 
                     // ─── JOURNAL SECTION ───
-                    const Text(
+                    Text(
                       'Jurnal Harian',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 6),

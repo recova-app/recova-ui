@@ -7,6 +7,7 @@ import 'package:recova/bloc/home_cubit.dart';
 import 'package:recova/bloc/community_cubit.dart';
 import 'package:recova/bloc/stats_cubit.dart';
 import 'package:recova/core/network/api_client.dart';
+import 'package:recova/core/theme/theme_cubit.dart';
 import 'package:recova/features/routine/data/datasources/routine_remote_data_source.dart';
 import 'package:recova/features/routine/data/repositories/routine_repository_impl.dart';
 import 'package:recova/features/routine/domain/repositories/routine_repository.dart';
@@ -114,6 +115,9 @@ void main() async {
           ],
           child: MultiBlocProvider(
             providers: [
+              BlocProvider<ThemeCubit>(
+                create: (context) => ThemeCubit()..loadTheme(),
+              ),
               BlocProvider<HomeCubit>(create: (context) => HomeCubit()),
               BlocProvider<CheckinCubit>(
                 create:
@@ -161,38 +165,43 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.lightTheme,
-      themeMode: ThemeMode.system,
-      debugShowCheckedModeBanner: false,
-      routes: {
-        '/': (context) => const SplashPage(),
-        '/homepage': (context) => const MainScaffold(),
-        '/login': (context) => const LoginPage(),
-        '/register': (context) => const RegisterPage(),
-        '/learning-1': (context) => const Learning1(),
-        '/learning-2': (context) => const Learning2(),
-        '/learning-3': (context) => const Learning3(),
-        '/learning-4': (context) => const Learning4(),
-        '/learning-5': (context) => const Learning5(),
-        '/set-name': (context) => const SetNamePage(),
-        '/question-1': (context) => const Question1(),
-        '/question-2': (context) => const Question2(),
-        '/question-3': (context) => const Question3(),
-        '/question-4': (context) => const Question4(),
-        '/question-5': (context) => const Question5(),
-        '/question-6': (context) => const Question6(),
-        '/question-7': (context) => const Question7(),
-        '/question-8': (context) => const Question8(),
-        '/question-9': (context) => const Question9(),
-        '/know-your-why': (context) => const KnowYourWhyPage(),
-        '/set-porn-free-day': (context) => const SetPornFreeDayPage(),
-        '/set-checkin-time': (context) => const SetCheckinTimePage(),
-        '/why-checkin': (context) => const WhyCheckinPage(),
-        '/preparing-test-result': (context) => const PreparingTestResultPage(),
-        '/results': (context) => const ResultsPage(),
-        '/benefits': (context) => const BenefitsPage(),
+    return BlocBuilder<ThemeCubit, ThemeState>(
+      builder: (context, themeState) {
+        return MaterialApp(
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.lightTheme,
+          themeMode: ThemeMode.light,
+          debugShowCheckedModeBanner: false,
+          routes: {
+            '/': (context) => const SplashPage(),
+            '/homepage': (context) => const MainScaffold(),
+            '/login': (context) => const LoginPage(),
+            '/register': (context) => const RegisterPage(),
+            '/learning-1': (context) => const Learning1(),
+            '/learning-2': (context) => const Learning2(),
+            '/learning-3': (context) => const Learning3(),
+            '/learning-4': (context) => const Learning4(),
+            '/learning-5': (context) => const Learning5(),
+            '/set-name': (context) => const SetNamePage(),
+            '/question-1': (context) => const Question1(),
+            '/question-2': (context) => const Question2(),
+            '/question-3': (context) => const Question3(),
+            '/question-4': (context) => const Question4(),
+            '/question-5': (context) => const Question5(),
+            '/question-6': (context) => const Question6(),
+            '/question-7': (context) => const Question7(),
+            '/question-8': (context) => const Question8(),
+            '/question-9': (context) => const Question9(),
+            '/know-your-why': (context) => const KnowYourWhyPage(),
+            '/set-porn-free-day': (context) => const SetPornFreeDayPage(),
+            '/set-checkin-time': (context) => const SetCheckinTimePage(),
+            '/why-checkin': (context) => const WhyCheckinPage(),
+            '/preparing-test-result':
+                (context) => const PreparingTestResultPage(),
+            '/results': (context) => const ResultsPage(),
+            '/benefits': (context) => const BenefitsPage(),
+          },
+        );
       },
     );
   }
