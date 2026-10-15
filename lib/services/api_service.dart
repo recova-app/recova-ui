@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
+import 'package:recova/core/config/app_config.dart';
 import 'package:recova/services/auth_service.dart';
 import 'package:recova/models/user_model.dart';
 import 'package:recova/models/statistics_model.dart';
@@ -15,8 +16,7 @@ import 'package:recova/models/daily_content_model.dart';
 import 'package:recova/models/journal_model.dart';
 
 class ApiService {
-  // Ganti ini dengan URL backend kamu
-  static const String baseUrl = 'https://recova.salmanabdurrahman.my.id/api/v1';
+  static String get baseUrl => AppConfig.v1Url;
   static final AuthService _authService = AuthService();
 
   static String _normalizeCommunityCategory(String category) {

@@ -5,10 +5,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
+import 'package:recova/core/config/app_config.dart';
 import 'package:recova/services/onboarding_state.dart';
 
 class AuthService {
-  static const String _baseUrl = 'https://recova.salmanabdurrahman.my.id';
+  static String get _baseUrl => AppConfig.rootUrl;
   static const String _webClientId =
       '756280521811-8g4mpvlputn04ltqdcghionnbrebhqbo.apps.googleusercontent.com';
 
