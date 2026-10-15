@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
+import 'package:recova/core/ui/app_dialog.dart';
+import 'package:recova/core/ui/app_toast.dart';
 import 'package:recova/models/daily_content_model.dart';
 import 'package:recova/models/education_model.dart';
 import 'package:recova/models/journal_model.dart';
@@ -66,74 +69,79 @@ class _EmergencyPageState extends State<EmergencyPage> {
 
   @override
   Widget build(BuildContext context) {
+    final recoveryTheme = context.recoveryTheme;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0C7A57),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Emergency",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+      backgroundColor: recoveryTheme.streakCardBackground,
+      body: Container(
+        decoration: BoxDecoration(gradient: recoveryTheme.streakGradient),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Emergency",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close, color: Colors.white),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                "Kamu merasa tergoda? coba salah satu dari hal ini",
-                style: TextStyle(color: Colors.white70, fontSize: 14),
-              ),
-              const SizedBox(height: 32),
-              _buildActionButton(
-                iconAsset: "assets/images/home/icon_review.png",
-                label: "Review Manifesto Yang Kamu Tulis",
-                onTap: _showManifesto,
-              ),
-              const SizedBox(height: 16),
-              _buildActionButton(
-                iconAsset: "assets/images/home/icon_exercise.png",
-                label: "Lakukan latihan fisik sederhana",
-                onTap: _showPhysicalChallenge,
-              ),
-              const SizedBox(height: 16),
-              _buildActionButton(
-                iconAsset: "assets/images/home/icon_pencil.png",
-                label: "Tulis Apa yang kamu rasakan sekarang",
-                onTap: _showJournal,
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                "Video Regulasi Emosi",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close, color: Colors.white),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                "Tonton video untuk membantumu mengelola emosi dan godaan",
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
-                  fontSize: 12,
+                const SizedBox(height: 6),
+                const Text(
+                  "Kamu merasa tergoda? coba salah satu dari hal ini",
+                  style: TextStyle(color: Colors.white70, fontSize: 14),
                 ),
-              ),
-              const SizedBox(height: 14),
-              _buildVideoSection(),
-            ],
+                const SizedBox(height: 32),
+                _buildActionButton(
+                  iconAsset: "assets/images/home/icon_review.png",
+                  label: "Review Manifesto Yang Kamu Tulis",
+                  onTap: _showManifesto,
+                ),
+                const SizedBox(height: 16),
+                _buildActionButton(
+                  iconAsset: "assets/images/home/icon_exercise.png",
+                  label: "Lakukan latihan fisik sederhana",
+                  onTap: _showPhysicalChallenge,
+                ),
+                const SizedBox(height: 16),
+                _buildActionButton(
+                  iconAsset: "assets/images/home/icon_pencil.png",
+                  label: "Tulis Apa yang kamu rasakan sekarang",
+                  onTap: _showJournal,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  "Video Regulasi Emosi",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Tonton video untuk membantumu mengelola emosi dan godaan",
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                _buildVideoSection(),
+              ],
+            ),
           ),
         ),
       ),
@@ -257,122 +265,42 @@ class _ManifestoDialogState extends State<_ManifestoDialog>
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: CurvedAnimation(parent: _anim, curve: Curves.easeIn),
-      child: ScaleTransition(
-        scale: CurvedAnimation(parent: _anim, curve: Curves.easeOutBack),
-        child: Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 40,
-          ),
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 400),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF22A06B).withOpacity(0.15),
-                  blurRadius: 30,
-                  offset: const Offset(0, 12),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF136E4D), Color(0xFF22A06B)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
-                    ),
-                  ),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(22, 24, 100, 22),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Manifesto\nKamu',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                                height: 1.2,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Alasan kamu memulai perjalanan ini',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        right: -5,
-                        bottom: -20,
-                        child: Image.asset(
-                          'assets/images/maskots/quote.png',
-                          width: 110,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(22, 24, 22, 22),
-                  child: _buildBody(),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return AppDialogShell(
+      title: 'Manifesto\nKamu',
+      subtitle: 'Alasan kamu memulai perjalanan ini',
+      mascotAssetPath: 'assets/images/maskots/quote.png',
+      child: _buildBody(context),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final recoveryTheme = context.recoveryTheme;
+
     if (_loading)
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 32),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32),
         child: Center(
           child: CircularProgressIndicator(
             strokeWidth: 3,
-            color: Color(0xFFE4573D),
+            color: colorScheme.primary,
           ),
         ),
       );
     if (_error != null)
       return Column(
         children: [
-          const Icon(
+          Icon(
             Icons.cloud_off_rounded,
             size: 36,
-            color: Color(0xFFD1D5DB),
+            color: colorScheme.onSurfaceVariant.withOpacity(0.5),
           ),
           const SizedBox(height: 8),
           Text(
             _error!,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
+            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
           ),
           const SizedBox(height: 12),
           TextButton.icon(
@@ -385,32 +313,33 @@ class _ManifestoDialogState extends State<_ManifestoDialog>
             },
             icon: const Icon(Icons.refresh, size: 18),
             label: const Text('Coba Lagi'),
-            style: TextButton.styleFrom(
-              foregroundColor: const Color(0xFFE4573D),
-            ),
+            style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
           ),
         ],
       );
     final reason = _user?.recoveryReason;
     if (reason == null || reason.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 24),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
         child: Column(
           children: [
-            Icon(Icons.edit_note_rounded, color: Color(0xFF22A06B), size: 36),
-            SizedBox(height: 12),
+            Icon(Icons.edit_note_rounded, color: colorScheme.primary, size: 36),
+            const SizedBox(height: 12),
             Text(
               'Kamu belum menulis manifesto',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF374151),
+                color: colorScheme.onSurface,
               ),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               'Tulis alasan pemulihanmu di halaman profil.',
-              style: TextStyle(fontSize: 13, color: Color(0xFF9CA3AF)),
+              style: TextStyle(
+                fontSize: 13,
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),
@@ -420,9 +349,9 @@ class _ManifestoDialogState extends State<_ManifestoDialog>
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFEAF9F1),
+        color: recoveryTheme.accentSurface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEAF9F1)),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -433,7 +362,7 @@ class _ManifestoDialogState extends State<_ManifestoDialog>
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF22A06B),
+                  color: recoveryTheme.cleanStatusColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
@@ -443,13 +372,13 @@ class _ManifestoDialogState extends State<_ManifestoDialog>
                 ),
               ),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Text(
                   'Alasan Pemulihan',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF22A06B),
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -460,15 +389,15 @@ class _ManifestoDialogState extends State<_ManifestoDialog>
             width: double.infinity,
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: colorScheme.surface,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               reason,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF374151),
+                color: colorScheme.onSurface,
                 height: 1.5,
               ),
             ),
@@ -481,7 +410,7 @@ class _ManifestoDialogState extends State<_ManifestoDialog>
                   '— ${_user?.nickname ?? "Kamu"}, ingat alasan ini saat kamu merasa tergoda.',
                   style: TextStyle(
                     fontSize: 11,
-                    color: const Color(0xFF6B7280).withOpacity(0.8),
+                    color: colorScheme.onSurfaceVariant,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
@@ -545,102 +474,22 @@ class _PhysicalChallengeDialogState extends State<_PhysicalChallengeDialog>
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: CurvedAnimation(parent: _anim, curve: Curves.easeIn),
-      child: ScaleTransition(
-        scale: CurvedAnimation(parent: _anim, curve: Curves.easeOutBack),
-        child: Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 40,
-          ),
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 400),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF136E4D).withOpacity(0.15),
-                  blurRadius: 30,
-                  offset: const Offset(0, 12),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF136E4D), Color(0xFF22A06B)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
-                    ),
-                  ),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(22, 24, 100, 22),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Latihan Fisik\nSederhana',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                                height: 1.2,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Gerakkan tubuhmu sekarang!',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        right: -5,
-                        bottom: -20,
-                        child: Image.asset(
-                          'assets/images/maskots/activity.png',
-                          width: 110,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(22, 24, 22, 22),
-                  child: _buildBody(),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+    return AppDialogShell(
+      title: 'Latihan Fisik\nSederhana',
+      subtitle: 'Gerakkan tubuhmu sekarang!',
+      mascotAssetPath: 'assets/images/maskots/activity.png',
+      child: _buildBody(context),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final recoveryTheme = context.recoveryTheme;
+
     if (_loading)
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 32),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32),
         child: Center(
           child: Column(
             children: [
@@ -649,13 +498,16 @@ class _PhysicalChallengeDialogState extends State<_PhysicalChallengeDialog>
                 height: 32,
                 child: CircularProgressIndicator(
                   strokeWidth: 3,
-                  color: Color(0xFF136E4D),
+                  color: colorScheme.primary,
                 ),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               Text(
                 'Memuat tantangan...',
-                style: TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
@@ -664,16 +516,16 @@ class _PhysicalChallengeDialogState extends State<_PhysicalChallengeDialog>
     if (_error != null)
       return Column(
         children: [
-          const Icon(
+          Icon(
             Icons.cloud_off_rounded,
             size: 36,
-            color: Color(0xFFD1D5DB),
+            color: colorScheme.onSurfaceVariant.withOpacity(0.5),
           ),
           const SizedBox(height: 8),
           Text(
             _error!,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
+            style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
           ),
           const SizedBox(height: 12),
           TextButton.icon(
@@ -686,35 +538,36 @@ class _PhysicalChallengeDialogState extends State<_PhysicalChallengeDialog>
             },
             icon: const Icon(Icons.refresh, size: 18),
             label: const Text('Coba Lagi'),
-            style: TextButton.styleFrom(
-              foregroundColor: const Color(0xFF136E4D),
-            ),
+            style: TextButton.styleFrom(foregroundColor: colorScheme.primary),
           ),
         ],
       );
     if (_challenge == null || _challenge!.isEmpty)
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 24),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
         child: Column(
           children: [
             Icon(
               Icons.fitness_center_rounded,
-              color: Color(0xFF38B768),
+              color: recoveryTheme.cleanStatusColor,
               size: 36,
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Text(
               'Belum ada tantangan fisik hari ini',
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF374151),
+                color: colorScheme.onSurface,
               ),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               'Cek lagi nanti ya!',
-              style: TextStyle(fontSize: 13, color: Color(0xFF9CA3AF)),
+              style: TextStyle(
+                fontSize: 13,
+                color: colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),
@@ -723,9 +576,9 @@ class _PhysicalChallengeDialogState extends State<_PhysicalChallengeDialog>
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFEAF9F1),
+        color: recoveryTheme.accentSurface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFD1FAE5)),
+        border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -736,7 +589,7 @@ class _PhysicalChallengeDialogState extends State<_PhysicalChallengeDialog>
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF38B768),
+                  color: recoveryTheme.cleanStatusColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
@@ -751,10 +604,10 @@ class _PhysicalChallengeDialogState extends State<_PhysicalChallengeDialog>
                   _challenge!.title.isNotEmpty
                       ? _challenge!.title
                       : 'Latihan Fisik Hari Ini',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF111827),
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -766,15 +619,15 @@ class _PhysicalChallengeDialogState extends State<_PhysicalChallengeDialog>
               width: double.infinity,
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: colorScheme.surface,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
                 _challenge!.description,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF374151),
+                  color: colorScheme.onSurface,
                   height: 1.5,
                 ),
               ),
@@ -788,7 +641,7 @@ class _PhysicalChallengeDialogState extends State<_PhysicalChallengeDialog>
                   'Latihan fisik membantu mengalihkan energi dan mengurangi dorongan.',
                   style: TextStyle(
                     fontSize: 11,
-                    color: const Color(0xFF6B7280).withOpacity(0.8),
+                    color: colorScheme.onSurfaceVariant,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
@@ -860,11 +713,9 @@ class _JournalDialogState extends State<_JournalDialog>
     } catch (e) {
       if (mounted) {
         setState(() => _submitting = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString().replaceFirst('Exception: ', '')),
-            backgroundColor: Colors.red,
-          ),
+        AppToast.showError(
+          context,
+          e.toString().replaceFirst('Exception: ', ''),
         );
       }
     }
@@ -879,189 +730,110 @@ class _JournalDialogState extends State<_JournalDialog>
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: CurvedAnimation(parent: _anim, curve: Curves.easeIn),
-      child: ScaleTransition(
-        scale: CurvedAnimation(parent: _anim, curve: Curves.easeOutBack),
-        child: Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 40,
-          ),
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 400, maxHeight: 600),
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return AppDialogShell(
+      title: 'Tulis\nPerasaanmu',
+      subtitle: 'Ekspresikan apa yang kamu rasakan',
+      mascotAssetPath: 'assets/images/maskots/write.png',
+      maxHeight: 600,
+      bottomAction: const SizedBox.shrink(),
+      child: Column(
+        children: [
+          // Input
+          Container(
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF5C6BC0).withOpacity(0.15),
-                  blurRadius: 30,
-                  offset: const Offset(0, 12),
-                ),
-              ],
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(14),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF136E4D), Color(0xFF22A06B)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
-                    ),
-                  ),
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(22, 24, 100, 22),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Tulis\nPerasaanmu',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                                height: 1.2,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              'Ekspresikan apa yang kamu rasakan',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        right: -5,
-                        bottom: -20,
-                        child: Image.asset(
-                          'assets/images/maskots/write.png',
-                          width: 110,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ],
-                  ),
+            child: TextField(
+              controller: _controller,
+              maxLines: 3,
+              style: TextStyle(color: colorScheme.onSurface, fontSize: 13),
+              decoration: InputDecoration(
+                hintText: 'Tulis apa yang kamu rasakan sekarang...',
+                hintStyle: TextStyle(
+                  color: colorScheme.onSurfaceVariant,
+                  fontSize: 13,
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(22, 18, 22, 8),
-                    child: Column(
-                      children: [
-                        // Input
-                        Container(
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF5F5F5),
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: TextField(
-                            controller: _controller,
-                            maxLines: 3,
-                            decoration: const InputDecoration(
-                              hintText:
-                                  'Tulis apa yang kamu rasakan sekarang...',
-                              hintStyle: TextStyle(
-                                color: Color(0xFF9CA3AF),
-                                fontSize: 13,
-                              ),
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.all(14),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 44,
-                          child: ElevatedButton(
-                            onPressed: _submitting ? null : _submit,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF22A06B),
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child:
-                                _submitting
-                                    ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                    : const Text(
-                                      'Simpan',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Jurnal Kamu',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF374151),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Expanded(child: _buildJournalList()),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.all(14),
+              ),
             ),
           ),
-        ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 48,
+            child: ElevatedButton(
+              onPressed: _submitting ? null : _submit,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              child:
+                  _submitting
+                      ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                      : const Text(
+                        'Simpan',
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Jurnal Kamu',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: colorScheme.onSurface,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(child: _buildJournalList(context)),
+        ],
       ),
     );
   }
 
-  Widget _buildJournalList() {
+  Widget _buildJournalList(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final recoveryTheme = context.recoveryTheme;
+
     if (_loading)
-      return const Center(
+      return Center(
         child: CircularProgressIndicator(
           strokeWidth: 3,
-          color: Color(0xFF303F9F),
+          color: colorScheme.primary,
         ),
       );
     if (_error != null)
       return Center(
         child: Text(
           _error!,
-          style: const TextStyle(fontSize: 13, color: Color(0xFF6B7280)),
+          style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
         ),
       );
     if (_journals.isEmpty)
-      return const Center(
+      return Center(
         child: Text(
           'Belum ada jurnal. Tulis yang pertama!',
-          style: TextStyle(fontSize: 13, color: Color(0xFF9CA3AF)),
+          style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
         ),
       );
     return ListView.builder(
@@ -1075,27 +847,27 @@ class _JournalDialogState extends State<_JournalDialog>
           margin: const EdgeInsets.only(bottom: 8),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: const Color(0xFFEAF9F1),
+            color: recoveryTheme.accentSurface,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: const Color(0xFFEAF9F1)),
+            border: Border.all(color: colorScheme.outlineVariant),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 j.content,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: Color(0xFF374151),
+                  color: colorScheme.onSurface,
                   height: 1.4,
                 ),
               ),
               const SizedBox(height: 6),
               Text(
                 date,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 10,
-                  color: Color.fromARGB(255, 2, 48, 24),
+                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -1123,14 +895,14 @@ class _EmergencyVideoCard extends StatelessWidget {
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
+                top: Radius.circular(16),
               ),
               child: Image.network(
                 content.thumbnailUrl,

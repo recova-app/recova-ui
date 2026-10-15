@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
 
 class RoutineTemplateChips extends StatelessWidget {
   final List<String> templates;
@@ -14,6 +15,10 @@ class RoutineTemplateChips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final recoveryTheme = context.recoveryTheme;
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -24,13 +29,14 @@ class RoutineTemplateChips extends StatelessWidget {
                 child: ActionChip(
                   label: Text(
                     template,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: Color(0xFF136E4D),
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.primary,
                     ),
                   ),
-                  backgroundColor: const Color(0xFFEAF9F1),
-                  side: const BorderSide(color: Color(0xFFD1FAE5)),
+                  backgroundColor: recoveryTheme.accentSurface,
+                  side: BorderSide(color: colorScheme.outlineVariant),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),

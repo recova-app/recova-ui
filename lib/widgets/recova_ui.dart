@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
 
 class RecovaTopBar extends StatelessWidget {
   final VoidCallback? onLeftPressed;
@@ -89,6 +90,8 @@ class RecovaHeroBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final recoveryTheme = context.recoveryTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -96,7 +99,8 @@ class RecovaHeroBanner extends StatelessWidget {
           height: height,
           padding: contentPadding,
           decoration: BoxDecoration(
-            color: const Color(0xFF0E6B52),
+            color: recoveryTheme.streakCardBackground,
+            gradient: recoveryTheme.streakGradient,
             borderRadius: BorderRadius.circular(22),
           ),
           child: Row(
@@ -108,10 +112,10 @@ class RecovaHeroBanner extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: recoveryTheme.streakCardForeground,
                         height: 1.2,
                       ),
                     ),
@@ -120,7 +124,9 @@ class RecovaHeroBanner extends StatelessWidget {
                       subtitle,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.white.withOpacity(0.9),
+                        color: recoveryTheme.streakCardForeground.withOpacity(
+                          0.9,
+                        ),
                         height: 1.4,
                       ),
                     ),

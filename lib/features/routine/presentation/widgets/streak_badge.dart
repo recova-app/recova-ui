@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
 
 class StreakBadge extends StatelessWidget {
   final String title;
@@ -6,7 +7,7 @@ class StreakBadge extends StatelessWidget {
   final int? streakDays;
   final String? quote;
   final String? mascotAssetPath;
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   const StreakBadge({
     super.key,
@@ -15,22 +16,27 @@ class StreakBadge extends StatelessWidget {
     this.streakDays,
     this.quote,
     this.mascotAssetPath,
-    this.backgroundColor = const Color(0xFF136E4D),
+    this.backgroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final recoveryTheme = context.recoveryTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final effectiveBg = backgroundColor ?? recoveryTheme.streakCardBackground;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: effectiveBg,
+        gradient: backgroundColor == null ? recoveryTheme.streakGradient : null,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x1A000000),
+            color: colorScheme.shadow.withOpacity(0.1),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -45,7 +51,9 @@ class StreakBadge extends StatelessWidget {
             title,
             style: TextStyle(
               color:
-                  streakDays != null ? const Color(0xFFD1FAE5) : Colors.white,
+                  streakDays != null
+                      ? recoveryTheme.streakCardForeground.withOpacity(0.9)
+                      : recoveryTheme.streakCardForeground,
               fontSize: streakDays != null ? 14 : 24,
               fontWeight:
                   streakDays != null ? FontWeight.w600 : FontWeight.w800,
@@ -70,10 +78,10 @@ class StreakBadge extends StatelessWidget {
               child: Text(
                 key: ValueKey<int>(streakDays!),
                 '$streakDays',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 72,
                   fontWeight: FontWeight.w800,
-                  color: Colors.white,
+                  color: recoveryTheme.streakCardForeground,
                   height: 1.1,
                 ),
               ),
@@ -82,10 +90,10 @@ class StreakBadge extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: recoveryTheme.streakCardForeground,
             ),
           ),
           if (quote != null) ...[
@@ -99,11 +107,11 @@ class StreakBadge extends StatelessWidget {
               child: Text(
                 quote!,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                   fontStyle: FontStyle.italic,
-                  color: Color(0xFFD1FAE5),
+                  color: recoveryTheme.streakCardForeground.withOpacity(0.9),
                   height: 1.4,
                 ),
               ),

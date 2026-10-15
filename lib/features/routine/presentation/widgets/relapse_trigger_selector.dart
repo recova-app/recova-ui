@@ -52,6 +52,9 @@ class RelapseTriggerSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Wrap(
       spacing: 10,
       runSpacing: 10,
@@ -73,23 +76,23 @@ class RelapseTriggerSelector extends StatelessWidget {
                 decoration: BoxDecoration(
                   color:
                       isSelected
-                          ? const Color(0xFF136E4D)
-                          : const Color(0xFFF9FAFB),
+                          ? colorScheme.primary
+                          : colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
                     color:
                         isSelected
-                            ? const Color(0xFF136E4D)
-                            : const Color(0xFFE5E7EB),
+                            ? colorScheme.primary
+                            : colorScheme.outlineVariant,
                     width: 1.5,
                   ),
                   boxShadow:
                       isSelected
                           ? [
-                            const BoxShadow(
-                              color: Color(0x33DC2626),
+                            BoxShadow(
+                              color: colorScheme.primary.withOpacity(0.2),
                               blurRadius: 8,
-                              offset: Offset(0, 2),
+                              offset: const Offset(0, 2),
                             ),
                           ]
                           : [],
@@ -101,7 +104,9 @@ class RelapseTriggerSelector extends StatelessWidget {
                       trigger.icon,
                       size: 18,
                       color:
-                          isSelected ? Colors.white : const Color(0xFF6B7280),
+                          isSelected
+                              ? Colors.white
+                              : colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 8),
                     Text(
@@ -111,7 +116,7 @@ class RelapseTriggerSelector extends StatelessWidget {
                         fontWeight:
                             isSelected ? FontWeight.w700 : FontWeight.w500,
                         color:
-                            isSelected ? Colors.white : const Color(0xFF374151),
+                            isSelected ? Colors.white : colorScheme.onSurface,
                       ),
                     ),
                   ],

@@ -1,6 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:recova/core/theme/recovery_theme_extension.dart';
+import 'package:recova/core/ui/app_toast.dart';
 import 'package:recova/services/notification_service.dart';
 
 /// Interactive switch card enabling or disabling local scheduled daily recovery reminders.
@@ -60,23 +61,11 @@ class _ProfileNotificationToggleCardState
         _loading = false;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            value
-                ? 'Pengingat harian diaktifkan 🔔'
-                : 'Pengingat harian dinonaktifkan 🔕',
-          ),
-          backgroundColor:
-              value
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurfaceVariant,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-      );
+      if (value) {
+        AppToast.showSuccess(context, 'Pengingat harian diaktifkan 🔔');
+      } else {
+        AppToast.showInfo(context, 'Pengingat harian dinonaktifkan 🔕');
+      }
     }
   }
 
@@ -99,7 +88,7 @@ class _ProfileNotificationToggleCardState
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             color: cardBg,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             children: [
@@ -110,7 +99,7 @@ class _ProfileNotificationToggleCardState
                       isDark
                           ? colorScheme.surfaceContainerHighest
                           : recoveryTheme.accentSurfaceSubtle,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   _isEnabled

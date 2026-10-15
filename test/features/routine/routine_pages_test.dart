@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:recova/bloc/stats_cubit.dart';
+import 'package:recova/features/routine/presentation/cubit/stats_cubit.dart';
 import 'package:recova/core/theme/app_theme.dart';
 import 'package:recova/features/routine/presentation/cubit/checkin_cubit.dart';
 import 'package:recova/features/routine/presentation/cubit/relapse_cubit.dart';

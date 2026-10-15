@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:recova/pages/splash_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/education_cubit.dart';
-import 'package:recova/bloc/home_cubit.dart';
-import 'package:recova/bloc/community_cubit.dart';
-import 'package:recova/bloc/stats_cubit.dart';
+import 'package:recova/features/community/presentation/cubit/community_cubit.dart';
+import 'package:recova/features/education/presentation/cubit/education_cubit.dart';
+import 'package:recova/features/home/presentation/cubit/home_cubit.dart';
+import 'package:recova/features/routine/presentation/cubit/stats_cubit.dart';
 import 'package:recova/core/network/api_client.dart';
 import 'package:recova/core/theme/theme_cubit.dart';
 import 'package:recova/features/routine/data/datasources/routine_remote_data_source.dart';
@@ -142,7 +142,12 @@ void main() async {
               BlocProvider<EducationCubit>(
                 create: (context) => EducationCubit(),
               ),
-              BlocProvider<StatsCubit>(create: (context) => StatsCubit()),
+              BlocProvider<StatsCubit>(
+                create:
+                    (context) => StatsCubit(
+                      routineRepository: context.read<RoutineRepository>(),
+                    ),
+              ),
             ],
             child: const MyApp(),
           ),
@@ -154,8 +159,8 @@ void main() async {
       FlutterError.presentError(
         FlutterErrorDetails(exception: error, stack: stack),
       );
-      print('Uncaught zone error: $error');
-      print(stack);
+      debugPrint('Uncaught zone error: $error');
+      debugPrint(stack.toString());
     },
   );
 }

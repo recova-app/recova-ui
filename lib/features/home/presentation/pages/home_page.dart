@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/home_cubit.dart';
+import 'package:recova/features/home/presentation/cubit/home_cubit.dart';
 import 'package:recova/features/home/presentation/widgets/daily_motivation_card.dart';
 import 'package:recova/features/home/presentation/widgets/home_header.dart';
 import 'package:recova/features/home/presentation/widgets/quick_action_grid.dart';
 import 'package:recova/features/home/presentation/widgets/streak_counter_card.dart';
 import 'package:recova/models/statistics_model.dart';
-import 'package:recova/services/api_service.dart';
 import 'package:recova/services/notification_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,15 +30,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _initNotifications() async {
-    await NotificationService.requestPermission();
     try {
-      final user = await ApiService.getUserMe();
-      await NotificationService.scheduleDailyNotification(
-        checkinTime: user.dailyCheckinTime,
-      );
+      await NotificationService.requestPermission();
     } catch (e) {
-      debugPrint('[HomePage] Gagal fetch user untuk notifikasi: $e');
-      await NotificationService.scheduleDailyNotification();
+      debugPrint('[HomePage] Gagal request permission notifikasi: $e');
     }
   }
 
@@ -60,8 +54,18 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: BlocBuilder<HomeCubit, HomeState>(
+      body: BlocConsumer<HomeCubit, HomeState>(
+        listener: (context, state) {
+          if (state is HomeLoadSuccess) {
+            NotificationService.scheduleDailyNotification(
+              checkinTime: state.user.dailyCheckinTime,
+            );
+          }
+        },
         builder: (context, state) {
+          final theme = Theme.of(context);
+          final colorScheme = theme.colorScheme;
+
           if (state is HomeLoading || state is HomeInitial) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -73,23 +77,28 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.error_outline,
                       size: 48,
-                      color: Colors.red,
+                      color: colorScheme.error,
                     ),
                     const SizedBox(height: 16),
                     Text(
                       state.error,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
-                        color: Color(0xFF6B7280),
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () => _homeCubit.fetchHomeData(),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
                       child: const Text('Coba Lagi'),
                     ),
                   ],
@@ -105,7 +114,7 @@ class _HomePageState extends State<HomePage> {
           return SafeArea(
             child: RefreshIndicator(
               onRefresh: () => _homeCubit.fetchHomeData(),
-              color: const Color(0xFF38B768),
+              color: colorScheme.primary,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(
                   parent: BouncingScrollPhysics(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/stats_cubit.dart';
+import 'package:recova/features/routine/presentation/cubit/stats_cubit.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
 import 'package:recova/features/routine/presentation/widgets/stats_history_panel.dart';
 import 'package:recova/features/routine/presentation/widgets/stats_relapse_time_chart.dart';
 import 'package:recova/features/routine/presentation/widgets/stats_streak_calendar.dart';
@@ -28,14 +29,18 @@ class _StatsPageState extends State<StatsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final recoveryTheme = context.recoveryTheme;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: BlocBuilder<StatsCubit, StatsState>(
           builder: (context, state) {
             if (state is StatsLoading || state is StatsInitial) {
-              return const Center(
-                child: CircularProgressIndicator(color: Color(0xFF0C7A57)),
+              return Center(
+                child: CircularProgressIndicator(color: colorScheme.primary),
               );
             }
             if (state is StatsLoadFailure) {
@@ -45,10 +50,10 @@ class _StatsPageState extends State<StatsPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.error_outline,
                         size: 48,
-                        color: Color(0xFFEF4444),
+                        color: colorScheme.error,
                       ),
                       const SizedBox(height: 12),
                       Text(state.error, textAlign: TextAlign.center),
@@ -57,7 +62,10 @@ class _StatsPageState extends State<StatsPage> {
                         onPressed:
                             () => context.read<StatsCubit>().fetchStats(),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF0C7A57),
+                          backgroundColor: colorScheme.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                         child: const Text(
                           'Coba Lagi',
@@ -72,7 +80,7 @@ class _StatsPageState extends State<StatsPage> {
             final data = (state as StatsLoadSuccess).data;
             final stats = data.statistics;
             return RefreshIndicator(
-              color: const Color(0xFF0C7A57),
+              color: colorScheme.primary,
               onRefresh: () => context.read<StatsCubit>().fetchStats(),
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -80,11 +88,11 @@ class _StatsPageState extends State<StatsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeader(),
+                    _buildHeader(context),
                     const SizedBox(height: 20),
-                    _hero(),
+                    _hero(context),
                     const SizedBox(height: 12),
-                    _tabs(),
+                    _tabs(context),
                     const SizedBox(height: 22),
                     if (_isAnalysisTab)
                       ..._buildAnalysis(stats, data)
@@ -100,103 +108,129 @@ class _StatsPageState extends State<StatsPage> {
     );
   }
 
-  Widget _buildHeader() => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          color: const Color(0xFF22C55E),
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Image.asset('assets/images/logo.png', width: 64, height: 64),
-      ),
-      GestureDetector(
-        onTap:
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const NotificationPage()),
-            ),
-        child: const Icon(
-          Icons.notifications_none_rounded,
-          color: Color(0xFF6B7280),
-        ),
-      ),
-    ],
-  );
+  Widget _buildHeader(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
 
-  Widget _hero() => Container(
-    height: 154,
-    decoration: BoxDecoration(
-      color: const Color(0xFF0C7A57),
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Stack(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Positioned(
-          left: 16,
-          top: 40,
-          right: 120,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Mari Kita liat, Seberapa\nJauh Progresmu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 34 * 0.55,
-                  height: 1.1,
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: colorScheme.primary,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Image.asset('assets/images/logo.png', width: 64, height: 64),
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.notifications_none_rounded,
+            color: colorScheme.onSurfaceVariant,
+          ),
+          onPressed:
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const NotificationPage()),
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget _hero(BuildContext context) {
+    final recoveryTheme = context.recoveryTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      height: 154,
+      decoration: BoxDecoration(
+        color: recoveryTheme.streakCardBackground,
+        gradient: recoveryTheme.streakGradient,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.shadow.withOpacity(0.08),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            left: 16,
+            top: 40,
+            right: 120,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Mari Kita liat, Seberapa\nJauh Progresmu',
+                  style: TextStyle(
+                    color: recoveryTheme.streakCardForeground,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 20,
+                    height: 1.15,
+                  ),
                 ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Satu langkah kecil setiap harinya',
-                style: TextStyle(color: Color(0xFFD1FAE5), fontSize: 10),
-              ),
-            ],
+                const SizedBox(height: 8),
+                Text(
+                  'Satu langkah kecil setiap harinya',
+                  style: TextStyle(
+                    color: recoveryTheme.streakCardForeground.withOpacity(0.85),
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        Positioned(
-          right: -35,
-          bottom: -50,
-          child: Image.asset(
-            'assets/images/home/task.png',
-            width: 195,
-            height: 195,
-            fit: BoxFit.contain,
+          Positioned(
+            right: -35,
+            bottom: -50,
+            child: Image.asset(
+              'assets/images/home/task.png',
+              width: 195,
+              height: 195,
+              fit: BoxFit.contain,
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 
-  Widget _tabs() => Container(
-    height: 36,
-    padding: const EdgeInsets.all(3),
-    decoration: BoxDecoration(
-      color:
-          Theme.of(context).brightness == Brightness.dark
-              ? Theme.of(context).colorScheme.surfaceContainerHighest
-              : const Color(0xFFE1E1E1),
-      borderRadius: BorderRadius.circular(30),
-    ),
-    child: Row(
-      children: [
-        _tabItem(
-          'Analisis',
-          _isAnalysisTab,
-          () => setState(() => _isAnalysisTab = true),
-        ),
-        _tabItem(
-          'Histori Relapse',
-          !_isAnalysisTab,
-          () => setState(() => _isAnalysisTab = false),
-        ),
-      ],
-    ),
-  );
+  Widget _tabs(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      height: 36,
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color:
+            isDark
+                ? colorScheme.surfaceContainerHighest
+                : colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Row(
+        children: [
+          _tabItem(
+            'Analisis',
+            _isAnalysisTab,
+            () => setState(() => _isAnalysisTab = true),
+          ),
+          _tabItem(
+            'Histori Relapse',
+            !_isAnalysisTab,
+            () => setState(() => _isAnalysisTab = false),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _tabItem(String label, bool active, VoidCallback onTap) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -206,7 +240,7 @@ class _StatsPageState extends State<StatsPage> {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: active ? const Color(0xFF0C7A57) : Colors.transparent,
+            color: active ? colorScheme.primary : Colors.transparent,
             borderRadius: BorderRadius.circular(24),
           ),
           child: Center(

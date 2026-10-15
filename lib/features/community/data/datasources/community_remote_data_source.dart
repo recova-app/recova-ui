@@ -1,4 +1,5 @@
 import 'package:recova/core/network/api_client.dart';
+import 'package:recova/models/community_comment_model.dart';
 import 'package:recova/models/community_like_data.dart';
 import 'package:recova/models/post_model.dart';
 
@@ -22,6 +23,22 @@ abstract class CommunityRemoteDataSource {
 
   /// Toggle like status on post (POST /api/v1/community/{post_id}/like)
   Future<CommunityLikeData> toggleLike(String postId);
+
+  /// Fetch comment thread for a post (GET /api/v1/community/{post_id}/comments)
+  Future<List<CommunityComment>> getPostComments(String postId);
+
+  /// Add comment to post (POST /api/v1/community/{post_id}/comments)
+  Future<void> addPostComment({
+    required String postId,
+    required String content,
+  });
+
+  /// Add reply to comment (POST /api/v1/community/{post_id}/comments/{comment_id}/replies)
+  Future<void> addCommentReply({
+    required String postId,
+    required String commentId,
+    required String content,
+  });
 }
 
 /// Implementation of [CommunityRemoteDataSource] backed by injectable [ApiClient].
@@ -113,5 +130,51 @@ class CommunityRemoteDataSourceImpl implements CommunityRemoteDataSource {
     );
 
     return response.data;
+  }
+
+  @override
+  Future<List<CommunityComment>> getPostComments(String postId) async {
+    final response = await _apiClient.get<List<CommunityComment>>(
+      '/community/$postId/comments',
+      fromJson: (rawData) {
+        final map = _asMap(rawData);
+        final comments = map['comments'];
+        if (comments is List) {
+          return comments
+              .whereType<Map>()
+              .map(
+                (item) =>
+                    CommunityComment.fromJson(Map<String, dynamic>.from(item)),
+              )
+              .toList();
+        }
+        return <CommunityComment>[];
+      },
+    );
+
+    return response.data;
+  }
+
+  @override
+  Future<void> addPostComment({
+    required String postId,
+    required String content,
+  }) async {
+    await _apiClient.post<void>(
+      '/community/$postId/comments',
+      data: {'content': content},
+    );
+  }
+
+  @override
+  Future<void> addCommentReply({
+    required String postId,
+    required String commentId,
+    required String content,
+  }) async {
+    await _apiClient.post<void>(
+      '/community/$postId/comments/$commentId/replies',
+      data: {'content': content},
+    );
   }
 }

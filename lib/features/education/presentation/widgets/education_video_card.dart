@@ -32,10 +32,10 @@ class EducationVideoCard extends StatelessWidget {
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
           color: cardBg,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: colorScheme.shadow.withOpacity(0.06),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -46,7 +46,7 @@ class EducationVideoCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
+                top: Radius.circular(16),
               ),
               child: Image.network(
                 content.thumbnailUrl,

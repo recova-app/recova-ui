@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
 import 'package:recova/models/relapse_statistics_model.dart';
 
 class StatsTriggerBarChart extends StatefulWidget {
@@ -204,7 +205,7 @@ class _StatsTriggerBarChartState extends State<StatsTriggerBarChart> {
           ),
           const SizedBox(height: 14),
           if (widget.data.relapseTimeriggerSummary != null)
-            _triggerSummaryCard(widget.data.relapseTimeriggerSummary!),
+            _triggerSummaryCard(context, widget.data.relapseTimeriggerSummary!),
         ],
       ),
     );
@@ -236,13 +237,19 @@ class _StatsTriggerBarChartState extends State<StatsTriggerBarChart> {
   }
 
   Widget _triggerToggle(String label, bool active, VoidCallback onTap) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
         decoration: BoxDecoration(
-          color: active ? const Color(0xFF0C7A57) : const Color(0xFFE5E7EB),
+          color:
+              active
+                  ? colorScheme.primary
+                  : colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Text(
@@ -250,49 +257,59 @@ class _StatsTriggerBarChartState extends State<StatsTriggerBarChart> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w700,
-            color: active ? Colors.white : const Color(0xFF6B7280),
+            color: active ? Colors.white : colorScheme.onSurfaceVariant,
           ),
         ),
       ),
     );
   }
 
-  Widget _triggerSummaryCard(RelapseTimeSummary summary) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: const Color(0xFFE6EEEA),
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 28,
-          height: 28,
-          decoration: const BoxDecoration(
-            color: Color(0xFFD1FAE5),
-            shape: BoxShape.circle,
-          ),
-          child: const Icon(
-            Icons.info_outline,
-            size: 16,
-            color: Color(0xFF0C7A57),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            summary.summary,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Color(0xFF4E5A55),
-              fontWeight: FontWeight.w600,
-              height: 1.4,
+  Widget _triggerSummaryCard(BuildContext context, RelapseTimeSummary summary) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final recoveryTheme = context.recoveryTheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color:
+            isDark
+                ? colorScheme.surfaceContainerHighest
+                : recoveryTheme.accentSurface,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: recoveryTheme.cleanStatusBackground,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.info_outline,
+              size: 16,
+              color: colorScheme.primary,
             ),
           ),
-        ),
-      ],
-    ),
-  );
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              summary.summary,
+              style: TextStyle(
+                fontSize: 12,
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.w600,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

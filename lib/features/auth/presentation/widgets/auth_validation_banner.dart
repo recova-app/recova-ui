@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recova/core/ui/app_toast.dart';
 
 /// Reusable validation banner and snackbar helper for authentication errors.
 class AuthValidationBanner extends StatelessWidget {
@@ -60,25 +61,6 @@ class AuthValidationBanner extends StatelessWidget {
 
   /// Displays a floating error SnackBar styled using application theme tokens.
   static void showErrorSnackBar(BuildContext context, String message) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: colorScheme.onError,
-          ),
-        ),
-        backgroundColor: colorScheme.error,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
-      ),
-    );
+    AppToast.showError(context, message);
   }
 }

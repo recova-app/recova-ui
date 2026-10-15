@@ -37,7 +37,7 @@ class HomeFeatureCard extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(16),
       child: Stack(
         clipBehavior: Clip.antiAlias,
         children: [
@@ -45,7 +45,7 @@ class HomeFeatureCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
               color: cardBg,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
               children: [
@@ -58,7 +58,7 @@ class HomeFeatureCard extends StatelessWidget {
                         title,
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
-                          fontSize: 31 * 0.42,
+                          fontSize: 14,
                           color: effectiveTitleColor,
                         ),
                       ),
@@ -66,7 +66,7 @@ class HomeFeatureCard extends StatelessWidget {
                       Text(
                         subtitle,
                         style: TextStyle(
-                          fontSize: 18 * 0.42,
+                          fontSize: 12,
                           color: effectiveSubtitleColor,
                         ),
                       ),
@@ -83,7 +83,7 @@ class HomeFeatureCard extends StatelessWidget {
             bottom: -15,
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
-                bottomRight: Radius.circular(12),
+                bottomRight: Radius.circular(16),
               ),
               child: Image.asset(assetPath, width: 80, fit: BoxFit.contain),
             ),

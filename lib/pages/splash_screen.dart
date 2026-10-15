@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:recova/pages/main_scaffold.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
 import 'package:recova/features/auth/presentation/pages/login_page.dart';
 import 'package:recova/features/onboarding/presentation/pages/learning_1_page.dart';
+import 'package:recova/pages/main_scaffold.dart';
 import 'package:recova/services/auth_service.dart';
 
 class SplashPage extends StatefulWidget {
@@ -62,8 +63,12 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final recoveryTheme = context.recoveryTheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -87,25 +92,25 @@ class _SplashPageState extends State<SplashPage> {
                   const SizedBox(height: 28),
 
                   // "You're not your past."
-                  const Text(
+                  Text(
                     "You're not\nyour past.",
                     style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 38,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1A1A1A),
+                      color: colorScheme.onSurface,
                       height: 1.15,
                     ),
                   ),
 
                   // "You're building your future."
-                  const Text(
+                  Text(
                     "You're building\nyour future.",
                     style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 38,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF4CAF50),
+                      color: colorScheme.primary,
                       height: 1.15,
                     ),
                   ),
@@ -117,7 +122,7 @@ class _SplashPageState extends State<SplashPage> {
                     width: 56,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF5A623),
+                      color: recoveryTheme.warningStatusColor,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -125,13 +130,13 @@ class _SplashPageState extends State<SplashPage> {
                   const SizedBox(height: 20),
 
                   // Subtitle
-                  const Text(
+                  Text(
                     "Track your progress. get support\nwhen you need it. Build life that sets\nyou free",
                     style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF555555),
+                      color: colorScheme.onSurfaceVariant,
                       height: 1.6,
                     ),
                   ),

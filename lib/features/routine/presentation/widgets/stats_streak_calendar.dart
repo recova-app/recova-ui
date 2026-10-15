@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
 import 'package:recova/models/relapse_statistics_model.dart';
 
 class CalCell {
@@ -80,13 +81,16 @@ class StatsStreakCalendar extends StatelessWidget {
       weeks.add(cells.sublist(i, i + 7));
     }
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final recoveryTheme = context.recoveryTheme;
     final monthLabel = DateFormat('MMMM yyyy').format(calendarMonth);
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -94,36 +98,46 @@ class StatsStreakCalendar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: () => onMonthChanged(DateTime(year, month - 1)),
-                child: const Icon(Icons.chevron_left),
+              IconButton(
+                icon: Icon(Icons.chevron_left, color: colorScheme.onSurface),
+                onPressed: () => onMonthChanged(DateTime(year, month - 1)),
               ),
               Text(
                 monthLabel,
-                style: const TextStyle(
-                  fontSize: 30 * 0.42,
-                  color: Color(0xFF666666),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: colorScheme.onSurface,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              GestureDetector(
-                onTap: () => onMonthChanged(DateTime(year, month + 1)),
-                child: const Icon(Icons.chevron_right),
+              IconButton(
+                icon: Icon(Icons.chevron_right, color: colorScheme.onSurface),
+                onPressed: () => onMonthChanged(DateTime(year, month + 1)),
               ),
             ],
           ),
           const SizedBox(height: 10),
-          const Divider(),
-          const Row(
+          Divider(color: colorScheme.outlineVariant),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text('Sen'),
-              Text('Sel'),
-              Text('Rab'),
-              Text('Kam'),
-              Text('Jum'),
-              Text('Sab'),
-              Text('Min'),
+              for (final day in [
+                'Sen',
+                'Sel',
+                'Rab',
+                'Kam',
+                'Jum',
+                'Sab',
+                'Min',
+              ])
+                Text(
+                  day,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
             ],
           ),
           const SizedBox(height: 8),
@@ -137,33 +151,33 @@ class StatsStreakCalendar extends StatelessWidget {
                       Color bgColor = Colors.transparent;
                       Color textColor =
                           cell.isCurrentMonth
-                              ? const Color(0xFF313131)
-                              : const Color(0xFFB8B8B8);
+                              ? colorScheme.onSurface
+                              : colorScheme.onSurfaceVariant.withOpacity(0.4);
                       BoxDecoration? decoration;
 
                       if (cell.isRelapse) {
-                        bgColor = const Color(0xFFEF4444);
+                        bgColor = recoveryTheme.relapseStatusColor;
                         textColor = Colors.white;
-                        decoration = const BoxDecoration(
-                          color: Color(0xFFEF4444),
+                        decoration = BoxDecoration(
+                          color: recoveryTheme.relapseStatusColor,
                           shape: BoxShape.circle,
                         );
                       } else if (cell.isStreak) {
-                        bgColor = const Color(0xFF39B96B);
+                        bgColor = recoveryTheme.cleanStatusColor;
                         textColor = Colors.white;
-                        decoration = const BoxDecoration(
-                          color: Color(0xFF39B96B),
+                        decoration = BoxDecoration(
+                          color: recoveryTheme.cleanStatusColor,
                           shape: BoxShape.circle,
                         );
                       } else if (cell.isToday) {
                         decoration = BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: const Color(0xFF0C7A57),
+                            color: colorScheme.primary,
                             width: 2,
                           ),
                         );
-                        textColor = const Color(0xFF0C7A57);
+                        textColor = colorScheme.primary;
                       }
 
                       return Container(
@@ -187,14 +201,19 @@ class StatsStreakCalendar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _calendarLegend(const Color(0xFF39B96B), 'Clean'),
-              const SizedBox(width: 16),
-              _calendarLegend(const Color(0xFFEF4444), 'Relapse'),
+              _calendarLegend(context, recoveryTheme.cleanStatusColor, 'Clean'),
               const SizedBox(width: 16),
               _calendarLegend(
+                context,
+                recoveryTheme.relapseStatusColor,
+                'Relapse',
+              ),
+              const SizedBox(width: 16),
+              _calendarLegend(
+                context,
                 Colors.transparent,
                 'Today',
-                border: const Color(0xFF0C7A57),
+                border: colorScheme.primary,
               ),
             ],
           ),
@@ -203,26 +222,34 @@ class StatsStreakCalendar extends StatelessWidget {
     );
   }
 
-  Widget _calendarLegend(Color color, String label, {Color? border}) => Row(
-    children: [
-      Container(
-        width: 12,
-        height: 12,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          border: border != null ? Border.all(color: border, width: 2) : null,
+  Widget _calendarLegend(
+    BuildContext context,
+    Color color,
+    String label, {
+    Color? border,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Row(
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            border: border != null ? Border.all(color: border, width: 2) : null,
+          ),
         ),
-      ),
-      const SizedBox(width: 4),
-      Text(
-        label,
-        style: const TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          color: Color(0xFF666666),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
+            color: colorScheme.onSurfaceVariant,
+          ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }

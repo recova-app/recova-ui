@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recova/core/ui/app_toast.dart';
 
 /// Bottom-sheet container scaffold standardizing header, mascot illustration, and action button.
 class ProfileSheetScaffold extends StatefulWidget {
@@ -32,30 +33,13 @@ class _ProfileSheetScaffoldState extends State<ProfileSheetScaffold> {
       await widget.onSave();
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Berhasil disimpan!'),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        );
+        AppToast.showSuccess(context, 'Berhasil disimpan!');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Gagal menyimpan: ${e.toString().replaceFirst("Exception: ", "")}',
-            ),
-            backgroundColor: Theme.of(context).colorScheme.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
+        AppToast.showError(
+          context,
+          'Gagal menyimpan: ${e.toString().replaceFirst("Exception: ", "")}',
         );
       }
     } finally {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:recova/core/ui/app_toast.dart';
 import 'package:recova/services/api_service.dart';
 import '../models/coach_chat_message.dart';
 import '../models/coach_persona.dart';
@@ -269,9 +270,7 @@ class _CoachPageState extends State<CoachPage> {
       setState(() {
         _selectedPersonaKey = previous;
       });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Gagal menyimpan persona')));
+      AppToast.showError(context, 'Gagal menyimpan persona');
     }
   }
 

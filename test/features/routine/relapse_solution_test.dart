@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:recova/bloc/home_cubit.dart';
+import 'package:recova/features/home/presentation/cubit/home_cubit.dart';
 import 'package:recova/core/network/network_exceptions.dart';
 import 'package:recova/features/routine/domain/repositories/routine_repository.dart';
 import 'package:recova/features/routine/presentation/cubit/relapse_cubit.dart';

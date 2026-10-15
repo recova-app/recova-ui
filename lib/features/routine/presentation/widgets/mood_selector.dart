@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
 
 class MoodOption {
   final String emoji;
@@ -16,7 +17,7 @@ class MoodSelector extends StatelessWidget {
   final String? selectedMood;
   final ValueChanged<String>? onMoodSelected;
   final bool isEnabled;
-  final Color activeColor;
+  final Color? activeColor;
   final List<MoodOption> moods;
 
   static const List<MoodOption> defaultMoods = [
@@ -32,16 +33,21 @@ class MoodSelector extends StatelessWidget {
     required this.selectedMood,
     this.onMoodSelected,
     this.isEnabled = true,
-    this.activeColor = const Color(0xFF38B768),
+    this.activeColor,
     this.moods = defaultMoods,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final recoveryTheme = context.recoveryTheme;
+    final effectiveActiveColor = activeColor ?? recoveryTheme.cleanStatusColor;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFFEAF9F1),
+        color: recoveryTheme.accentSurface,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -60,13 +66,14 @@ class MoodSelector extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: isSelected ? activeColor : Colors.transparent,
+                    color:
+                        isSelected ? effectiveActiveColor : Colors.transparent,
                     borderRadius: BorderRadius.circular(14),
                     boxShadow:
                         isSelected
                             ? [
                               BoxShadow(
-                                color: activeColor.withOpacity(0.25),
+                                color: effectiveActiveColor.withOpacity(0.25),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -94,7 +101,7 @@ class MoodSelector extends StatelessWidget {
                           color:
                               isSelected
                                   ? Colors.white
-                                  : const Color(0xFF6B7280),
+                                  : colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],

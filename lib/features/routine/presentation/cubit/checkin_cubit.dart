@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/home_cubit.dart';
+import 'package:recova/features/home/presentation/cubit/home_cubit.dart';
 import 'package:recova/features/routine/data/repositories/routine_repository_impl.dart';
 import 'package:recova/features/routine/domain/repositories/routine_repository.dart';
 import 'package:recova/models/checkin_result_model.dart';

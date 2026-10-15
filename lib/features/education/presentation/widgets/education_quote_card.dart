@@ -20,15 +20,17 @@ class EducationQuoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final recoveryTheme = context.recoveryTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
         color: recoveryTheme.streakCardBackground,
-        borderRadius: BorderRadius.circular(18),
+        gradient: recoveryTheme.streakGradient,
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
+            color: colorScheme.shadow.withOpacity(0.08),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
@@ -46,17 +48,15 @@ class EducationQuoteCard extends StatelessWidget {
                   title,
                   style: TextStyle(
                     color: recoveryTheme.streakCardForeground,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 18,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   quote,
                   style: TextStyle(
-                    color: recoveryTheme.streakCardForeground.withValues(
-                      alpha: 0.9,
-                    ),
+                    color: recoveryTheme.streakCardForeground.withOpacity(0.9),
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
                     fontStyle: FontStyle.italic,
@@ -67,9 +67,7 @@ class EducationQuoteCard extends StatelessWidget {
                 Text(
                   author,
                   style: TextStyle(
-                    color: recoveryTheme.streakCardForeground.withValues(
-                      alpha: 0.75,
-                    ),
+                    color: recoveryTheme.streakCardForeground.withOpacity(0.75),
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
@@ -82,7 +80,7 @@ class EducationQuoteCard extends StatelessWidget {
             bottom: -15,
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
-                bottomRight: Radius.circular(18),
+                bottomRight: Radius.circular(20),
               ),
               child: Image.asset(assetPath, width: 140, fit: BoxFit.contain),
             ),

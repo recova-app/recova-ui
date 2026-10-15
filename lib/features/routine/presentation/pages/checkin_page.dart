@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
+import 'package:recova/core/ui/app_toast.dart';
 import 'package:recova/features/routine/presentation/cubit/checkin_cubit.dart';
 import 'package:recova/features/routine/presentation/widgets/mood_selector.dart';
 import 'package:recova/features/routine/presentation/widgets/routine_template_chips.dart';
@@ -88,6 +90,7 @@ class _CheckInPageState extends State<CheckInPage>
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final recoveryTheme = context.recoveryTheme;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -121,22 +124,22 @@ class _CheckInPageState extends State<CheckInPage>
                             width: 38,
                             height: 38,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF3F4F6),
+                              color: colorScheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.arrow_back_ios_new_rounded,
                               size: 18,
-                              color: Color(0xFF374151),
+                              color: colorScheme.onSurface,
                             ),
                           ),
                         ),
                         Text(
                           _getTodayDate(),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF8B98A0),
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const SizedBox(width: 38),
@@ -160,15 +163,17 @@ class _CheckInPageState extends State<CheckInPage>
                       ),
                     ),
                     const SizedBox(height: 6),
-                    const Text(
+                    Text(
                       'Pilih yang paling menggambarkan perasaanmu saat ini',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF8B98A0)),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: 14),
                     MoodSelector(
                       selectedMood: _selectedMood,
                       isEnabled: !isAlreadyCheckedIn,
-                      activeColor: const Color(0xFF38B768),
                       onMoodSelected: (mood) {
                         setState(() {
                           _selectedMood = mood;
@@ -185,17 +190,20 @@ class _CheckInPageState extends State<CheckInPage>
                       ),
                     ),
                     const SizedBox(height: 6),
-                    const Text(
+                    Text(
                       'Ceritakan apa yang kamu rasakan hari ini',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF8B98A0)),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: 14),
                     Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF9FAFB),
+                        color: colorScheme.surfaceContainerLowest,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: const Color(0xFFE5E7EB),
+                          color: colorScheme.outlineVariant,
                           width: 1,
                         ),
                       ),
@@ -203,14 +211,20 @@ class _CheckInPageState extends State<CheckInPage>
                         controller: _journalController,
                         enabled: !isAlreadyCheckedIn,
                         maxLines: 4,
-                        style: const TextStyle(fontSize: 14, height: 1.5),
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 1.5,
+                          color: colorScheme.onSurface,
+                        ),
                         decoration: InputDecoration(
                           hintText:
                               isAlreadyCheckedIn
                                   ? 'Kamu sudah melakukan check-in hari ini.'
                                   : 'Tuliskan pengalaman atau perasaanmu hari ini...',
-                          hintStyle: const TextStyle(
-                            color: Color(0xFFB0B8C1),
+                          hintStyle: TextStyle(
+                            color: colorScheme.onSurfaceVariant.withOpacity(
+                              0.6,
+                            ),
                             fontSize: 14,
                           ),
                           filled: true,
@@ -231,7 +245,7 @@ class _CheckInPageState extends State<CheckInPage>
                       Container(
                         padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFEAF9F1),
+                          color: recoveryTheme.accentSurface,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
@@ -239,8 +253,8 @@ class _CheckInPageState extends State<CheckInPage>
                             Container(
                               width: 40,
                               height: 40,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF38B768),
+                              decoration: BoxDecoration(
+                                color: recoveryTheme.cleanStatusColor,
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
@@ -250,7 +264,7 @@ class _CheckInPageState extends State<CheckInPage>
                               ),
                             ),
                             const SizedBox(width: 14),
-                            const Expanded(
+                            Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -259,15 +273,15 @@ class _CheckInPageState extends State<CheckInPage>
                                     style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
-                                      color: Color(0xFF136E4D),
+                                      color: colorScheme.primary,
                                     ),
                                   ),
-                                  SizedBox(height: 2),
+                                  const SizedBox(height: 2),
                                   Text(
                                     'Kamu sudah melakukan check-in hari ini. Lanjutkan perjuanganmu besok!',
                                     style: TextStyle(
                                       fontSize: 11,
-                                      color: Color(0xFF6B7280),
+                                      color: colorScheme.onSurfaceVariant,
                                     ),
                                   ),
                                 ],
@@ -285,13 +299,13 @@ class _CheckInPageState extends State<CheckInPage>
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.fromLTRB(22, 12, 22, 32),
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Color(0x0D000000),
+              color: colorScheme.shadow.withOpacity(0.06),
               blurRadius: 10,
-              offset: Offset(0, -4),
+              offset: const Offset(0, -4),
             ),
           ],
         ),
@@ -309,13 +323,9 @@ class _CheckInPageState extends State<CheckInPage>
                         ? null
                         : () async {
                           if (_selectedMood == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Pilih mood kamu terlebih dahulu',
-                                ),
-                                backgroundColor: Color(0xFFEF4444),
-                              ),
+                            AppToast.showWarning(
+                              context,
+                              'Pilih mood kamu terlebih dahulu',
                             );
                             return;
                           }
@@ -336,13 +346,9 @@ class _CheckInPageState extends State<CheckInPage>
 
                           if (resultState is CheckinSuccess) {
                             _journalController.clear();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Berhasil check-in. Terima kasih!',
-                                ),
-                                backgroundColor: Color(0xFF38B768),
-                              ),
+                            AppToast.showSuccess(
+                              context,
+                              'Berhasil check-in. Terima kasih!',
                             );
                             Navigator.pushReplacement(
                               context,
@@ -351,12 +357,7 @@ class _CheckInPageState extends State<CheckInPage>
                               ),
                             );
                           } else if (resultState is CheckinFailure) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(resultState.error),
-                                backgroundColor: const Color(0xFF38B768),
-                              ),
-                            );
+                            AppToast.showError(context, resultState.error);
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
@@ -366,8 +367,10 @@ class _CheckInPageState extends State<CheckInPage>
                           }
                         },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF136E4D),
-                  disabledBackgroundColor: const Color(0xFFB2DFDB),
+                  backgroundColor: colorScheme.primary,
+                  disabledBackgroundColor: colorScheme.primary.withOpacity(
+                    0.38,
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   elevation: 0,
                   shape: RoundedRectangleBorder(

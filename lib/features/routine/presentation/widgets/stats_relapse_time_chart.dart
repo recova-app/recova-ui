@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
 import 'package:recova/models/relapse_statistics_model.dart';
 
 class DonutSegment {
@@ -128,17 +129,17 @@ class StatsRelapseTimeChart extends StatelessWidget {
                             children: [
                               Text(
                                 '$total',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 32,
                                   fontWeight: FontWeight.w800,
-                                  color: Color(0xFF273247),
+                                  color: colorScheme.onSurface,
                                 ),
                               ),
-                              const Text(
+                              Text(
                                 'Relapses',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Color(0xFF9AA3AA),
+                                  color: colorScheme.onSurfaceVariant,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -146,10 +147,10 @@ class StatsRelapseTimeChart extends StatelessWidget {
                           ),
                         ),
                       )
-                      : const Center(
+                      : Center(
                         child: Text(
                           'Belum ada data',
-                          style: TextStyle(color: Color(0xFF9AA3AA)),
+                          style: TextStyle(color: colorScheme.onSurfaceVariant),
                         ),
                       ),
             ),
@@ -175,10 +176,10 @@ class StatsRelapseTimeChart extends StatelessWidget {
                             const SizedBox(width: 4),
                             Text(
                               '${s.label} (${s.count})',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 11,
-                                color: Color(0xFF4A5460),
+                                color: colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -192,24 +193,33 @@ class StatsRelapseTimeChart extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFEF3C7),
+                  color:
+                      isDark
+                          ? colorScheme.surfaceContainerHighest
+                          : const Color(0xFFFEF3C7),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.access_time,
                       size: 16,
-                      color: Color(0xFFD97706),
+                      color:
+                          isDark
+                              ? colorScheme.primary
+                              : const Color(0xFFD97706),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Peak hours: $peakText',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF92400E),
+                          color:
+                              isDark
+                                  ? colorScheme.onSurface
+                                  : const Color(0xFF92400E),
                         ),
                       ),
                     ),
@@ -218,7 +228,7 @@ class StatsRelapseTimeChart extends StatelessWidget {
               ),
             if (data.relapseTimeSummary != null) ...[
               const SizedBox(height: 10),
-              _buildTimeSummaryCard(data.relapseTimeSummary!),
+              _buildTimeSummaryCard(context, data.relapseTimeSummary!),
             ],
           ],
         ),
@@ -226,69 +236,89 @@ class StatsRelapseTimeChart extends StatelessWidget {
     );
   }
 
-  Widget _buildTimeSummaryCard(RelapseTimeSummary summary) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: const Color(0xFFE6EEEA),
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Icon(
-              Icons.analytics_outlined,
-              size: 16,
-              color: Color(0xFF3F51B5),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              summary.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF1A237E),
-                fontSize: 13,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Text(
-          summary.analysis,
-          style: const TextStyle(fontSize: 12, color: Color(0xFF3949AB)),
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: const Color(0xFFC5CAE9),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildTimeSummaryCard(
+    BuildContext context,
+    RelapseTimeSummary summary,
+  ) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final recoveryTheme = context.recoveryTheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color:
+            isDark
+                ? colorScheme.surfaceContainerHighest
+                : recoveryTheme.accentSurface,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              const Icon(
-                Icons.lightbulb_outline,
-                size: 14,
-                color: Color(0xFF1A237E),
+              Icon(
+                Icons.analytics_outlined,
+                size: 16,
+                color: colorScheme.primary,
               ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  summary.summary,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A237E),
-                  ),
+              const SizedBox(width: 8),
+              Text(
+                summary.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.onSurface,
+                  fontSize: 13,
                 ),
               ),
             ],
           ),
-        ),
-      ],
-    ),
-  );
+          const SizedBox(height: 8),
+          Text(
+            summary.analysis,
+            style: TextStyle(
+              fontSize: 12,
+              color: colorScheme.onSurfaceVariant,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color:
+                  isDark
+                      ? colorScheme.surface
+                      : recoveryTheme.cleanStatusBackground,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.lightbulb_outline,
+                  size: 14,
+                  color: colorScheme.primary,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    summary.summary,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/home_cubit.dart';
+import 'package:recova/features/home/presentation/cubit/home_cubit.dart';
 import 'package:recova/core/theme/recovery_theme_extension.dart';
 import 'package:recova/services/api_service.dart';
 import 'profile_sheet_scaffold.dart';

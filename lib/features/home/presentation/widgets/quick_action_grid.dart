@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/checkin_cubit.dart';
-import 'package:recova/bloc/relapse_cubit.dart';
+import 'package:recova/features/routine/presentation/cubit/checkin_cubit.dart';
+import 'package:recova/features/routine/presentation/cubit/relapse_cubit.dart';
 import 'package:recova/features/home/presentation/widgets/daily_challenge_dialog.dart';
 import 'package:recova/features/home/presentation/widgets/home_feature_card.dart';
 import 'package:recova/models/daily_content_model.dart';
@@ -29,9 +29,10 @@ class QuickActionGrid extends StatelessWidget {
   });
 
   void _showDailyChallengePopup(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     showDialog(
       context: context,
-      barrierColor: Colors.black54,
+      barrierColor: colorScheme.scrim.withOpacity(0.54),
       builder:
           (ctx) => DailyChallengeDialog(challenge: dailyContent?.challenge),
     );
@@ -58,7 +59,6 @@ class QuickActionGrid extends StatelessWidget {
               'Check-In Harian Diatur Saat ${user.dailyCheckinTime ?? "6pm"}',
           subtitle: 'Klik untuk Check-In lebih awal',
           assetPath: 'assets/images/maskots/set-checkin-time.png',
-          bg: const Color(0xFFEAF9F1),
           arrow: true,
           onTap: () async {
             final checkinCubit = context.read<CheckinCubit>();
@@ -86,7 +86,6 @@ class QuickActionGrid extends StatelessWidget {
           title: 'Relapse',
           subtitle: 'Akui, evaluasi, dan reset progress kamu.',
           assetPath: 'assets/images/maskots/learning-5.png',
-          bg: const Color(0xFFEAF9F1),
           onTap: () {
             final relapseCubit = context.read<RelapseCubit>();
             relapseCubit.resetState();
@@ -107,7 +106,6 @@ class QuickActionGrid extends StatelessWidget {
           title: 'Daily Activity Challenge',
           subtitle: 'Dapatkan Tantangan harian untuk mengatasi rasa bosanmu',
           assetPath: 'assets/images/maskots/activity.png',
-          bg: const Color(0xFFEAF9F1),
           onTap: () => _showDailyChallengePopup(context),
         ),
         const SizedBox(height: 26),
@@ -125,7 +123,6 @@ class QuickActionGrid extends StatelessWidget {
           subtitle:
               'Dapatkan Bantuan instan ketika dalam waktu feeling tempted',
           assetPath: 'assets/images/maskots/emergency.png',
-          bg: const Color(0xFFEAF9F1),
           onTap: () {
             Navigator.push(
               context,
@@ -141,7 +138,6 @@ class QuickActionGrid extends StatelessWidget {
           title: 'Smart Personal AI Coach',
           subtitle: 'Dapatkan Insight untuk Keluhan atau Pertanyaanmu',
           assetPath: 'assets/images/maskots/coach.png',
-          bg: const Color(0xFFEAF9F1),
           onTap: () {
             Navigator.push(
               context,

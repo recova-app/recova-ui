@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/education_cubit.dart';
+import 'package:recova/features/education/presentation/cubit/education_cubit.dart';
 import 'package:recova/core/theme/recovery_theme_extension.dart';
 import 'package:recova/models/education_model.dart';
 import 'package:recova/features/coach/presentation/pages/coach_page.dart';

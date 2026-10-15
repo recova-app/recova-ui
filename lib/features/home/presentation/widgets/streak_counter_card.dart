@@ -19,15 +19,20 @@ class StreakCounterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final recoveryTheme = context.recoveryTheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF136E4D),
+        color: recoveryTheme.streakCardBackground,
+        gradient: recoveryTheme.streakGradient,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x1A000000),
+            color: colorScheme.shadow.withOpacity(0.1),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -42,10 +47,10 @@ class StreakCounterCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Streak Kamu',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: recoveryTheme.streakCardForeground,
                         fontWeight: FontWeight.w700,
                         fontSize: 16,
                       ),
@@ -53,18 +58,20 @@ class StreakCounterCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       '$currentStreak Hari',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: recoveryTheme.streakCardForeground,
                         fontWeight: FontWeight.w800,
                         fontSize: 40,
                       ),
                     ),
                     const SizedBox(height: 2),
-                    const Text(
+                    Text(
                       'Setelah Melakukan Daily Check-in streak kamu akan terupdate di tengah malam',
                       style: TextStyle(
-                        color: Color(0xFFD1FAE5),
-                        fontSize: 8,
+                        color: recoveryTheme.streakCardForeground.withOpacity(
+                          0.85,
+                        ),
+                        fontSize: 9,
                         height: 1.3,
                       ),
                     ),
@@ -148,8 +155,8 @@ class StreakCounterCard extends StatelessWidget {
                               Container(
                                 width: 26,
                                 height: 26,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFEF4444),
+                                decoration: BoxDecoration(
+                                  color: recoveryTheme.relapseStatusColor,
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
@@ -162,8 +169,8 @@ class StreakCounterCard extends StatelessWidget {
                               Container(
                                 width: 26,
                                 height: 26,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFF38B768),
+                                decoration: BoxDecoration(
+                                  color: recoveryTheme.cleanStatusColor,
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
@@ -180,18 +187,19 @@ class StreakCounterCard extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: const Color(0xFF38B768),
+                                    color: recoveryTheme.cleanStatusColor,
                                     width: 1.5,
                                   ),
                                 ),
                                 child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFFD1E8CD),
+                                  decoration: BoxDecoration(
+                                    color: recoveryTheme.cleanStatusBackground,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.check,
-                                    color: Color(0xFF9ECEAA),
+                                    color: recoveryTheme.cleanStatusColor
+                                        .withOpacity(0.6),
                                     size: 16,
                                   ),
                                 ),
@@ -231,8 +239,8 @@ class StreakCounterCard extends StatelessWidget {
                     value: progress,
                     minHeight: 14,
                     backgroundColor: context.recoveryTheme.progressBackground,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      Color(0xFF38B768),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      recoveryTheme.cleanStatusColor,
                     ),
                   ),
                 ),

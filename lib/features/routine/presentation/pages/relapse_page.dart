@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recova/core/theme/recovery_theme_extension.dart';
+import 'package:recova/core/ui/app_toast.dart';
 import 'package:recova/features/routine/presentation/cubit/relapse_cubit.dart';
 import 'package:recova/features/routine/presentation/widgets/mood_selector.dart';
 import 'package:recova/features/routine/presentation/widgets/relapse_trigger_selector.dart';
@@ -85,6 +87,7 @@ class _RelapsePageState extends State<RelapsePage>
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final recoveryTheme = context.recoveryTheme;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -113,32 +116,33 @@ class _RelapsePageState extends State<RelapsePage>
                             width: 38,
                             height: 38,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF3F4F6),
+                              color: colorScheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.arrow_back_ios_new_rounded,
                               size: 18,
-                              color: Color(0xFF374151),
+                              color: colorScheme.onSurface,
                             ),
                           ),
                         ),
                         Text(
                           _getTodayDate(),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF8B98A0),
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                         const SizedBox(width: 38),
                       ],
                     ),
                     const SizedBox(height: 20),
-                    const StreakBadge(
+                    StreakBadge(
                       title: 'Tidak Apa-Apa',
                       subtitle: 'Jatuh bukan berarti gagal',
                       mascotAssetPath: 'assets/images/maskots/learning-5.png',
+                      backgroundColor: recoveryTheme.relapseStatusColor,
                       quote:
                           '"Yang penting adalah kamu jujur pada dirimu sendiri dan bangkit kembali."',
                     ),
@@ -152,15 +156,18 @@ class _RelapsePageState extends State<RelapsePage>
                       ),
                     ),
                     const SizedBox(height: 6),
-                    const Text(
+                    Text(
                       'Pilih yang paling menggambarkan perasaanmu saat ini',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF8B98A0)),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: 14),
                     MoodSelector(
                       selectedMood: _selectedMood,
                       isEnabled: !isSubmitted,
-                      activeColor: const Color(0xFF136E4D),
+                      activeColor: recoveryTheme.relapseStatusColor,
                       onMoodSelected: (mood) {
                         setState(() {
                           _selectedMood = mood;
@@ -177,9 +184,12 @@ class _RelapsePageState extends State<RelapsePage>
                       ),
                     ),
                     const SizedBox(height: 6),
-                    const Text(
+                    Text(
                       'Pilih satu atau lebih pemicu yang kamu rasakan',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF8B98A0)),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: 14),
                     RelapseTriggerSelector(
@@ -205,17 +215,20 @@ class _RelapsePageState extends State<RelapsePage>
                       ),
                     ),
                     const SizedBox(height: 6),
-                    const Text(
+                    Text(
                       'Tulis komitmen kamu untuk bangkit kembali',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF8B98A0)),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: 14),
                     Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF9FAFB),
+                        color: colorScheme.surfaceContainerLowest,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: const Color(0xFFE5E7EB),
+                          color: colorScheme.outlineVariant,
                           width: 1,
                         ),
                       ),
@@ -223,14 +236,20 @@ class _RelapsePageState extends State<RelapsePage>
                         controller: _commitmentController,
                         enabled: !isSubmitted,
                         maxLines: 4,
-                        style: const TextStyle(fontSize: 14, height: 1.5),
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 1.5,
+                          color: colorScheme.onSurface,
+                        ),
                         decoration: InputDecoration(
                           hintText:
                               isSubmitted
                                   ? 'Relapse sudah dicatat. Tetap semangat!'
                                   : 'Tuliskan komitmen kamu untuk tetap berjuang...',
-                          hintStyle: const TextStyle(
-                            color: Color(0xFFB0B8C1),
+                          hintStyle: TextStyle(
+                            color: colorScheme.onSurfaceVariant.withOpacity(
+                              0.6,
+                            ),
                             fontSize: 14,
                           ),
                           filled: true,
@@ -251,7 +270,7 @@ class _RelapsePageState extends State<RelapsePage>
                       Container(
                         padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFEF2F2),
+                          color: recoveryTheme.relapseStatusBackground,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
@@ -259,8 +278,8 @@ class _RelapsePageState extends State<RelapsePage>
                             Container(
                               width: 40,
                               height: 40,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF136E4D),
+                              decoration: BoxDecoration(
+                                color: recoveryTheme.relapseStatusColor,
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
@@ -270,7 +289,7 @@ class _RelapsePageState extends State<RelapsePage>
                               ),
                             ),
                             const SizedBox(width: 14),
-                            const Expanded(
+                            Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -279,15 +298,15 @@ class _RelapsePageState extends State<RelapsePage>
                                     style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
-                                      color: Color(0xFFB91C1C),
+                                      color: recoveryTheme.relapseStatusColor,
                                     ),
                                   ),
-                                  SizedBox(height: 2),
+                                  const SizedBox(height: 2),
                                   Text(
                                     'Terima kasih atas kejujuranmu. Kamu bisa bangkit kembali!',
                                     style: TextStyle(
                                       fontSize: 11,
-                                      color: Color(0xFF6B7280),
+                                      color: colorScheme.onSurfaceVariant,
                                     ),
                                   ),
                                 ],
@@ -305,13 +324,13 @@ class _RelapsePageState extends State<RelapsePage>
       ),
       bottomNavigationBar: Container(
         padding: const EdgeInsets.fromLTRB(22, 12, 22, 32),
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: Color(0x0D000000),
+              color: colorScheme.shadow.withOpacity(0.06),
               blurRadius: 10,
-              offset: Offset(0, -4),
+              offset: const Offset(0, -4),
             ),
           ],
         ),
@@ -328,35 +347,25 @@ class _RelapsePageState extends State<RelapsePage>
                         ? null
                         : () async {
                           if (_selectedMood == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Pilih mood kamu terlebih dahulu',
-                                ),
-                                backgroundColor: Color(0xFFEF4444),
-                              ),
+                            AppToast.showWarning(
+                              context,
+                              'Pilih mood kamu terlebih dahulu',
                             );
                             return;
                           }
 
                           if (_selectedTriggers.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Pilih minimal satu pemicu relapse',
-                                ),
-                                backgroundColor: Color(0xFFEF4444),
-                              ),
+                            AppToast.showWarning(
+                              context,
+                              'Pilih minimal satu pemicu relapse',
                             );
                             return;
                           }
 
                           if (_commitmentController.text.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Tulis pesan komitmen kamu'),
-                                backgroundColor: Color(0xFFEF4444),
-                              ),
+                            AppToast.showWarning(
+                              context,
+                              'Tulis pesan komitmen kamu',
                             );
                             return;
                           }
@@ -373,13 +382,9 @@ class _RelapsePageState extends State<RelapsePage>
 
                           if (resultState is RelapseSuccess) {
                             _commitmentController.clear();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Relapse dicatat. Tetap semangat!',
-                                ),
-                                backgroundColor: Color(0xFF136E4D),
-                              ),
+                            AppToast.showSuccess(
+                              context,
+                              'Relapse dicatat. Tetap semangat!',
                             );
                             Navigator.pushReplacement(
                               context,
@@ -388,17 +393,13 @@ class _RelapsePageState extends State<RelapsePage>
                               ),
                             );
                           } else if (resultState is RelapseFailure) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(resultState.error),
-                                backgroundColor: const Color(0xFFEF4444),
-                              ),
-                            );
+                            AppToast.showError(context, resultState.error);
                           }
                         },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF136E4D),
-                  disabledBackgroundColor: const Color(0xFFB2DFDB),
+                  backgroundColor: recoveryTheme.relapseStatusColor,
+                  disabledBackgroundColor: recoveryTheme.relapseStatusColor
+                      .withOpacity(0.38),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   elevation: 0,
                   shape: RoundedRectangleBorder(

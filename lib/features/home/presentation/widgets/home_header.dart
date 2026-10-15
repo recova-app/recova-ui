@@ -18,11 +18,11 @@ class HomeHeader extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              width: 30,
-              height: 30,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFF22C55E),
-                borderRadius: BorderRadius.circular(15),
+                color: colorScheme.primary,
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Image.asset(
                 'assets/images/logo.png',
@@ -30,17 +30,17 @@ class HomeHeader extends StatelessWidget {
                 height: 64,
               ),
             ),
-            GestureDetector(
-              onTap:
+            IconButton(
+              icon: Icon(
+                Icons.notifications_none_rounded,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              onPressed:
                   onNotificationTap ??
                   () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => const NotificationPage()),
                   ),
-              child: const Icon(
-                Icons.notifications_none_rounded,
-                color: Color(0xFF6B7280),
-              ),
             ),
           ],
         ),
@@ -48,7 +48,7 @@ class HomeHeader extends StatelessWidget {
         Text(
           'Halo, $nickname!',
           style: TextStyle(
-            fontSize: 38 * 0.8,
+            fontSize: 30,
             fontWeight: FontWeight.w800,
             color: colorScheme.onSurface,
           ),
@@ -56,10 +56,7 @@ class HomeHeader extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           'Apapun usahamu hari ini, kami bangga kepadamu',
-          style: TextStyle(
-            fontSize: 30 * 0.42,
-            color: colorScheme.onSurfaceVariant,
-          ),
+          style: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant),
         ),
       ],
     );

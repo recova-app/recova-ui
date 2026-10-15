@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/education_cubit.dart';
+import 'package:recova/features/education/presentation/cubit/education_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../widgets/article_card.dart';
 
