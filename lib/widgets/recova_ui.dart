@@ -36,14 +36,15 @@ class RecovaTopBar extends StatelessWidget {
         Image.asset(
           'assets/images/logo.png', // Fallback just in case
           height: 32,
-          errorBuilder: (context, error, stackTrace) => const Text(
-            'Recova',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF0E6B52),
-            ),
-          ),
+          errorBuilder:
+              (context, error, stackTrace) => const Text(
+                'Recova',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF0E6B52),
+                ),
+              ),
         ),
 
         if (rightIcon != null)
@@ -125,18 +126,11 @@ class RecovaHeroBanner extends StatelessWidget {
                 ),
               ),
               if (imagePath.isNotEmpty)
-                Image.asset(
-                  imagePath,
-                  width: imageWidth,
-                  fit: BoxFit.contain,
-                ),
+                Image.asset(imagePath, width: imageWidth, fit: BoxFit.contain),
             ],
           ),
         ),
-        if (footer != null) ...[
-          const SizedBox(height: 16),
-          footer!,
-        ],
+        if (footer != null) ...[const SizedBox(height: 16), footer!],
       ],
     );
   }
@@ -211,10 +205,7 @@ class RecovaFeatureCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (trailing != null) ...[
-              const SizedBox(width: 8),
-              trailing!,
-            ],
+            if (trailing != null) ...[const SizedBox(width: 8), trailing!],
           ],
         ),
       ),

@@ -123,17 +123,19 @@ class _CoachPageState extends State<CoachPage> {
               final content = (item['content'] ?? '').toString();
               final messageId = (item['id'] ?? '').toString();
               final createdAt =
-                  DateTime.tryParse((item['created_at'] ?? '').toString())
-                          ?.toLocal() ??
-                      DateTime.now();
+                  DateTime.tryParse(
+                    (item['created_at'] ?? '').toString(),
+                  )?.toLocal() ??
+                  DateTime.now();
 
               String? personaKeyForMessage;
               if (role != 'user') {
-                final rawPersona = (item['persona_used'] ??
-                        item['persona'] ??
-                        item['persona_key'] ??
-                        '')
-                    .toString();
+                final rawPersona =
+                    (item['persona_used'] ??
+                            item['persona'] ??
+                            item['persona_key'] ??
+                            '')
+                        .toString();
 
                 if (rawPersona.isNotEmpty) {
                   personaKeyForMessage = _normalizePersonaKey(rawPersona);
@@ -144,16 +146,19 @@ class _CoachPageState extends State<CoachPage> {
                     createdAt: createdAt,
                   );
                   personaKeyForMessage =
-                      _personaCache[primaryKey] ?? _personaCache[_contentFallbackKey(content)];
+                      _personaCache[primaryKey] ??
+                      _personaCache[_contentFallbackKey(content)];
                 }
 
                 if (personaKeyForMessage != null) {
                   _personaCache[_personaCacheKey(
-                    id: messageId,
-                    content: content,
-                    createdAt: createdAt,
-                  )] = personaKeyForMessage;
-                  _personaCache[_contentFallbackKey(content)] = personaKeyForMessage;
+                        id: messageId,
+                        content: content,
+                        createdAt: createdAt,
+                      )] =
+                      personaKeyForMessage;
+                  _personaCache[_contentFallbackKey(content)] =
+                      personaKeyForMessage;
                 }
               }
 
@@ -263,7 +268,9 @@ class _CoachPageState extends State<CoachPage> {
     if (diff.inSeconds < 60) return 'JUST NOW';
 
     final sameDay =
-        now.year == createdAt.year && now.month == createdAt.month && now.day == createdAt.day;
+        now.year == createdAt.year &&
+        now.month == createdAt.month &&
+        now.day == createdAt.day;
 
     final hh = createdAt.hour.toString().padLeft(2, '0');
     final mm = createdAt.minute.toString().padLeft(2, '0');
@@ -302,9 +309,9 @@ class _CoachPageState extends State<CoachPage> {
       setState(() {
         _selectedPersonaKey = previous;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal menyimpan persona')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Gagal menyimpan persona')));
     }
   }
 
@@ -318,13 +325,7 @@ class _CoachPageState extends State<CoachPage> {
     setState(() {
       _isSending = true;
       _isDropdownOpen = false;
-      _messages.add(
-        _ChatMessage(
-          text: input,
-          isAI: false,
-          createdAt: now,
-        ),
-      );
+      _messages.add(_ChatMessage(text: input, isAI: false, createdAt: now));
     });
     _messageController.clear();
     _scrollToBottom();
@@ -336,7 +337,9 @@ class _CoachPageState extends State<CoachPage> {
       final responseText = (result['response'] ?? '').toString().trim();
       final personaUsedRaw = (result['persona_used'] ?? '').toString();
       final personaUsed =
-          personaUsedRaw.isNotEmpty ? _personaFromKey(personaUsedRaw) : activePersonaAtSend;
+          personaUsedRaw.isNotEmpty
+              ? _personaFromKey(personaUsedRaw)
+              : activePersonaAtSend;
 
       setState(() {
         if (responseText.isNotEmpty) {
@@ -359,7 +362,8 @@ class _CoachPageState extends State<CoachPage> {
       setState(() {
         _messages.add(
           _ChatMessage(
-            text: 'Maaf, Billy belum bisa membalas sekarang. Coba lagi sebentar.',
+            text:
+                'Maaf, Billy belum bisa membalas sekarang. Coba lagi sebentar.',
             isAI: true,
             createdAt: DateTime.now(),
             personaKey: activePersonaAtSend.key,
@@ -423,10 +427,7 @@ class _CoachPageState extends State<CoachPage> {
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: const Color(0xFFE2E8F0),
-            height: 1,
-          ),
+          child: Container(color: const Color(0xFFE2E8F0), height: 1),
         ),
       ),
       body: SafeArea(
@@ -443,21 +444,22 @@ class _CoachPageState extends State<CoachPage> {
                         });
                       }
                     },
-                    child: _isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : ListView.builder(
-                            controller: _scrollController,
-                            padding: const EdgeInsets.only(
-                              left: 16,
-                              right: 16,
-                              top: 74,
-                              bottom: 16,
+                    child:
+                        _isLoading
+                            ? const Center(child: CircularProgressIndicator())
+                            : ListView.builder(
+                              controller: _scrollController,
+                              padding: const EdgeInsets.only(
+                                left: 16,
+                                right: 16,
+                                top: 74,
+                                bottom: 16,
+                              ),
+                              itemCount: _messages.length,
+                              itemBuilder: (context, index) {
+                                return _buildMessageBubble(_messages[index]);
+                              },
                             ),
-                            itemCount: _messages.length,
-                            itemBuilder: (context, index) {
-                              return _buildMessageBubble(_messages[index]);
-                            },
-                          ),
                   ),
                 ),
                 _buildInputField(),
@@ -476,7 +478,8 @@ class _CoachPageState extends State<CoachPage> {
   }
 
   Widget _buildFloatingPersonaSelector() {
-    final availablePersonas = _personas.where((p) => p.key != _selectedPersonaKey).toList();
+    final availablePersonas =
+        _personas.where((p) => p.key != _selectedPersonaKey).toList();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -485,15 +488,16 @@ class _CoachPageState extends State<CoachPage> {
         border: Border(
           bottom: BorderSide(color: const Color(0xFFE2E8F0).withOpacity(0.5)),
         ),
-        boxShadow: _isDropdownOpen
-            ? [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : [],
+        boxShadow:
+            _isDropdownOpen
+                ? [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+                : [],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -530,7 +534,9 @@ class _CoachPageState extends State<CoachPage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
-                    _isDropdownOpen ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    _isDropdownOpen
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
                     color: const Color(0xFF0F172A),
                     size: 16,
                   ),
@@ -546,63 +552,68 @@ class _CoachPageState extends State<CoachPage> {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Column(
-                children: availablePersonas.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final persona = entry.value;
+                children:
+                    availablePersonas.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final persona = entry.value;
 
-                  return GestureDetector(
-                    onTap: () => _onSelectPersona(persona),
-                    child: Container(
-                      margin: EdgeInsets.only(
-                        left: 2,
-                        right: 2,
-                        top: index == 0 ? 2 : 0,
-                        bottom: index == availablePersonas.length - 1 ? 2 : 0,
-                      ),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: persona.color,
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: const Color(0xFFE2E8F0), width: 1.5),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.asset(
-                            persona.avatarPath,
-                            width: _avatarSize,
-                            height: _avatarSize,
-                            fit: BoxFit.contain,
+                      return GestureDetector(
+                        onTap: () => _onSelectPersona(persona),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            left: 2,
+                            right: 2,
+                            top: index == 0 ? 2 : 0,
+                            bottom:
+                                index == availablePersonas.length - 1 ? 2 : 0,
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  persona.title,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  persona.desc,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                              ],
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: persona.color,
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: const Color(0xFFE2E8F0),
+                              width: 1.5,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                persona.avatarPath,
+                                width: _avatarSize,
+                                height: _avatarSize,
+                                fit: BoxFit.contain,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      persona.title,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      persona.desc,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
               ),
             ),
         ],
@@ -705,11 +716,7 @@ class _CoachPageState extends State<CoachPage> {
       data: text,
       selectable: false,
       styleSheet: MarkdownStyleSheet(
-        p: const TextStyle(
-          color: Color(0xFF1E293B),
-          fontSize: 14,
-          height: 1.5,
-        ),
+        p: const TextStyle(color: Color(0xFF1E293B), fontSize: 14, height: 1.5),
         strong: const TextStyle(
           color: Color(0xFF1E293B),
           fontSize: 14,
@@ -734,9 +741,7 @@ class _CoachPageState extends State<CoachPage> {
   Widget _buildInputField() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-      ),
+      decoration: const BoxDecoration(color: Colors.white),
       child: SafeArea(
         child: Container(
           decoration: BoxDecoration(
@@ -774,23 +779,29 @@ class _CoachPageState extends State<CoachPage> {
                   margin: const EdgeInsets.only(right: 8, top: 4, bottom: 4),
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: _isSending ? const Color(0xFF94A3B8) : const Color(0xFF0F8C72),
+                    color:
+                        _isSending
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF0F8C72),
                     shape: BoxShape.circle,
                   ),
-                  child: _isSending
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  child:
+                      _isSending
+                          ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                          : const Icon(
+                            Icons.send,
+                            color: Colors.white,
+                            size: 16,
                           ),
-                        )
-                      : const Icon(
-                          Icons.send,
-                          color: Colors.white,
-                          size: 16,
-                        ),
                 ),
               ),
             ],

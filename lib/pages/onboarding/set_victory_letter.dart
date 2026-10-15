@@ -20,7 +20,6 @@ class _SetVictoryLetterPageState extends State<SetVictoryLetterPage> {
     Navigator.pushNamed(context, '/next-onboarding-step');
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +47,6 @@ class _SetVictoryLetterPageState extends State<SetVictoryLetterPage> {
                         fit: BoxFit.contain,
                       ),
                     ),
-
 
                     const SizedBox(height: 40),
 
@@ -88,53 +86,64 @@ class _SetVictoryLetterPageState extends State<SetVictoryLetterPage> {
 
               // Goal Options
               Column(
-                children: goals.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final goal = entry.value;
-                  final isSelected = selectedGoal == index;
-                  final isRecommended = goal['recommended'] as bool;
+                children:
+                    goals.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final goal = entry.value;
+                      final isSelected = selectedGoal == index;
+                      final isRecommended = goal['recommended'] as bool;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 2),
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedGoal = index;
-                        });
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? const Color(0xFF4CAF50).withOpacity(0.1)
-                              : Colors.transparent,
-                          border: Border(
-                            top: index == 0
-                                ? const BorderSide(color: Color(0xFFE0E0E0))
-                                : BorderSide.none,
-                            bottom: const BorderSide(color: Color(0xFFE0E0E0)),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            goal['text'] as String,
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 18,
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                              color: isSelected
-                                  ? const Color(0xFF1B5E20)
-                                  : (isRecommended
-                                      ? const Color(0xFF777777)
-                                      : const Color(0xFF1A1A1A)),
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 2),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedGoal = index;
+                            });
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            decoration: BoxDecoration(
+                              color:
+                                  isSelected
+                                      ? const Color(0xFF4CAF50).withOpacity(0.1)
+                                      : Colors.transparent,
+                              border: Border(
+                                top:
+                                    index == 0
+                                        ? const BorderSide(
+                                          color: Color(0xFFE0E0E0),
+                                        )
+                                        : BorderSide.none,
+                                bottom: const BorderSide(
+                                  color: Color(0xFFE0E0E0),
+                                ),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                goal['text'] as String,
+                                style: TextStyle(
+                                  fontFamily: 'Inter',
+                                  fontSize: 18,
+                                  fontWeight:
+                                      isSelected
+                                          ? FontWeight.w600
+                                          : FontWeight.w500,
+                                  color:
+                                      isSelected
+                                          ? const Color(0xFF1B5E20)
+                                          : (isRecommended
+                                              ? const Color(0xFF777777)
+                                              : const Color(0xFF1A1A1A)),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                      );
+                    }).toList(),
               ),
 
               const SizedBox(height: 40),
@@ -168,7 +177,6 @@ class _SetVictoryLetterPageState extends State<SetVictoryLetterPage> {
                   ),
 
                   const SizedBox(height: 20),
-
                 ],
               ),
 

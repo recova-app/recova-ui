@@ -123,9 +123,10 @@ class _KnowYourWhyPageState extends State<KnowYourWhyPage> {
                   child: ElevatedButton(
                     onPressed: _isButtonEnabled ? _saveWhy : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _isButtonEnabled
-                          ? const Color(0xFF1B5E20)
-                          : const Color(0xFFBDBDBD),
+                      backgroundColor:
+                          _isButtonEnabled
+                              ? const Color(0xFF1B5E20)
+                              : const Color(0xFFBDBDBD),
                       shadowColor: Colors.transparent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(32),

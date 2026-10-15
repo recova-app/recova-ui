@@ -28,9 +28,9 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SetPornFreeDayResultPage(
-          selectedGoal: selectedGoalText,
-        ),
+        builder:
+            (context) =>
+                SetPornFreeDayResultPage(selectedGoal: selectedGoalText),
       ),
     );
   }
@@ -81,56 +81,65 @@ class _SetPornFreeDayPageState extends State<SetPornFreeDayPage> {
 
               // Goal Options
               Column(
-                children: goals.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final goal = entry.value;
-                  final isSelected = selectedGoal == index;
-                  final isRecommended = goal['recommended'] as bool;
+                children:
+                    goals.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final goal = entry.value;
+                      final isSelected = selectedGoal == index;
+                      final isRecommended = goal['recommended'] as bool;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.medium),
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedGoal = index;
-                        });
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(AppSpacing.large),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? const Color(0xFF4CAF50).withOpacity(0.1)
-                              : const Color(0xFFF5F5F5),
-                          borderRadius: BorderRadius.circular(AppRadius.medium),
-                          border: Border.all(
-                            color: isSelected
-                                ? const Color(0xFF4CAF50)
-                                : const Color(0xFFDDDDDD),
-                            width: isSelected ? 2 : 1,
-                          ),
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: AppSpacing.medium,
                         ),
-                        child: Center(
-                          child: Text(
-                            goal['text'] as String,
-                            style: AppText.body.copyWith(
-                              fontSize: 18,
-                              fontFamily: 'Inter',
-                              fontWeight: isRecommended
-                                  ? FontWeight.w600
-                                  : FontWeight.w500,
-                              color: isSelected
-                                  ? const Color(0xFF1B5E20)
-                                  : (isRecommended
-                                      ? const Color(0xFF1A1A1A)
-                                      : const Color(0xFF777777)),
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedGoal = index;
+                            });
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(AppSpacing.large),
+                            decoration: BoxDecoration(
+                              color:
+                                  isSelected
+                                      ? const Color(0xFF4CAF50).withOpacity(0.1)
+                                      : const Color(0xFFF5F5F5),
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.medium,
+                              ),
+                              border: Border.all(
+                                color:
+                                    isSelected
+                                        ? const Color(0xFF4CAF50)
+                                        : const Color(0xFFDDDDDD),
+                                width: isSelected ? 2 : 1,
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                goal['text'] as String,
+                                style: AppText.body.copyWith(
+                                  fontSize: 18,
+                                  fontFamily: 'Inter',
+                                  fontWeight:
+                                      isRecommended
+                                          ? FontWeight.w600
+                                          : FontWeight.w500,
+                                  color:
+                                      isSelected
+                                          ? const Color(0xFF1B5E20)
+                                          : (isRecommended
+                                              ? const Color(0xFF1A1A1A)
+                                              : const Color(0xFF777777)),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                      );
+                    }).toList(),
               ),
 
               const SizedBox(height: AppSpacing.large),

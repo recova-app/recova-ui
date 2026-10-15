@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 class SetPornFreeDayResultPage extends StatefulWidget {
   final String selectedGoal;
 
-  const SetPornFreeDayResultPage({
-    super.key,
-    this.selectedGoal = '3 days',
-  });
+  const SetPornFreeDayResultPage({super.key, this.selectedGoal = '3 days'});
 
   @override
-  State<SetPornFreeDayResultPage> createState() => _SetPornFreeDayResultPageState();
+  State<SetPornFreeDayResultPage> createState() =>
+      _SetPornFreeDayResultPageState();
 }
 
 class _SetPornFreeDayResultPageState extends State<SetPornFreeDayResultPage>
@@ -66,15 +64,15 @@ class _SetPornFreeDayResultPageState extends State<SetPornFreeDayResultPage>
                   const SizedBox(height: 60),
 
                   SizedBox(
+                    width: 200,
+                    height: 200,
+                    child: Image.asset(
+                      'assets/images/maskots/set-porn-free-day-result.png',
                       width: 200,
                       height: 200,
-                      child: Image.asset(
-                        'assets/images/maskots/set-porn-free-day-result.png',
-                        width: 200,
-                        height: 200,
-                        fit: BoxFit.contain,
-                      ),
+                      fit: BoxFit.contain,
                     ),
+                  ),
                   const SizedBox(height: 60),
 
                   // Goal text
@@ -82,7 +80,11 @@ class _SetPornFreeDayResultPageState extends State<SetPornFreeDayResultPage>
                     scale: Tween<double>(begin: 0.0, end: 1.0).animate(
                       CurvedAnimation(
                         parent: _scaleController,
-                        curve: const Interval(0.3, 1.0, curve: Curves.elasticOut),
+                        curve: const Interval(
+                          0.3,
+                          1.0,
+                          curve: Curves.elasticOut,
+                        ),
                       ),
                     ),
                     child: Text(
@@ -138,9 +140,12 @@ class _SetPornFreeDayResultPageState extends State<SetPornFreeDayResultPage>
               decoration: BoxDecoration(
                 color: color,
                 shape: shape == 'circle' ? BoxShape.circle : BoxShape.rectangle,
-                borderRadius: shape == 'curve'
-                    ? BorderRadius.circular(6)
-                    : (shape == 'rectangle' ? BorderRadius.circular(2) : null),
+                borderRadius:
+                    shape == 'curve'
+                        ? BorderRadius.circular(6)
+                        : (shape == 'rectangle'
+                            ? BorderRadius.circular(2)
+                            : null),
               ),
             ),
           ),

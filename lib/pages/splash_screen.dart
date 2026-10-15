@@ -27,9 +27,9 @@ class _SplashPageState extends State<SplashPage> {
       final AuthService authService = AuthService();
 
       // Add a timeout so a hanging secure-storage read never freezes the app
-      final String? token = await authService
-          .getToken()
-          .timeout(const Duration(seconds: 10));
+      final String? token = await authService.getToken().timeout(
+        const Duration(seconds: 10),
+      );
 
       if (!mounted) return;
 
@@ -38,22 +38,25 @@ class _SplashPageState extends State<SplashPage> {
         page = const LoginPage();
       } else {
         // Token exists – check if onboarding was completed
-        final onboarded = await authService
-            .isOnboardingCompleted()
-            .timeout(const Duration(seconds: 10));
+        final onboarded = await authService.isOnboardingCompleted().timeout(
+          const Duration(seconds: 10),
+        );
         page = onboarded ? const MainScaffold() : const Learning1();
       }
 
       if (!mounted) return;
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => page));
+        context,
+        MaterialPageRoute(builder: (context) => page),
+      );
     } catch (e) {
       // On any error (storage hang, timeout, etc.) fall back to login
       debugPrint('SplashPage auth check failed: $e');
       if (!mounted) return;
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginPage()));
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
     }
   }
 

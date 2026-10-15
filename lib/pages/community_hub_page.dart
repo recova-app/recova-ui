@@ -33,11 +33,17 @@ class CommunityHubPage extends StatelessWidget {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const NotificationPage()),
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const NotificationPage(),
+                          ),
+                        ),
+                    child: const Icon(
+                      Icons.notifications_none_rounded,
+                      color: Color(0xFF6B7280),
                     ),
-                    child: const Icon(Icons.notifications_none_rounded, color: Color(0xFF6B7280)),
                   ),
                 ],
               ),
@@ -94,7 +100,8 @@ class CommunityHubPage extends StatelessWidget {
               const SizedBox(height: 18),
               _MenuCard(
                 title: 'Chat Dengan Billy',
-                subtitle: 'Billy Merupakan Ai companion yang akan menjawab semua keresahan kamu',
+                subtitle:
+                    'Billy Merupakan Ai companion yang akan menjawab semua keresahan kamu',
                 assetPath: 'assets/images/home/billy.png',
                 imageWidth: 70, // Atur ukuran lebar gambar billy di sini
                 imageHeight: 70, // Atur ukuran tinggi gambar billy di sini

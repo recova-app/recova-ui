@@ -2,10 +2,7 @@ class DailyChallenge {
   final String title;
   final String description;
 
-  const DailyChallenge({
-    required this.title,
-    required this.description,
-  });
+  const DailyChallenge({required this.title, required this.description});
 
   factory DailyChallenge.fromJson(Map<String, dynamic> json) {
     return DailyChallenge(
@@ -22,10 +19,7 @@ class PhysicalChallenge {
   final String title;
   final String description;
 
-  const PhysicalChallenge({
-    required this.title,
-    required this.description,
-  });
+  const PhysicalChallenge({required this.title, required this.description});
 
   factory PhysicalChallenge.fromJson(Map<String, dynamic> json) {
     return PhysicalChallenge(
@@ -53,13 +47,17 @@ class DailyContent {
 
   factory DailyContent.fromJson(Map<String, dynamic> json) {
     DailyChallenge? challenge;
-    if (json['challenge'] != null && json['challenge'] is Map<String, dynamic>) {
+    if (json['challenge'] != null &&
+        json['challenge'] is Map<String, dynamic>) {
       challenge = DailyChallenge.fromJson(json['challenge']);
     }
 
     PhysicalChallenge? physicalChallenge;
-    if (json['physical_challenge'] != null && json['physical_challenge'] is Map<String, dynamic>) {
-      physicalChallenge = PhysicalChallenge.fromJson(json['physical_challenge']);
+    if (json['physical_challenge'] != null &&
+        json['physical_challenge'] is Map<String, dynamic>) {
+      physicalChallenge = PhysicalChallenge.fromJson(
+        json['physical_challenge'],
+      );
     }
 
     return DailyContent(
@@ -70,4 +68,3 @@ class DailyContent {
     );
   }
 }
-

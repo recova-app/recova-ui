@@ -20,7 +20,7 @@ class Learning4 extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                      Container(
+                    Container(
                       width: 220,
                       height: 220,
                       child: Image.asset(

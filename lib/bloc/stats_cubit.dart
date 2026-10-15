@@ -17,9 +17,7 @@ class StatsCubit extends Cubit<StatsState> {
       emit(StatsLoadSuccess(data: data));
       developer.log(data.toString());
     } catch (e) {
-      emit(StatsLoadFailure(
-        e.toString().replaceFirst('Exception: ', ''),
-      ));
+      emit(StatsLoadFailure(e.toString().replaceFirst('Exception: ', '')));
     }
   }
 }

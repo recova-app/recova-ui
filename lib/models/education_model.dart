@@ -27,9 +27,10 @@ class EducationContent {
       url: json['url'] ?? '',
       thumbnailUrl: json['thumbnail_url'] ?? '',
       // Memberikan nilai default jika kategori null atau kosong
-      category: (json['category'] != null && json['category'].isNotEmpty)
-          ? json['category']
-          : 'General',
+      category:
+          (json['category'] != null && json['category'].isNotEmpty)
+              ? json['category']
+              : 'General',
       type: json['type'] ?? 'video',
       publishedAt: json['published_at'],
     );

@@ -67,9 +67,9 @@ class _SetCheckinTimePageState extends State<SetCheckinTimePage> {
               Expanded(
                 child: Column(
                   children: [
-                    const SizedBox(height: AppSpacing.large ),
+                    const SizedBox(height: AppSpacing.large),
 
-                        Container(
+                    Container(
                       width: 200,
                       height: 200,
                       child: Image.asset(
@@ -114,7 +114,8 @@ class _SetCheckinTimePageState extends State<SetCheckinTimePage> {
                           },
                           childDelegate: ListWheelChildBuilderDelegate(
                             builder: (context, index) {
-                              if (index < 0 || index >= times.length) return null;
+                              if (index < 0 || index >= times.length)
+                                return null;
 
                               final time = times[index];
                               final isSelected = selectedTime == index;
@@ -122,20 +123,33 @@ class _SetCheckinTimePageState extends State<SetCheckinTimePage> {
                               return Container(
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                    border: isSelected ? const Border(
-                                      top: BorderSide(color: Color(0xFFDDDDDD)),
-                                      bottom: BorderSide(color: Color(0xFFDDDDDD)),
-                                    ) : null,
+                                  border:
+                                      isSelected
+                                          ? const Border(
+                                            top: BorderSide(
+                                              color: Color(0xFFDDDDDD),
+                                            ),
+                                            bottom: BorderSide(
+                                              color: Color(0xFFDDDDDD),
+                                            ),
+                                          )
+                                          : null,
+                                ),
+                                child: Text(
+                                  time,
+                                  style: TextStyle(
+                                    fontSize: isSelected ? 32 : 24,
+                                    fontFamily: 'Inter',
+                                    fontWeight:
+                                        isSelected
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                    color:
+                                        isSelected
+                                            ? const Color(0xFF1A1A1A)
+                                            : const Color(0xFF777777),
                                   ),
-                                  child: Text(
-                                    time,
-                                    style: TextStyle(
-                                      fontSize: isSelected ? 32 : 24,
-                                      fontFamily: 'Inter',
-                                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                      color: isSelected ? const Color(0xFF1A1A1A) : const Color(0xFF777777),
-                                    ),
-                                  ),
+                                ),
                               );
                             },
                             childCount: times.length,
@@ -147,7 +161,7 @@ class _SetCheckinTimePageState extends State<SetCheckinTimePage> {
                 ),
               ),
 
-                const SizedBox(height: AppSpacing.large ),
+              const SizedBox(height: AppSpacing.large),
 
               // Bottom Button
               SizedBox(

@@ -26,7 +26,8 @@ class _Question3State extends State<Question3> {
 
   void _continue() {
     if (selectedOption != null) {
-      OnboardingState().answers['Seberapa sering kamu menonton pornografi?'] = options[selectedOption!];
+      OnboardingState().answers['Seberapa sering kamu menonton pornografi?'] =
+          options[selectedOption!];
       Navigator.pushNamed(context, '/question-4');
     }
   }
@@ -108,8 +109,7 @@ class _Question3State extends State<Question3> {
                     final isSelected = selectedOption == index;
 
                     return Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: AppSpacing.medium),
+                      padding: const EdgeInsets.only(bottom: AppSpacing.medium),
                       child: GestureDetector(
                         onTap: () => _selectOption(index),
                         child: Container(
@@ -118,26 +118,30 @@ class _Question3State extends State<Question3> {
                             vertical: 18,
                           ),
                           decoration: BoxDecoration(
-                            color: isSelected
-                                ? const Color(0xFF4BB857).withOpacity(0.12)
-                                : const Color(0xFFF2F2F2),
-                            borderRadius:
-                                BorderRadius.circular(AppRadius.large),
-                            border: isSelected
-                                ? Border.all(
-                                    color: const Color(0xFF4BB857),
-                                    width: 2,
-                                  )
-                                : null,
+                            color:
+                                isSelected
+                                    ? const Color(0xFF4BB857).withOpacity(0.12)
+                                    : const Color(0xFFF2F2F2),
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.large,
+                            ),
+                            border:
+                                isSelected
+                                    ? Border.all(
+                                      color: const Color(0xFF4BB857),
+                                      width: 2,
+                                    )
+                                    : null,
                           ),
                           child: Text(
                             options[index],
                             style: AppText.body.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: isSelected
-                                  ? const Color(0xFF2E7D32)
-                                  : AppTheme.textDark,
+                              color:
+                                  isSelected
+                                      ? const Color(0xFF2E7D32)
+                                      : AppTheme.textDark,
                             ),
                           ),
                         ),
@@ -154,9 +158,10 @@ class _Question3State extends State<Question3> {
                 child: ElevatedButton(
                   onPressed: selectedOption != null ? _continue : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: selectedOption != null
-                        ? const Color(0xFF1B5E20)
-                        : const Color(0xFFBDBDBD),
+                    backgroundColor:
+                        selectedOption != null
+                            ? const Color(0xFF1B5E20)
+                            : const Color(0xFFBDBDBD),
                     disabledBackgroundColor: const Color(0xFFBDBDBD),
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(

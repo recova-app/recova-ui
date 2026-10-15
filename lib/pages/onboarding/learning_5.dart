@@ -20,7 +20,7 @@ class Learning5 extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     Container(
+                    Container(
                       width: 220,
                       height: 220,
                       child: Image.asset(
@@ -114,39 +114,45 @@ class CuteBrainPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // Brain body (purple color)
-    final brainPaint = Paint()
-      ..color = const Color(0xFFB39DDB) // Light purple
-      ..style = PaintingStyle.fill;
+    final brainPaint =
+        Paint()
+          ..color = const Color(0xFFB39DDB) // Light purple
+          ..style = PaintingStyle.fill;
 
     // Brain outline
-    final outlinePaint = Paint()
-      ..color = const Color(0xFF9575CD) // Medium purple
-      ..strokeWidth = 3.0
-      ..style = PaintingStyle.stroke;
+    final outlinePaint =
+        Paint()
+          ..color = const Color(0xFF9575CD) // Medium purple
+          ..strokeWidth = 3.0
+          ..style = PaintingStyle.stroke;
 
     // Eyes
-    final eyePaint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.fill;
+    final eyePaint =
+        Paint()
+          ..color = Colors.black
+          ..style = PaintingStyle.fill;
 
     // Mouth
-    final mouthPaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
+    final mouthPaint =
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill;
 
     // Arms
-    final armPaint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 4.0
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
+    final armPaint =
+        Paint()
+          ..color = Colors.black
+          ..strokeWidth = 4.0
+          ..strokeCap = StrokeCap.round
+          ..style = PaintingStyle.stroke;
 
     // Legs
-    final legPaint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 4.0
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
+    final legPaint =
+        Paint()
+          ..color = Colors.black
+          ..strokeWidth = 4.0
+          ..strokeCap = StrokeCap.round
+          ..style = PaintingStyle.stroke;
 
     // Draw main brain shape
     final brainPath = Path();
@@ -154,32 +160,46 @@ class CuteBrainPainter extends CustomPainter {
     // Brain outline (rounded, bulbous shape)
     brainPath.moveTo(size.width * 0.3, size.height * 0.2);
     brainPath.quadraticBezierTo(
-      size.width * 0.1, size.height * 0.1,
-      size.width * 0.2, size.height * 0.35,
+      size.width * 0.1,
+      size.height * 0.1,
+      size.width * 0.2,
+      size.height * 0.35,
     );
     brainPath.quadraticBezierTo(
-      size.width * 0.15, size.height * 0.5,
-      size.width * 0.25, size.height * 0.65,
+      size.width * 0.15,
+      size.height * 0.5,
+      size.width * 0.25,
+      size.height * 0.65,
     );
     brainPath.quadraticBezierTo(
-      size.width * 0.35, size.height * 0.75,
-      size.width * 0.5, size.height * 0.7,
+      size.width * 0.35,
+      size.height * 0.75,
+      size.width * 0.5,
+      size.height * 0.7,
     );
     brainPath.quadraticBezierTo(
-      size.width * 0.65, size.height * 0.75,
-      size.width * 0.75, size.height * 0.65,
+      size.width * 0.65,
+      size.height * 0.75,
+      size.width * 0.75,
+      size.height * 0.65,
     );
     brainPath.quadraticBezierTo(
-      size.width * 0.85, size.height * 0.5,
-      size.width * 0.8, size.height * 0.35,
+      size.width * 0.85,
+      size.height * 0.5,
+      size.width * 0.8,
+      size.height * 0.35,
     );
     brainPath.quadraticBezierTo(
-      size.width * 0.9, size.height * 0.1,
-      size.width * 0.7, size.height * 0.2,
+      size.width * 0.9,
+      size.height * 0.1,
+      size.width * 0.7,
+      size.height * 0.2,
     );
     brainPath.quadraticBezierTo(
-      size.width * 0.5, size.height * 0.05,
-      size.width * 0.3, size.height * 0.2,
+      size.width * 0.5,
+      size.height * 0.05,
+      size.width * 0.3,
+      size.height * 0.2,
     );
     brainPath.close();
 
@@ -187,41 +207,52 @@ class CuteBrainPainter extends CustomPainter {
     canvas.drawPath(brainPath, outlinePaint);
 
     // Draw brain texture lines
-    final texturePaint = Paint()
-      ..color = const Color(0xFF9575CD)
-      ..strokeWidth = 2.0
-      ..style = PaintingStyle.stroke;
+    final texturePaint =
+        Paint()
+          ..color = const Color(0xFF9575CD)
+          ..strokeWidth = 2.0
+          ..style = PaintingStyle.stroke;
 
     // Left hemisphere lines
     final leftTexture = Path();
     leftTexture.moveTo(size.width * 0.25, size.height * 0.3);
     leftTexture.quadraticBezierTo(
-      size.width * 0.2, size.height * 0.4,
-      size.width * 0.3, size.height * 0.5,
+      size.width * 0.2,
+      size.height * 0.4,
+      size.width * 0.3,
+      size.height * 0.5,
     );
     leftTexture.moveTo(size.width * 0.35, size.height * 0.35);
     leftTexture.quadraticBezierTo(
-      size.width * 0.3, size.height * 0.45,
-      size.width * 0.4, size.height * 0.55,
+      size.width * 0.3,
+      size.height * 0.45,
+      size.width * 0.4,
+      size.height * 0.55,
     );
 
     // Right hemisphere lines
     leftTexture.moveTo(size.width * 0.75, size.height * 0.3);
     leftTexture.quadraticBezierTo(
-      size.width * 0.8, size.height * 0.4,
-      size.width * 0.7, size.height * 0.5,
+      size.width * 0.8,
+      size.height * 0.4,
+      size.width * 0.7,
+      size.height * 0.5,
     );
     leftTexture.moveTo(size.width * 0.65, size.height * 0.35);
     leftTexture.quadraticBezierTo(
-      size.width * 0.7, size.height * 0.45,
-      size.width * 0.6, size.height * 0.55,
+      size.width * 0.7,
+      size.height * 0.45,
+      size.width * 0.6,
+      size.height * 0.55,
     );
 
     // Center line
     leftTexture.moveTo(size.width * 0.5, size.height * 0.25);
     leftTexture.quadraticBezierTo(
-      size.width * 0.48, size.height * 0.4,
-      size.width * 0.5, size.height * 0.6,
+      size.width * 0.48,
+      size.height * 0.4,
+      size.width * 0.5,
+      size.height * 0.6,
     );
 
     canvas.drawPath(leftTexture, texturePaint);
@@ -275,12 +306,21 @@ class CuteBrainPainter extends CustomPainter {
     );
 
     // Draw feet (small circles)
-    final footPaint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.fill;
+    final footPaint =
+        Paint()
+          ..color = Colors.black
+          ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(Offset(size.width * 0.3, size.height * 0.9), 3, footPaint);
-    canvas.drawCircle(Offset(size.width * 0.7, size.height * 0.9), 3, footPaint);
+    canvas.drawCircle(
+      Offset(size.width * 0.3, size.height * 0.9),
+      3,
+      footPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.7, size.height * 0.9),
+      3,
+      footPaint,
+    );
   }
 
   @override

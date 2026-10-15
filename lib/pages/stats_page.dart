@@ -31,7 +31,9 @@ class _StatsPageState extends State<StatsPage> {
         child: BlocBuilder<StatsCubit, StatsState>(
           builder: (context, state) {
             if (state is StatsLoading || state is StatsInitial) {
-              return const Center(child: CircularProgressIndicator(color: Color(0xFF0C7A57)));
+              return const Center(
+                child: CircularProgressIndicator(color: Color(0xFF0C7A57)),
+              );
             }
             if (state is StatsLoadFailure) {
               return Center(
@@ -40,14 +42,24 @@ class _StatsPageState extends State<StatsPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.error_outline, size: 48, color: Color(0xFFEF4444)),
+                      const Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: Color(0xFFEF4444),
+                      ),
                       const SizedBox(height: 12),
                       Text(state.error, textAlign: TextAlign.center),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: () => context.read<StatsCubit>().fetchStats(),
-                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0C7A57)),
-                        child: const Text('Coba Lagi', style: TextStyle(color: Colors.white)),
+                        onPressed:
+                            () => context.read<StatsCubit>().fetchStats(),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0C7A57),
+                        ),
+                        child: const Text(
+                          'Coba Lagi',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                   ),
@@ -71,7 +83,10 @@ class _StatsPageState extends State<StatsPage> {
                     const SizedBox(height: 12),
                     _tabs(),
                     const SizedBox(height: 22),
-                    if (_isAnalysisTab) ..._buildAnalysis(stats, data) else _historyPanel(data.relapses),
+                    if (_isAnalysisTab)
+                      ..._buildAnalysis(stats, data)
+                    else
+                      _historyPanel(data.relapses),
                   ],
                 ),
               ),
@@ -86,43 +101,95 @@ class _StatsPageState extends State<StatsPage> {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Container(
-        width: 30, height: 30,
-        decoration: BoxDecoration(color: const Color(0xFF22C55E), borderRadius: BorderRadius.circular(15)),
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          color: const Color(0xFF22C55E),
+          borderRadius: BorderRadius.circular(15),
+        ),
         child: Image.asset('assets/images/logo.png', width: 64, height: 64),
       ),
       GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const NotificationPage()),
+        onTap:
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const NotificationPage()),
+            ),
+        child: const Icon(
+          Icons.notifications_none_rounded,
+          color: Color(0xFF6B7280),
         ),
-        child: const Icon(Icons.notifications_none_rounded, color: Color(0xFF6B7280)),
       ),
     ],
   );
 
   Widget _hero() => Container(
     height: 154,
-    decoration: BoxDecoration(color: const Color(0xFF0C7A57), borderRadius: BorderRadius.circular(20)),
-    child: Stack(children: [
-      const Positioned(
-        left: 16, top: 40, right: 120,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Mari Kita liat, Seberapa\nJauh Progresmu', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 34 * 0.55, height: 1.1)),
-          SizedBox(height: 8),
-          Text('Satu langkah kecil setiap harinya', style: TextStyle(color: Color(0xFFD1FAE5), fontSize: 10)),
-        ]),
-      ),
-      Positioned(right: -35, bottom: -50, child: Image.asset('assets/images/home/task.png', width: 195, height: 195, fit: BoxFit.contain)),
-    ]),
+    decoration: BoxDecoration(
+      color: const Color(0xFF0C7A57),
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Stack(
+      children: [
+        const Positioned(
+          left: 16,
+          top: 40,
+          right: 120,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Mari Kita liat, Seberapa\nJauh Progresmu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 34 * 0.55,
+                  height: 1.1,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Satu langkah kecil setiap harinya',
+                style: TextStyle(color: Color(0xFFD1FAE5), fontSize: 10),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          right: -35,
+          bottom: -50,
+          child: Image.asset(
+            'assets/images/home/task.png',
+            width: 195,
+            height: 195,
+            fit: BoxFit.contain,
+          ),
+        ),
+      ],
+    ),
   );
 
   Widget _tabs() => Container(
-    height: 36, padding: const EdgeInsets.all(3),
-    decoration: BoxDecoration(color: const Color(0xFFE1E1E1), borderRadius: BorderRadius.circular(30)),
-    child: Row(children: [
-      _tabItem('Analisis', _isAnalysisTab, () => setState(() => _isAnalysisTab = true)),
-      _tabItem('Histori Relapse', !_isAnalysisTab, () => setState(() => _isAnalysisTab = false)),
-    ]),
+    height: 36,
+    padding: const EdgeInsets.all(3),
+    decoration: BoxDecoration(
+      color: const Color(0xFFE1E1E1),
+      borderRadius: BorderRadius.circular(30),
+    ),
+    child: Row(
+      children: [
+        _tabItem(
+          'Analisis',
+          _isAnalysisTab,
+          () => setState(() => _isAnalysisTab = true),
+        ),
+        _tabItem(
+          'Histori Relapse',
+          !_isAnalysisTab,
+          () => setState(() => _isAnalysisTab = false),
+        ),
+      ],
+    ),
   );
 
   Widget _tabItem(String label, bool active, VoidCallback onTap) => Expanded(
@@ -133,28 +200,51 @@ class _StatsPageState extends State<StatsPage> {
           color: active ? const Color(0xFF0C7A57) : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
         ),
-        child: Center(child: Text(label, style: TextStyle(color: active ? Colors.white : const Color(0xFF444444), fontWeight: active ? FontWeight.w700 : FontWeight.w600))),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: active ? Colors.white : const Color(0xFF444444),
+              fontWeight: active ? FontWeight.w700 : FontWeight.w600,
+            ),
+          ),
+        ),
       ),
     ),
   );
 
-  List<Widget> _buildAnalysis(RelapseStats stats, RelapseStatisticsResponse data) {
+  List<Widget> _buildAnalysis(
+    RelapseStats stats,
+    RelapseStatisticsResponse data,
+  ) {
     final cleanDays = stats.streakCalendar.length;
     final successPercent = (stats.successRate * 100).round();
     return [
-      _sectionTitle('Statistik Kamu', 'Ini adalah ringkasan untuk 90 hari terakhir'),
+      _sectionTitle(
+        'Statistik Kamu',
+        'Ini adalah ringkasan untuk 90 hari terakhir',
+      ),
       const SizedBox(height: 12),
       _statCards(stats, cleanDays, successPercent),
       const SizedBox(height: 22),
-      _sectionTitle('Kalender Streak', 'Ini adalah catatan kalender Streak Kamu'),
+      _sectionTitle(
+        'Kalender Streak',
+        'Ini adalah catatan kalender Streak Kamu',
+      ),
       const SizedBox(height: 14),
       _calendar(stats),
       const SizedBox(height: 22),
-      _sectionTitle('Waktu Relapse', 'Analisis Waktu ketika kamu mengalami relapse'),
+      _sectionTitle(
+        'Waktu Relapse',
+        'Analisis Waktu ketika kamu mengalami relapse',
+      ),
       const SizedBox(height: 12),
       _donutPanel(data),
       const SizedBox(height: 22),
-      _sectionTitle('Trigger Relapse', 'Frekuensi trigger yang menyebabkan relapse'),
+      _sectionTitle(
+        'Trigger Relapse',
+        'Frekuensi trigger yang menyebabkan relapse',
+      ),
       const SizedBox(height: 12),
       _triggerBarChart(data),
     ];
@@ -163,70 +253,194 @@ class _StatsPageState extends State<StatsPage> {
   Widget _sectionTitle(String title, String subtitle) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(title, style: const TextStyle(fontSize: 43 * 0.55, fontWeight: FontWeight.w800)),
-      Text(subtitle, style: const TextStyle(fontSize: 14, color: Color(0xFF9AA3AA))),
+      Text(
+        title,
+        style: const TextStyle(
+          fontSize: 43 * 0.55,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+      Text(
+        subtitle,
+        style: const TextStyle(fontSize: 14, color: Color(0xFF9AA3AA)),
+      ),
     ],
   );
 
-  Widget _statCards(RelapseStats stats, int cleanDays, int successPercent) => Column(children: [
-    Row(children: [
-      Expanded(flex: 3, child: Container(
-        height: 220,
-        decoration: BoxDecoration(color: const Color(0xFFDDE8E2), borderRadius: BorderRadius.circular(14)),
-        child: Stack(clipBehavior: Clip.antiAlias, children: [
-          Padding(padding: const EdgeInsets.all(16), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Text('Longest Streak', style: TextStyle(color: Color(0xFF5C6761), fontWeight: FontWeight.w700)),
-            const SizedBox(height: 8),
-            Text('${stats.longestStreak} Hari', style: const TextStyle(fontSize: 56 * 0.55, fontWeight: FontWeight.w800, color: Color(0xFF2E5948))),
-          ])),
-          Positioned(right: 25, bottom: -35, child: Image.asset('assets/images/home/longStreak.png', width: 200, fit: BoxFit.contain)),
-        ]),
-      )),
-      const SizedBox(width: 10),
-      Expanded(flex: 2, child: SizedBox(height: 220, child: Column(children: [
-        Expanded(child: _miniCard(Icons.check_box_outlined, 'Success Rate', '$successPercent%', const Color(0xFFC8D5E8))),
-        const SizedBox(height: 10),
-        Expanded(child: _miniCard(Icons.calendar_month_outlined, 'Clean Days', '$cleanDays Hari', const Color(0xFFB6C3EE))),
-      ]))),
-    ]),
-    const SizedBox(height: 10),
-    Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
-      decoration: BoxDecoration(color: const Color(0xFFE8DDCB), borderRadius: BorderRadius.circular(14)),
-      child: Row(children: [
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Total Check-ins', style: TextStyle(color: Color(0xFF6E6558), fontWeight: FontWeight.w700)),
-          const SizedBox(height: 2),
-          Text('${stats.totalCheckins}', style: const TextStyle(fontSize: 50 * 0.55, fontWeight: FontWeight.w800, color: Color(0xFF3B352D))),
-        ])),
-        Image.asset('assets/images/home/boredom.png', width: 120, height: 120, fit: BoxFit.contain),
-      ]),
-    ),
-  ]);
+  Widget _statCards(RelapseStats stats, int cleanDays, int successPercent) =>
+      Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Container(
+                  height: 220,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFDDE8E2),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Stack(
+                    clipBehavior: Clip.antiAlias,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Longest Streak',
+                              style: TextStyle(
+                                color: Color(0xFF5C6761),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              '${stats.longestStreak} Hari',
+                              style: const TextStyle(
+                                fontSize: 56 * 0.55,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF2E5948),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        right: 25,
+                        bottom: -35,
+                        child: Image.asset(
+                          'assets/images/home/longStreak.png',
+                          width: 200,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                flex: 2,
+                child: SizedBox(
+                  height: 220,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: _miniCard(
+                          Icons.check_box_outlined,
+                          'Success Rate',
+                          '$successPercent%',
+                          const Color(0xFFC8D5E8),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Expanded(
+                        child: _miniCard(
+                          Icons.calendar_month_outlined,
+                          'Clean Days',
+                          '$cleanDays Hari',
+                          const Color(0xFFB6C3EE),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE8DDCB),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Total Check-ins',
+                        style: TextStyle(
+                          color: Color(0xFF6E6558),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${stats.totalCheckins}',
+                        style: const TextStyle(
+                          fontSize: 50 * 0.55,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF3B352D),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Image.asset(
+                  'assets/images/home/boredom.png',
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.contain,
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
 
-  Widget _miniCard(IconData icon, String label, String value, Color bg) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-    decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(14)),
-    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Icon(icon, size: 20),
-      const Spacer(),
-      Text(label, style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF4D5560))),
-      Text(value, style: const TextStyle(fontSize: 44 * 0.55, fontWeight: FontWeight.w800, color: Color(0xFF273247), height: 1.1)),
-    ]),
-  );
+  Widget _miniCard(IconData icon, String label, String value, Color bg) =>
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, size: 20),
+            const Spacer(),
+            Text(
+              label,
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF4D5560),
+              ),
+            ),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 44 * 0.55,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF273247),
+                height: 1.1,
+              ),
+            ),
+          ],
+        ),
+      );
 
   // ── Calendar ─────────────────────────────────────────────────────────────
   Widget _calendar(RelapseStats stats) {
-    final streakDates = stats.streakCalendar.map((s) => s.substring(0, 10)).toSet();
-    final relapseDates = stats.relapseCalendar.map((s) => s.substring(0, 10)).toSet();
+    final streakDates =
+        stats.streakCalendar.map((s) => s.substring(0, 10)).toSet();
+    final relapseDates =
+        stats.relapseCalendar.map((s) => s.substring(0, 10)).toSet();
     final year = _calendarMonth.year;
     final month = _calendarMonth.month;
     final daysInMonth = DateTime(year, month + 1, 0).day;
     final firstWeekday = DateTime(year, month, 1).weekday; // 1=Mon
     final today = DateTime.now();
-    final todayStr = '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+    final todayStr =
+        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
 
     // Build grid cells
     final cells = <_CalCell>[];
@@ -236,11 +450,20 @@ class _StatsPageState extends State<StatsPage> {
       cells.add(_CalCell(day: prevMonth.day - i + 1, isCurrentMonth: false));
     }
     for (int d = 1; d <= daysInMonth; d++) {
-      final dateStr = '$year-${month.toString().padLeft(2, '0')}-${d.toString().padLeft(2, '0')}';
+      final dateStr =
+          '$year-${month.toString().padLeft(2, '0')}-${d.toString().padLeft(2, '0')}';
       final isRelapse = relapseDates.contains(dateStr);
       final isStreak = streakDates.contains(dateStr) && !isRelapse;
       final isToday = dateStr == todayStr;
-      cells.add(_CalCell(day: d, isCurrentMonth: true, isStreak: isStreak, isRelapse: isRelapse, isToday: isToday));
+      cells.add(
+        _CalCell(
+          day: d,
+          isCurrentMonth: true,
+          isStreak: isStreak,
+          isRelapse: isRelapse,
+          isToday: isToday,
+        ),
+      );
     }
     // Trailing blanks
     int trailing = 7 - (cells.length % 7);
@@ -260,69 +483,152 @@ class _StatsPageState extends State<StatsPage> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 16),
-      decoration: BoxDecoration(color: const Color(0xFFF4F4F4), borderRadius: BorderRadius.circular(16)),
-      child: Column(children: [
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          GestureDetector(onTap: () => setState(() => _calendarMonth = DateTime(year, month - 1)), child: const Icon(Icons.chevron_left)),
-          Text(monthLabel, style: const TextStyle(fontSize: 30 * 0.42, color: Color(0xFF666666), fontWeight: FontWeight.w600)),
-          GestureDetector(onTap: () => setState(() => _calendarMonth = DateTime(year, month + 1)), child: const Icon(Icons.chevron_right)),
-        ]),
-        const SizedBox(height: 10),
-        const Divider(),
-        const Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-          Text('Sen'), Text('Sel'), Text('Rab'), Text('Kam'), Text('Jum'), Text('Sab'), Text('Min'),
-        ]),
-        const SizedBox(height: 8),
-        ...weeks.map((week) => Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: week.map((cell) {
-            Color bgColor = Colors.transparent;
-            Color textColor = cell.isCurrentMonth ? const Color(0xFF313131) : const Color(0xFFB8B8B8);
-            BoxDecoration? decoration;
+      decoration: BoxDecoration(
+        color: const Color(0xFFF4F4F4),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap:
+                    () => setState(
+                      () => _calendarMonth = DateTime(year, month - 1),
+                    ),
+                child: const Icon(Icons.chevron_left),
+              ),
+              Text(
+                monthLabel,
+                style: const TextStyle(
+                  fontSize: 30 * 0.42,
+                  color: Color(0xFF666666),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              GestureDetector(
+                onTap:
+                    () => setState(
+                      () => _calendarMonth = DateTime(year, month + 1),
+                    ),
+                child: const Icon(Icons.chevron_right),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const Divider(),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text('Sen'),
+              Text('Sel'),
+              Text('Rab'),
+              Text('Kam'),
+              Text('Jum'),
+              Text('Sab'),
+              Text('Min'),
+            ],
+          ),
+          const SizedBox(height: 8),
+          ...weeks.map(
+            (week) => Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children:
+                    week.map((cell) {
+                      Color bgColor = Colors.transparent;
+                      Color textColor =
+                          cell.isCurrentMonth
+                              ? const Color(0xFF313131)
+                              : const Color(0xFFB8B8B8);
+                      BoxDecoration? decoration;
 
-            if (cell.isRelapse) {
-              bgColor = const Color(0xFFEF4444);
-              textColor = Colors.white;
-              decoration = const BoxDecoration(color: Color(0xFFEF4444), shape: BoxShape.circle);
-            } else if (cell.isStreak) {
-              bgColor = const Color(0xFF39B96B);
-              textColor = Colors.white;
-              decoration = const BoxDecoration(color: Color(0xFF39B96B), shape: BoxShape.circle);
-            } else if (cell.isToday) {
-              decoration = BoxDecoration(shape: BoxShape.circle, border: Border.all(color: const Color(0xFF0C7A57), width: 2));
-              textColor = const Color(0xFF0C7A57);
-            }
+                      if (cell.isRelapse) {
+                        bgColor = const Color(0xFFEF4444);
+                        textColor = Colors.white;
+                        decoration = const BoxDecoration(
+                          color: Color(0xFFEF4444),
+                          shape: BoxShape.circle,
+                        );
+                      } else if (cell.isStreak) {
+                        bgColor = const Color(0xFF39B96B);
+                        textColor = Colors.white;
+                        decoration = const BoxDecoration(
+                          color: Color(0xFF39B96B),
+                          shape: BoxShape.circle,
+                        );
+                      } else if (cell.isToday) {
+                        decoration = BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: const Color(0xFF0C7A57),
+                            width: 2,
+                          ),
+                        );
+                        textColor = const Color(0xFF0C7A57);
+                      }
 
-            return Container(
-              width: 32, height: 32, alignment: Alignment.center,
-              decoration: decoration,
-              child: Text('${cell.day}', style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
-            );
-          }).toList()),
-        )),
-        const SizedBox(height: 14),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          _calendarLegend(const Color(0xFF39B96B), 'Clean'),
-          const SizedBox(width: 16),
-          _calendarLegend(const Color(0xFFEF4444), 'Relapse'),
-          const SizedBox(width: 16),
-          _calendarLegend(Colors.transparent, 'Today', border: const Color(0xFF0C7A57)),
-        ]),
-      ]),
+                      return Container(
+                        width: 32,
+                        height: 32,
+                        alignment: Alignment.center,
+                        decoration: decoration,
+                        child: Text(
+                          '${cell.day}',
+                          style: TextStyle(
+                            color: textColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _calendarLegend(const Color(0xFF39B96B), 'Clean'),
+              const SizedBox(width: 16),
+              _calendarLegend(const Color(0xFFEF4444), 'Relapse'),
+              const SizedBox(width: 16),
+              _calendarLegend(
+                Colors.transparent,
+                'Today',
+                border: const Color(0xFF0C7A57),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _calendarLegend(Color color, String label, {Color? border}) => Row(children: [
-    Container(
-      width: 12, height: 12,
-      decoration: BoxDecoration(
-        color: color, shape: BoxShape.circle,
-        border: border != null ? Border.all(color: border, width: 2) : null,
+  Widget _calendarLegend(Color color, String label, {Color? border}) => Row(
+    children: [
+      Container(
+        width: 12,
+        height: 12,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: border != null ? Border.all(color: border, width: 2) : null,
+        ),
       ),
-    ),
-    const SizedBox(width: 4),
-    Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF666666))),
-  ]);
+      const SizedBox(width: 4),
+      Text(
+        label,
+        style: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF666666),
+        ),
+      ),
+    ],
+  );
 
   // ── Donut (Time Of Day) ──────────────────────────────────────────────────
   Widget _donutPanel(RelapseStatisticsResponse data) {
@@ -355,77 +661,190 @@ class _StatsPageState extends State<StatsPage> {
     ];
 
     // Peak hours text
-    final peakText = peakHours.isNotEmpty
-        ? peakHours.map((h) => '${h.toString().padLeft(2, '0')}:00').join(', ')
-        : '-';
+    final peakText =
+        peakHours.isNotEmpty
+            ? peakHours
+                .map((h) => '${h.toString().padLeft(2, '0')}:00')
+                .join(', ')
+            : '-';
 
     return _panel(
-      child: Column(children: [
-        const SizedBox(height: 4),
-        SizedBox(
-          height: 220,
-          child: total > 0
-              ? CustomPaint(painter: _DonutPainterData(segments: segments, total: total), child: Center(
-                  child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    Text('$total', style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w800, color: Color(0xFF273247))),
-                    const Text('Relapses', style: TextStyle(fontSize: 12, color: Color(0xFF9AA3AA), fontWeight: FontWeight.w600)),
-                  ]),
-                ))
-              : const Center(child: Text('Belum ada data', style: TextStyle(color: Color(0xFF9AA3AA)))),
-        ),
-        const SizedBox(height: 12),
-        Wrap(spacing: 14, runSpacing: 8, alignment: WrapAlignment.center, children: segments.map((s) => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(width: 10, height: 10, decoration: BoxDecoration(color: s.color, shape: BoxShape.circle)),
-            const SizedBox(width: 4),
-            Text('${s.label} (${s.count})', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, color: Color(0xFF4A5460))),
-          ],
-        )).toList()),
-        const SizedBox(height: 10),
-        if (peakHours.isNotEmpty)
-          Container(
-            width: double.infinity, padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(10)),
-            child: Row(children: [
-              const Icon(Icons.access_time, size: 16, color: Color(0xFFD97706)),
-              const SizedBox(width: 8),
-              Expanded(child: Text('Peak hours: $peakText', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF92400E)))),
-            ]),
+      child: Column(
+        children: [
+          const SizedBox(height: 4),
+          SizedBox(
+            height: 220,
+            child:
+                total > 0
+                    ? CustomPaint(
+                      painter: _DonutPainterData(
+                        segments: segments,
+                        total: total,
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              '$total',
+                              style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF273247),
+                              ),
+                            ),
+                            const Text(
+                              'Relapses',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF9AA3AA),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                    : const Center(
+                      child: Text(
+                        'Belum ada data',
+                        style: TextStyle(color: Color(0xFF9AA3AA)),
+                      ),
+                    ),
           ),
-        const SizedBox(height: 10),
-        // if (summary != null && summary.isNotEmpty) _tip(summary),
-        if (data.relapseTimeSummary != null) ...[
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 14,
+            runSpacing: 8,
+            alignment: WrapAlignment.center,
+            children:
+                segments
+                    .map(
+                      (s) => Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: s.color,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${s.label} (${s.count})',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
+                              color: Color(0xFF4A5460),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                    .toList(),
+          ),
           const SizedBox(height: 10),
-          _timeSummaryCard(data.relapseTimeSummary!),
+          if (peakHours.isNotEmpty)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFEF3C7),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.access_time,
+                    size: 16,
+                    color: Color(0xFFD97706),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Peak hours: $peakText',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF92400E),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 10),
+          // if (summary != null && summary.isNotEmpty) _tip(summary),
+          if (data.relapseTimeSummary != null) ...[
+            const SizedBox(height: 10),
+            _timeSummaryCard(data.relapseTimeSummary!),
+          ],
         ],
-      ]),
+      ),
     );
   }
 
   Widget _timeSummaryCard(RelapseTimeSummary summary) => Container(
-    width: double.infinity, padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(color: const Color(0xFFE6EEEA), borderRadius: BorderRadius.circular(12)),
+    width: double.infinity,
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      color: const Color(0xFFE6EEEA),
+      borderRadius: BorderRadius.circular(12),
+    ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
-          const Icon(Icons.analytics_outlined, size: 16, color: Color(0xFF3F51B5)),
-          const SizedBox(width: 8),
-          Text(summary.title, style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF1A237E), fontSize: 13)),
-        ]),
+        Row(
+          children: [
+            const Icon(
+              Icons.analytics_outlined,
+              size: 16,
+              color: Color(0xFF3F51B5),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              summary.title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF1A237E),
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: 8),
-        Text(summary.analysis, style: const TextStyle(fontSize: 12, color: Color(0xFF3949AB))),
+        Text(
+          summary.analysis,
+          style: const TextStyle(fontSize: 12, color: Color(0xFF3949AB)),
+        ),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: const Color(0xFFC5CAE9), borderRadius: BorderRadius.circular(8)),
+          decoration: BoxDecoration(
+            color: const Color(0xFFC5CAE9),
+            borderRadius: BorderRadius.circular(8),
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.lightbulb_outline, size: 14, color: Color(0xFF1A237E)),
+              const Icon(
+                Icons.lightbulb_outline,
+                size: 14,
+                color: Color(0xFF1A237E),
+              ),
               const SizedBox(width: 6),
-              Expanded(child: Text(summary.summary, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF1A237E)))),
+              Expanded(
+                child: Text(
+                  summary.summary,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1A237E),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -434,101 +853,207 @@ class _StatsPageState extends State<StatsPage> {
   );
 
   Widget _panel({required Widget child}) => Container(
-    width: double.infinity, padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
-    decoration: BoxDecoration(color: const Color(0xFFE2E9E5), borderRadius: BorderRadius.circular(16)),
+    width: double.infinity,
+    padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
+    decoration: BoxDecoration(
+      color: const Color(0xFFE2E9E5),
+      borderRadius: BorderRadius.circular(16),
+    ),
     child: Container(
       padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(color: const Color(0xFFF1F5F2), borderRadius: BorderRadius.circular(16)),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF1F5F2),
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: child,
     ),
   );
 
   Widget _tip(String text) => Container(
-    width: double.infinity, padding: const EdgeInsets.all(10),
-    decoration: BoxDecoration(color: const Color(0xFFE6EEEA), borderRadius: BorderRadius.circular(12)),
-    child: Row(children: [
-      const Icon(Icons.info_outline, size: 16, color: Color(0xFF5D8D7F)),
-      const SizedBox(width: 8),
-      Expanded(child: Text(text, style: const TextStyle(fontSize: 12, color: Color(0xFF4E5A55), fontWeight: FontWeight.w600))),
-    ]),
+    width: double.infinity,
+    padding: const EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      color: const Color(0xFFE6EEEA),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      children: [
+        const Icon(Icons.info_outline, size: 16, color: Color(0xFF5D8D7F)),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Color(0xFF4E5A55),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    ),
   );
 
   // ── History Tab ──────────────────────────────────────────────────────────
   Widget _historyPanel(List<RelapseEntry> relapses) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _sectionTitle('Histori Relapse', 'Ini adalah histori relapse kamu'),
-      const SizedBox(height: 20),
-      if (relapses.isEmpty)
-        Container(
-          width: double.infinity, padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(color: const Color(0xFFEFFBEE), borderRadius: BorderRadius.circular(12)),
-          child: const Column(children: [
-            Icon(Icons.celebration, size: 40, color: Color(0xFF22C55E)),
-            SizedBox(height: 8),
-            Text('Belum ada relapse!', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF2E5948))),
-            Text('Pertahankan progresmu', style: TextStyle(color: Color(0xFF5C6761))),
-          ]),
-        )
-      else
-        ...relapses.asMap().entries.map((entry) {
-          final i = entry.key;
-          final r = entry.value;
-          return _historyTimelineItem(
-            relapse: r,
-            isFirst: i == 0,
-            isLast: i == relapses.length - 1,
-          );
-        }),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionTitle('Histori Relapse', 'Ini adalah histori relapse kamu'),
+        const SizedBox(height: 20),
+        if (relapses.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: const Color(0xFFEFFBEE),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Column(
+              children: [
+                Icon(Icons.celebration, size: 40, color: Color(0xFF22C55E)),
+                SizedBox(height: 8),
+                Text(
+                  'Belum ada relapse!',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF2E5948),
+                  ),
+                ),
+                Text(
+                  'Pertahankan progresmu',
+                  style: TextStyle(color: Color(0xFF5C6761)),
+                ),
+              ],
+            ),
+          )
+        else
+          ...relapses.asMap().entries.map((entry) {
+            final i = entry.key;
+            final r = entry.value;
+            return _historyTimelineItem(
+              relapse: r,
+              isFirst: i == 0,
+              isLast: i == relapses.length - 1,
+            );
+          }),
+      ],
+    );
   }
 
-  Widget _historyTimelineItem({required RelapseEntry relapse, required bool isFirst, required bool isLast}) {
+  Widget _historyTimelineItem({
+    required RelapseEntry relapse,
+    required bool isFirst,
+    required bool isLast,
+  }) {
     return IntrinsicHeight(
-      child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        SizedBox(width: 24, child: Stack(alignment: Alignment.center, children: [
-          Positioned(
-            top: isFirst ? 14 : 0, bottom: isLast ? null : 0,
-            child: Container(width: 4, color: const Color(0xFFE2E2E2)),
-          ),
-          Positioned(top: 14, child: Container(
-            width: 14, height: 14,
-            decoration: const BoxDecoration(color: Color(0xFFEF4444), shape: BoxShape.circle),
-          )),
-        ])),
-        const SizedBox(width: 8),
-        Expanded(child: Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: const Color(0xFFFEF2F2), borderRadius: BorderRadius.circular(12)),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                '${relapse.relapseDayName}, ${relapse.relapseDate}',
-                style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF272727), fontSize: 12),
-              ),
-              const SizedBox(height: 4),
-              Row(children: [
-                const Icon(Icons.emoji_emotions_outlined, size: 14, color: Color(0xFF9AA3AA)),
-                const SizedBox(width: 4),
-                Text('Mood: ${relapse.mood}', style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280))),
-              ]),
-              const SizedBox(height: 4),
-              Text(relapse.commitment, style: const TextStyle(color: Color(0xFF7F1D1D), fontSize: 13)),
-              if (relapse.relapseTrigger.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Wrap(spacing: 8, runSpacing: 4, children: relapse.relapseTrigger.map((t) => _tag(t)).toList()),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            width: 24,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Positioned(
+                  top: isFirst ? 14 : 0,
+                  bottom: isLast ? null : 0,
+                  child: Container(width: 4, color: const Color(0xFFE2E2E2)),
+                ),
+                Positioned(
+                  top: 14,
+                  child: Container(
+                    width: 14,
+                    height: 14,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFEF4444),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
               ],
-            ]),
+            ),
           ),
-        )),
-      ]),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFEF2F2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${relapse.relapseDayName}, ${relapse.relapseDate}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF272727),
+                        fontSize: 12,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.emoji_emotions_outlined,
+                          size: 14,
+                          color: Color(0xFF9AA3AA),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Mood: ${relapse.mood}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF6B7280),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      relapse.commitment,
+                      style: const TextStyle(
+                        color: Color(0xFF7F1D1D),
+                        fontSize: 13,
+                      ),
+                    ),
+                    if (relapse.relapseTrigger.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        children:
+                            relapse.relapseTrigger.map((t) => _tag(t)).toList(),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _tag(String text) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-    decoration: BoxDecoration(color: const Color(0xFFEF4444), borderRadius: BorderRadius.circular(4)),
-    child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.w700)),
+    decoration: BoxDecoration(
+      color: const Color(0xFFEF4444),
+      borderRadius: BorderRadius.circular(4),
+    ),
+    child: Text(
+      text,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 8,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
   );
 
   // ── Trigger Bar Chart ─────────────────────────────────────────────────────
@@ -539,7 +1064,13 @@ class _StatsPageState extends State<StatsPage> {
         child: const Center(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 32),
-            child: Text('Belum ada data trigger', style: TextStyle(color: Color(0xFF9AA3AA), fontWeight: FontWeight.w600)),
+            child: Text(
+              'Belum ada data trigger',
+              style: TextStyle(
+                color: Color(0xFF9AA3AA),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ),
       );
@@ -550,7 +1081,9 @@ class _StatsPageState extends State<StatsPage> {
       ..sort((a, b) => b.relapseTriggerCount.compareTo(a.relapseTriggerCount));
 
     final displayed = _showAllTriggers ? sorted : sorted.take(5).toList();
-    final maxCount = displayed.map((e) => e.relapseTriggerCount).reduce(math.max);
+    final maxCount = displayed
+        .map((e) => e.relapseTriggerCount)
+        .reduce(math.max);
 
     // Bar colors cycling through a curated palette
     const barColors = [
@@ -567,121 +1100,164 @@ class _StatsPageState extends State<StatsPage> {
     ];
 
     return _panel(
-      child: Column(children: [
-        // Toggle: Top 5 / All
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Text('Show:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF6B7280))),
-          const SizedBox(width: 8),
-          _triggerToggle('Top 5', !_showAllTriggers, () => setState(() => _showAllTriggers = false)),
-          const SizedBox(width: 6),
-          _triggerToggle('All', _showAllTriggers, () => setState(() => _showAllTriggers = true)),
-        ]),
-        const SizedBox(height: 16),
-
-        // Y-axis labels + bar chart
-        SizedBox(
-          height: 230,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+      child: Column(
+        children: [
+          // Toggle: Top 5 / All
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Y-axis labels
-              SizedBox(
-                width: 26,
-                height: 190,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: List.generate(
-                    maxCount < 5 ? maxCount + 1 : 6,
-                    (i) {
+              const Text(
+                'Show:',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF6B7280),
+                ),
+              ),
+              const SizedBox(width: 8),
+              _triggerToggle(
+                'Top 5',
+                !_showAllTriggers,
+                () => setState(() => _showAllTriggers = false),
+              ),
+              const SizedBox(width: 6),
+              _triggerToggle(
+                'All',
+                _showAllTriggers,
+                () => setState(() => _showAllTriggers = true),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Y-axis labels + bar chart
+          SizedBox(
+            height: 230,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Y-axis labels
+                SizedBox(
+                  width: 26,
+                  height: 190,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: List.generate(maxCount < 5 ? maxCount + 1 : 6, (
+                      i,
+                    ) {
                       final steps = math.max(1, maxCount < 5 ? maxCount : 5);
                       final val = maxCount - ((maxCount / steps) * i).round();
                       return Text(
                         '$val',
-                        style: const TextStyle(fontSize: 10, color: Color(0xFF9AA3AA), fontWeight: FontWeight.w600),
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: Color(0xFF9AA3AA),
+                          fontWeight: FontWeight.w600,
+                        ),
                       );
-                    },
+                    }),
                   ),
                 ),
-              ),
-              const SizedBox(width: 6),
-              // Bars area
-              Expanded(
-                child: Column(
-                  children: [
-                    // Bars
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                const SizedBox(width: 6),
+                // Bars area
+                Expanded(
+                  child: Column(
+                    children: [
+                      // Bars
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: List.generate(displayed.length, (i) {
+                            final item = displayed[i];
+                            final fraction =
+                                maxCount > 0
+                                    ? item.relapseTriggerCount.toDouble() /
+                                        maxCount.toDouble()
+                                    : 0.0;
+                            final color = barColors[i % barColors.length];
+                            return Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    // Count label above bar
+                                    Text(
+                                      '${item.relapseTriggerCount}',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w800,
+                                        color: color,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    // Animated bar
+                                    AnimatedContainer(
+                                      duration: const Duration(
+                                        milliseconds: 500,
+                                      ),
+                                      curve: Curves.easeOutCubic,
+                                      height: fraction * 160,
+                                      decoration: BoxDecoration(
+                                        color: color,
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                              top: Radius.circular(6),
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      // Divider line
+                      Container(height: 1, color: const Color(0xFFD1D5DB)),
+                      const SizedBox(height: 6),
+                      // X-axis labels
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: List.generate(displayed.length, (i) {
-                          final item = displayed[i];
-                          final fraction = maxCount > 0 ? item.relapseTriggerCount.toDouble() / maxCount.toDouble() : 0.0;
-                          final color = barColors[i % barColors.length];
+                          final label = displayed[i].relapseTrigger;
+                          final capitalised =
+                              label.isNotEmpty
+                                  ? '${label[0].toUpperCase()}${label.substring(1)}'
+                                  : label;
                           return Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  // Count label above bar
-                                  Text(
-                                    '${item.relapseTriggerCount}',
-                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: color),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  // Animated bar
-                                  AnimatedContainer(
-                                    duration: const Duration(milliseconds: 500),
-                                    curve: Curves.easeOutCubic,
-                                    height: fraction * 160,
-                                    decoration: BoxDecoration(
-                                      color: color,
-                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
-                                    ),
-                                  ),
-                                ],
+                            child: Text(
+                              capitalised,
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF4A5460),
                               ),
                             ),
                           );
                         }),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    // Divider line
-                    Container(height: 1, color: const Color(0xFFD1D5DB)),
-                    const SizedBox(height: 6),
-                    // X-axis labels
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: List.generate(displayed.length, (i) {
-                        final label = displayed[i].relapseTrigger;
-                        final capitalised = label.isNotEmpty
-                            ? '${label[0].toUpperCase()}${label.substring(1)}'
-                            : label;
-                        return Expanded(
-                          child: Text(
-                            capitalised,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w700, color: Color(0xFF4A5460)),
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 14),
+          const SizedBox(height: 14),
 
-        // Summary card
-        if (data.relapseTimeriggerSummary != null)
-          _triggerSummaryCard(data.relapseTimeriggerSummary!),
-      ]),
+          // Summary card
+          if (data.relapseTimeriggerSummary != null)
+            _triggerSummaryCard(data.relapseTimeriggerSummary!),
+        ],
+      ),
     );
   }
 
@@ -718,18 +1294,28 @@ class _StatsPageState extends State<StatsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 28, height: 28,
+          width: 28,
+          height: 28,
           decoration: const BoxDecoration(
             color: Color(0xFFD1FAE5),
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.info_outline, size: 16, color: Color(0xFF0C7A57)),
+          child: const Icon(
+            Icons.info_outline,
+            size: 16,
+            color: Color(0xFF0C7A57),
+          ),
         ),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
             summary.summary,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF4E5A55), fontWeight: FontWeight.w600, height: 1.4),
+            style: const TextStyle(
+              fontSize: 12,
+              color: Color(0xFF4E5A55),
+              fontWeight: FontWeight.w600,
+              height: 1.4,
+            ),
           ),
         ),
       ],
@@ -745,7 +1331,13 @@ class _CalCell {
   final bool isStreak;
   final bool isRelapse;
   final bool isToday;
-  const _CalCell({required this.day, this.isCurrentMonth = true, this.isStreak = false, this.isRelapse = false, this.isToday = false});
+  const _CalCell({
+    required this.day,
+    this.isCurrentMonth = true,
+    this.isStreak = false,
+    this.isRelapse = false,
+    this.isToday = false,
+  });
 }
 
 class _DonutSegment {
@@ -768,11 +1360,12 @@ class _DonutPainterData extends CustomPainter {
     final strokeWidth = 26.0;
 
     // Draw background ring
-    final bg = Paint()
-      ..color = const Color(0xFFE3E7F9)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
+    final bg =
+        Paint()
+          ..color = const Color(0xFFE3E7F9)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeWidth
+          ..strokeCap = StrokeCap.round;
     canvas.drawArc(rect, 0, math.pi * 2, false, bg);
 
     if (total == 0) return;
@@ -781,11 +1374,12 @@ class _DonutPainterData extends CustomPainter {
     for (final seg in segments) {
       if (seg.count == 0) continue;
       final sweep = (seg.count / total) * math.pi * 2;
-      final paint = Paint()
-        ..color = seg.color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = strokeWidth
-        ..strokeCap = StrokeCap.round;
+      final paint =
+          Paint()
+            ..color = seg.color
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = strokeWidth
+            ..strokeCap = StrokeCap.round;
       canvas.drawArc(rect, startAngle, sweep, false, paint);
       startAngle += sweep;
     }

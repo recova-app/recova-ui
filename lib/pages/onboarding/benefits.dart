@@ -13,42 +13,15 @@ class _BenefitsPageState extends State<BenefitsPage>
   late List<Animation<Offset>> _slideAnimations;
 
   final List<BenefitItem> _benefits = [
-    BenefitItem(
-      emoji: '💛',
-      title: 'Hubungan sosial yang lebih erat',
-    ),
-    BenefitItem(
-      emoji: '⭐',
-      title: 'Peningkatan rasa percaya diri',
-    ),
-    BenefitItem(
-      emoji: '🔥',
-      title: 'Lebih banyak energi dan motivasi',
-    ),
-    BenefitItem(
-      emoji: '💪',
-      title: 'Peningkatan gairah dan kehidupan seks',
-    ),
-    BenefitItem(
-      emoji: '🧘',
-      title: 'Peningkatan pengendalian diri',
-    ),
-    BenefitItem(
-      emoji: '🎯',
-      title: 'Peningkatan fokus dan kejernihan pikiran',
-    ),
-    BenefitItem(
-      emoji: '🌿',
-      title: 'Pikiran yang murni dan sehat',
-    ),
-    BenefitItem(
-      emoji: '😊',
-      title: 'Suasana hati yang lebih baik',
-    ),
-    BenefitItem(
-      emoji: '🕊️',
-      title: 'Stres dan kecemasan berkurang',
-    ),
+    BenefitItem(emoji: '💛', title: 'Hubungan sosial yang lebih erat'),
+    BenefitItem(emoji: '⭐', title: 'Peningkatan rasa percaya diri'),
+    BenefitItem(emoji: '🔥', title: 'Lebih banyak energi dan motivasi'),
+    BenefitItem(emoji: '💪', title: 'Peningkatan gairah dan kehidupan seks'),
+    BenefitItem(emoji: '🧘', title: 'Peningkatan pengendalian diri'),
+    BenefitItem(emoji: '🎯', title: 'Peningkatan fokus dan kejernihan pikiran'),
+    BenefitItem(emoji: '🌿', title: 'Pikiran yang murni dan sehat'),
+    BenefitItem(emoji: '😊', title: 'Suasana hati yang lebih baik'),
+    BenefitItem(emoji: '🕊️', title: 'Stres dan kecemasan berkurang'),
   ];
 
   @override
@@ -62,17 +35,17 @@ class _BenefitsPageState extends State<BenefitsPage>
 
     _slideAnimations = List.generate(
       _benefits.length,
-      (index) => Tween<Offset>(
-        begin: const Offset(0, 1),
-        end: Offset.zero,
-      ).animate(CurvedAnimation(
-        parent: _slideController,
-        curve: Interval(
-          index * 0.05,
-          0.5 + (index * 0.05),
-          curve: Curves.easeOutCubic,
-        ),
-      )),
+      (index) =>
+          Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).animate(
+            CurvedAnimation(
+              parent: _slideController,
+              curve: Interval(
+                index * 0.05,
+                0.5 + (index * 0.05),
+                curve: Curves.easeOutCubic,
+              ),
+            ),
+          ),
     );
 
     _slideController.forward();
@@ -164,20 +137,14 @@ class BenefitItem {
   final String emoji;
   final String title;
 
-  BenefitItem({
-    required this.emoji,
-    required this.title,
-  });
+  BenefitItem({required this.emoji, required this.title});
 }
 
 // Benefit Card Widget
 class BenefitCard extends StatelessWidget {
   final BenefitItem benefit;
 
-  const BenefitCard({
-    super.key,
-    required this.benefit,
-  });
+  const BenefitCard({super.key, required this.benefit});
 
   @override
   Widget build(BuildContext context) {
@@ -190,10 +157,7 @@ class BenefitCard extends StatelessWidget {
       child: Row(
         children: [
           // Emoji
-          Text(
-            benefit.emoji,
-            style: const TextStyle(fontSize: 24),
-          ),
+          Text(benefit.emoji, style: const TextStyle(fontSize: 24)),
 
           const SizedBox(width: 16),
 

@@ -57,10 +57,11 @@ class _CommunityPageState extends State<CommunityPage> {
     await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: context.read<CommunityCubit>(),
-          child: const CreatePostPage(),
-        ),
+        builder:
+            (_) => BlocProvider.value(
+              value: context.read<CommunityCubit>(),
+              child: const CreatePostPage(),
+            ),
       ),
     );
     if (!mounted) return;
@@ -104,14 +105,14 @@ class _CommunityPageState extends State<CommunityPage> {
         backgroundColor: const Color(0xFFF5F5F7),
         elevation: 0,
         centerTitle: true,
-        title: const Text(
-          'Komunitas',
-          style: _CommunityTypography.pageTitle,
-        ),
+        title: const Text('Komunitas', style: _CommunityTypography.pageTitle),
         leading: IconButton(
           onPressed: () => Navigator.of(context).maybePop(),
-          icon:
-              const Icon(Icons.arrow_back, color: Color(0xFF1E293B), size: 24),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Color(0xFF1E293B),
+            size: 24,
+          ),
         ),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1),
@@ -142,24 +143,27 @@ class _CommunityPageState extends State<CommunityPage> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
-                        color: selected
-                            ? const Color(0xFF0B9A63)
-                            : const Color(0xFFDDE3EC),
+                        color:
+                            selected
+                                ? const Color(0xFF0B9A63)
+                                : const Color(0xFFDDE3EC),
                         borderRadius: BorderRadius.circular(13),
                         border: Border.all(
-                          color: selected
-                              ? const Color(0xFF0B9A63)
-                              : const Color(0xFFD0D7E2),
+                          color:
+                              selected
+                                  ? const Color(0xFF0B9A63)
+                                  : const Color(0xFFD0D7E2),
                         ),
-                        boxShadow: selected
-                            ? const [
-                                BoxShadow(
-                                  color: Color(0x220B9A63),
-                                  blurRadius: 12,
-                                  offset: Offset(0, 5),
-                                ),
-                              ]
-                            : const [],
+                        boxShadow:
+                            selected
+                                ? const [
+                                  BoxShadow(
+                                    color: Color(0x220B9A63),
+                                    blurRadius: 12,
+                                    offset: Offset(0, 5),
+                                  ),
+                                ]
+                                : const [],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -167,14 +171,18 @@ class _CommunityPageState extends State<CommunityPage> {
                           if (selected)
                             const Padding(
                               padding: EdgeInsets.only(right: 8),
-                              child: Icon(Icons.circle,
-                                  size: 7, color: Colors.white),
+                              child: Icon(
+                                Icons.circle,
+                                size: 7,
+                                color: Colors.white,
+                              ),
                             ),
                           Text(
                             label,
-                            style: selected
-                                ? _CommunityTypography.filterSelected
-                                : _CommunityTypography.filterDefault,
+                            style:
+                                selected
+                                    ? _CommunityTypography.filterSelected
+                                    : _CommunityTypography.filterDefault,
                           ),
                         ],
                       ),
@@ -205,10 +213,13 @@ class _CommunityPageState extends State<CommunityPage> {
                     );
                   }
 
-                  final posts = state.posts
-                      .where(
-                          (p) => _categoryMatches(p.category, _selectedFilter))
-                      .toList();
+                  final posts =
+                      state.posts
+                          .where(
+                            (p) =>
+                                _categoryMatches(p.category, _selectedFilter),
+                          )
+                          .toList();
 
                   if (posts.isEmpty) {
                     return Center(
@@ -268,8 +279,10 @@ class _CommunityPageState extends State<CommunityPage> {
                       final post = posts[index];
                       return _CommunityPostCard(
                         post: post,
-                        onLike: () =>
-                            context.read<CommunityCubit>().toggleLike(post.id),
+                        onLike:
+                            () => context.read<CommunityCubit>().toggleLike(
+                              post.id,
+                            ),
                         onComments: () => _openCommentsSheet(post),
                       );
                     },
@@ -414,10 +427,7 @@ class _CommunityPostCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            post.content,
-            style: _CommunityTypography.postContent,
-          ),
+          Text(post.content, style: _CommunityTypography.postContent),
           const SizedBox(height: 14),
           Row(
             children: [
@@ -448,8 +458,11 @@ class _CommunityPostCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 2),
-                    const Icon(Icons.local_fire_department,
-                        size: 12, color: Color(0xFFF59E0B)),
+                    const Icon(
+                      Icons.local_fire_department,
+                      size: 12,
+                      color: Color(0xFFF59E0B),
+                    ),
                   ],
                 ),
               ),
@@ -473,7 +486,7 @@ class _CommunityPostCard extends StatelessWidget {
                     post.isLiked ? Colors.redAccent : const Color(0xFF6B7280),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -510,10 +523,7 @@ class _CommunityActionButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              '$count',
-              style: _CommunityTypography.metaCount,
-            ),
+            Text('$count', style: _CommunityTypography.metaCount),
             const SizedBox(width: 5),
             Icon(icon, size: 20, color: iconColor),
           ],
@@ -566,9 +576,9 @@ class _CommentsSheetState extends State<_CommentsSheet> {
       });
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal memuat komentar')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Gagal memuat komentar')));
     } finally {
       if (!mounted) return;
       setState(() {
@@ -587,7 +597,9 @@ class _CommentsSheetState extends State<_CommentsSheet> {
     try {
       if (_replyTarget == null) {
         await ApiService.addPostComment(
-            postId: widget.post.id, content: content);
+          postId: widget.post.id,
+          content: content,
+        );
       } else {
         await ApiService.addCommentReply(
           postId: widget.post.id,
@@ -609,9 +621,9 @@ class _CommentsSheetState extends State<_CommentsSheet> {
       }
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gagal mengirim komentar')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Gagal mengirim komentar')));
     } finally {
       if (!mounted) return;
       setState(() {
@@ -620,8 +632,10 @@ class _CommentsSheetState extends State<_CommentsSheet> {
     }
   }
 
-  List<Widget> _buildCommentNodes(List<CommunityComment> comments,
-      {double indent = 0}) {
+  List<Widget> _buildCommentNodes(
+    List<CommunityComment> comments, {
+    double indent = 0,
+  }) {
     final widgets = <Widget>[];
     for (final c in comments) {
       widgets.add(
@@ -651,10 +665,7 @@ class _CommentsSheetState extends State<_CommentsSheet> {
                 ],
               ),
               const SizedBox(height: 6),
-              Text(
-                c.content,
-                style: _CommunityTypography.commentBody,
-              ),
+              Text(c.content, style: _CommunityTypography.commentBody),
               const SizedBox(height: 8),
               GestureDetector(
                 onTap: () {
@@ -709,20 +720,21 @@ class _CommentsSheetState extends State<_CommentsSheet> {
               ),
             ),
             Expanded(
-              child: _loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : _comments.isEmpty
+              child:
+                  _loading
+                      ? const Center(child: CircularProgressIndicator())
+                      : _comments.isEmpty
                       ? const Center(
-                          child: Text(
-                            'Belum ada komentar. Jadilah yang pertama.',
-                            style: _CommunityTypography.emptyText,
-                          ),
-                        )
-                      : ListView(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                          children: _buildCommentNodes(_comments),
+                        child: Text(
+                          'Belum ada komentar. Jadilah yang pertama.',
+                          style: _CommunityTypography.emptyText,
                         ),
+                      )
+                      : ListView(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                        children: _buildCommentNodes(_comments),
+                      ),
             ),
             if (_replyTarget != null)
               Container(
@@ -766,19 +778,23 @@ class _CommentsSheetState extends State<_CommentsSheet> {
                         color: Color(0xFF1F2937),
                       ),
                       decoration: InputDecoration(
-                        hintText: _replyTarget == null
-                            ? 'Tulis komentar...'
-                            : 'Tulis balasan...',
+                        hintText:
+                            _replyTarget == null
+                                ? 'Tulis komentar...'
+                                : 'Tulis balasan...',
                         hintStyle: const TextStyle(
                           fontSize: 14,
                           color: Color(0xFF9AA3B2),
                         ),
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide:
-                              const BorderSide(color: Color(0xFFD9DEE6)),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFD9DEE6),
+                          ),
                         ),
                       ),
                     ),
@@ -791,22 +807,28 @@ class _CommentsSheetState extends State<_CommentsSheet> {
                       width: 42,
                       height: 42,
                       decoration: BoxDecoration(
-                        color: _sending
-                            ? const Color(0xFF91C9B3)
-                            : const Color(0xFF0B9A63),
+                        color:
+                            _sending
+                                ? const Color(0xFF91C9B3)
+                                : const Color(0xFF0B9A63),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: _sending
-                          ? const Padding(
-                              padding: EdgeInsets.all(11),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                      child:
+                          _sending
+                              ? const Padding(
+                                padding: EdgeInsets.all(11),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
+                              : const Icon(
+                                Icons.send,
+                                color: Colors.white,
+                                size: 20,
                               ),
-                            )
-                          : const Icon(Icons.send,
-                              color: Colors.white, size: 20),
                     ),
                   ),
                 ],

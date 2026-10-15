@@ -100,23 +100,23 @@ class _PreparingTestResultPageState extends State<PreparingTestResultPage>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                          height: 200,
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Container(
-                                  width: 200,
-                                  height: 200,
-                                  child: Image.asset(
-                                    'assets/images/maskots/preparing-results.png',
-                                    width: 200,
-                                    height: 200,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                            ],
+                      height: 200,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 200,
+                            height: 200,
+                            child: Image.asset(
+                              'assets/images/maskots/preparing-results.png',
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.contain,
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                    ),
 
                     const SizedBox(height: AppSpacing.large),
 

@@ -8,11 +8,7 @@ class ArticlePage extends StatefulWidget {
   final String title;
   final String category;
 
-  const ArticlePage({
-    super.key,
-    required this.title,
-    required this.category,
-  });
+  const ArticlePage({super.key, required this.title, required this.category});
 
   @override
   State<ArticlePage> createState() => _ArticlePageState();
@@ -42,7 +38,11 @@ class _ArticlePageState extends State<ArticlePage> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Color(0xFF111111), size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Color(0xFF111111),
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -56,7 +56,8 @@ class _ArticlePageState extends State<ArticlePage> {
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () => context.read<EducationCubit>().fetchEducationContents(),
+          onRefresh:
+              () => context.read<EducationCubit>().fetchEducationContents(),
           color: const Color(0xFF38B768),
           child: BlocBuilder<EducationCubit, EducationState>(
             builder: (context, state) {
@@ -71,16 +72,27 @@ class _ArticlePageState extends State<ArticlePage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                      const Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: Colors.red,
+                      ),
                       const SizedBox(height: 16),
                       Text(
                         state.error,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF6B7280),
+                        ),
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: () => context.read<EducationCubit>().fetchEducationContents(),
+                        onPressed:
+                            () =>
+                                context
+                                    .read<EducationCubit>()
+                                    .fetchEducationContents(),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF38B768),
                           foregroundColor: Colors.white,
@@ -97,9 +109,11 @@ class _ArticlePageState extends State<ArticlePage> {
 
               if (state is EducationLoadSuccess) {
                 // Filter content by category
-                final articles = state.contents.where((content) {
-                  return content.category.toLowerCase() == widget.category.toLowerCase();
-                }).toList();
+                final articles =
+                    state.contents.where((content) {
+                      return content.category.toLowerCase() ==
+                          widget.category.toLowerCase();
+                    }).toList();
 
                 if (articles.isEmpty) {
                   return SingleChildScrollView(
@@ -127,7 +141,10 @@ class _ArticlePageState extends State<ArticlePage> {
                             SizedBox(height: 16),
                             Text(
                               'Artikel edukasi akan segera tersedia. Stay tuned!',
-                              style: TextStyle(fontSize: 10, color: Color(0xFF7A7A7A)),
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Color(0xFF7A7A7A),
+                              ),
                             ),
                           ],
                         ),
@@ -150,7 +167,8 @@ class _ArticlePageState extends State<ArticlePage> {
                         title: article.title,
                         subtitle: article.description,
                         tag: article.category,
-                        readTime: '3 min read', // Placeholder as API doesn't provide read time
+                        readTime:
+                            '3 min read', // Placeholder as API doesn't provide read time
                       ),
                     );
                   },
@@ -202,10 +220,7 @@ class _ArticleCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               subtitle,
-              style: const TextStyle(
-                fontSize: 13,
-                color: Color(0xFF454545),
-              ),
+              style: const TextStyle(fontSize: 13, color: Color(0xFF454545)),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -214,7 +229,10 @@ class _ArticleCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF38B768).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),

@@ -10,8 +10,8 @@ class RelapseCubit extends Cubit<RelapseState> {
   final HomeCubit _homeCubit;
 
   RelapseCubit({required HomeCubit homeCubit})
-      : _homeCubit = homeCubit,
-        super(RelapseInitial());
+    : _homeCubit = homeCubit,
+      super(RelapseInitial());
 
   Future<void> submitRelapse({
     required String mood,

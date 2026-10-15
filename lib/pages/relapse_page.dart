@@ -6,10 +6,7 @@ import 'package:recova/pages/main_scaffold.dart';
 class RelapsePage extends StatefulWidget {
   final int streakDays;
 
-  const RelapsePage({
-    super.key,
-    required this.streakDays,
-  });
+  const RelapsePage({super.key, required this.streakDays});
 
   @override
   State<RelapsePage> createState() => _RelapsePageState();
@@ -33,11 +30,27 @@ class _RelapsePageState extends State<RelapsePage>
   ];
 
   final List<_TriggerOption> _triggers = const [
-    _TriggerOption(icon: Icons.hourglass_empty_rounded, label: 'Boredom', value: 'Boredom'),
-    _TriggerOption(icon: Icons.psychology_rounded, label: 'Stress', value: 'Stress'),
-    _TriggerOption(icon: Icons.phone_android_rounded, label: 'Media', value: 'Media'),
+    _TriggerOption(
+      icon: Icons.hourglass_empty_rounded,
+      label: 'Boredom',
+      value: 'Boredom',
+    ),
+    _TriggerOption(
+      icon: Icons.psychology_rounded,
+      label: 'Stress',
+      value: 'Stress',
+    ),
+    _TriggerOption(
+      icon: Icons.phone_android_rounded,
+      label: 'Media',
+      value: 'Media',
+    ),
     _TriggerOption(icon: Icons.mood_rounded, label: 'Mood', value: 'Mood'),
-    _TriggerOption(icon: Icons.location_on_rounded, label: 'Location', value: 'Location'),
+    _TriggerOption(
+      icon: Icons.location_on_rounded,
+      label: 'Location',
+      value: 'Location',
+    ),
   ];
 
   final List<String> _commitmentTemplates = [
@@ -72,11 +85,27 @@ class _RelapsePageState extends State<RelapsePage>
   String _getTodayDate() {
     final now = DateTime.now();
     const months = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
     ];
     const days = [
-      'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu',
+      'Senin',
+      'Selasa',
+      'Rabu',
+      'Kamis',
+      'Jumat',
+      'Sabtu',
+      'Minggu',
     ];
     return '${days[now.weekday - 1]}, ${now.day} ${months[now.month - 1]} ${now.year}';
   }
@@ -153,7 +182,11 @@ class _RelapsePageState extends State<RelapsePage>
                       child: Column(
                         children: [
                           const SizedBox(height: 8),
-                          Image.asset('assets/images/maskots/learning-5.png', width: 200, height: 200,),
+                          Image.asset(
+                            'assets/images/maskots/learning-5.png',
+                            width: 200,
+                            height: 200,
+                          ),
                           const SizedBox(height: 8),
                           const Text(
                             'Tidak Apa-Apa',
@@ -575,9 +608,7 @@ class _RelapsePageState extends State<RelapsePage>
                           if (_commitmentController.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text(
-                                  'Tulis pesan komitmen kamu',
-                                ),
+                                content: Text('Tulis pesan komitmen kamu'),
                                 backgroundColor: Color(0xFFEF4444),
                               ),
                             );
@@ -617,7 +648,7 @@ class _RelapsePageState extends State<RelapsePage>
                                 backgroundColor: Color(0xFF136E4D),
                               ),
                             );
-                              Navigator.pushReplacement(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (_) => const MainScaffold(),
@@ -648,9 +679,7 @@ class _RelapsePageState extends State<RelapsePage>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              isSubmitted
-                                  ? 'Relapse Sudah Dicatat'
-                                  : 'Relapse',
+                              isSubmitted ? 'Relapse Sudah Dicatat' : 'Relapse',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,

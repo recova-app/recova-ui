@@ -10,13 +10,11 @@ class ThemeSettingsPage extends StatefulWidget {
 
 class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   bool isDarkMode = false;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Theme Settings'),
-      ),
+      appBar: AppBar(title: const Text('Theme Settings')),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.medium),
         child: Column(
@@ -56,9 +54,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: AppSpacing.medium),
-            
+
             // Preview Colors
             Card(
               child: Padding(
@@ -68,7 +66,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                   children: [
                     Text('Color Preview', style: AppText.h2),
                     const SizedBox(height: AppSpacing.medium),
-                    
+
                     // Color Rows
                     _buildColorRow('Primary', AppTheme.primary),
                     _buildColorRow('Secondary', AppTheme.secondary),

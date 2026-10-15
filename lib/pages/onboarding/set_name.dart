@@ -78,7 +78,9 @@ class _SetNamePageState extends State<SetNamePage> {
                           // Input Field
                           Container(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(AppRadius.medium),
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.medium,
+                              ),
                               border: Border.all(
                                 color: const Color(0xFFDDDDDD),
                                 width: 1,
@@ -106,7 +108,6 @@ class _SetNamePageState extends State<SetNamePage> {
                               onSubmitted: (_) => _continue(),
                             ),
                           ),
-
                         ],
                       ),
 
@@ -137,9 +138,10 @@ class _SetNamePageState extends State<SetNamePage> {
                 child: ElevatedButton(
                   onPressed: _isButtonEnabled ? _continue : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _isButtonEnabled
-                        ? const Color(0xFF1B5E20)
-                        : const Color(0xFFBDBDBD),
+                    backgroundColor:
+                        _isButtonEnabled
+                            ? const Color(0xFF1B5E20)
+                            : const Color(0xFFBDBDBD),
                     disabledBackgroundColor: const Color(0xFFBDBDBD),
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
@@ -152,7 +154,10 @@ class _SetNamePageState extends State<SetNamePage> {
                       fontFamily: 'Inter',
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: _isButtonEnabled ? Colors.white : const Color(0xFF777777),
+                      color:
+                          _isButtonEnabled
+                              ? Colors.white
+                              : const Color(0xFF777777),
                     ),
                   ),
                 ),

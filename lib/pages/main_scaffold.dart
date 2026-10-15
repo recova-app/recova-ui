@@ -29,25 +29,23 @@ class _MainScaffoldState extends State<MainScaffold> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
       // Gunakan IndexedStack untuk menjaga state setiap halaman
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
-      floatingActionButton: _currentIndex == -1
-          ? FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CreatePostPage(),
-                  ),
-                );
-              },
-              backgroundColor: const Color(0xFF2EC4B6),
-              shape: const CircleBorder(),
-              child: const Icon(Icons.add, color: Colors.white),
-            )
-          : null,
+      body: IndexedStack(index: _currentIndex, children: _pages),
+      floatingActionButton:
+          _currentIndex == -1
+              ? FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CreatePostPage(),
+                    ),
+                  );
+                },
+                backgroundColor: const Color(0xFF2EC4B6),
+                shape: const CircleBorder(),
+                child: const Icon(Icons.add, color: Colors.white),
+              )
+              : null,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,

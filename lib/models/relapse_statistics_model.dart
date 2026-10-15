@@ -27,33 +27,36 @@ class RelapseStatisticsResponse {
   factory RelapseStatisticsResponse.fromJson(Map<String, dynamic> json) {
     return RelapseStatisticsResponse(
       statistics: RelapseStats.fromJson(json['statistics'] ?? {}),
-      relapses: (json['relapses'] as List?)
+      relapses:
+          (json['relapses'] as List?)
               ?.map((e) => RelapseEntry.fromJson(e))
               .toList() ??
           [],
       hourlyRelapseDistribution:
           (json['hourly_relapse_distribution'] as List?)
-                  ?.map((e) => HourlyRelapseDistribution.fromJson(e))
-                  .toList() ??
-              [],
+              ?.map((e) => HourlyRelapseDistribution.fromJson(e))
+              .toList() ??
+          [],
       relapseTriggerDistribution:
           (json['relapse_triggers_distribution'] as List?)
-                  ?.map((e) => RelapseTriggerDistribution.fromJson(e))
-                  .toList() ??
-              [],
-      peakRelapseHoursUtc:
-          List<int>.from(json['peak_relapse_hours_utc'] ?? []),
+              ?.map((e) => RelapseTriggerDistribution.fromJson(e))
+              .toList() ??
+          [],
+      peakRelapseHoursUtc: List<int>.from(json['peak_relapse_hours_utc'] ?? []),
       peakRelapseCount: json['peak_relapse_count'] ?? 0,
       aiSummary: json['ai_summary'] ?? '',
-      relapseTimeSummary: json['relapse_time_summary'] != null
-          ? RelapseTimeSummary.fromJson(json['relapse_time_summary'])
-          : null,
-      relapseTimeriggerSummary: json['relapse_trigger_summary'] != null
-          ? RelapseTimeSummary.fromJson(json['relapse_trigger_summary'])
-          : null,
-      latestRelapseSolution: json['latest_relapse_solution'] != null
-          ? RelapseTimeSummary.fromJson(json['latest_relapse_solution'])
-          : null,
+      relapseTimeSummary:
+          json['relapse_time_summary'] != null
+              ? RelapseTimeSummary.fromJson(json['relapse_time_summary'])
+              : null,
+      relapseTimeriggerSummary:
+          json['relapse_trigger_summary'] != null
+              ? RelapseTimeSummary.fromJson(json['relapse_trigger_summary'])
+              : null,
+      latestRelapseSolution:
+          json['latest_relapse_solution'] != null
+              ? RelapseTimeSummary.fromJson(json['latest_relapse_solution'])
+              : null,
     );
   }
 }
@@ -117,13 +120,16 @@ class RelapseStats {
       recoverySuccessRate: (json['recovery_success_rate'] ?? 0).toDouble(),
       checkinConsistencyScore:
           (json['checkin_consistency_score'] ?? 0).toDouble(),
-      weeklyProgress: json['weekly_progress'] != null
-          ? WeeklyMonthlyProgress.fromJson(json['weekly_progress'])
-          : null,
-      monthlyProgress: json['monthly_progress'] != null
-          ? WeeklyMonthlyProgress.fromJson(json['monthly_progress'])
-          : null,
-      moodTrend: (json['mood_trend'] as List?)
+      weeklyProgress:
+          json['weekly_progress'] != null
+              ? WeeklyMonthlyProgress.fromJson(json['weekly_progress'])
+              : null,
+      monthlyProgress:
+          json['monthly_progress'] != null
+              ? WeeklyMonthlyProgress.fromJson(json['monthly_progress'])
+              : null,
+      moodTrend:
+          (json['mood_trend'] as List?)
               ?.map((e) => MoodTrendEntry.fromJson(e))
               .toList() ??
           [],
@@ -131,13 +137,17 @@ class RelapseStats {
       lastCheckInDayName: json['last_check_in_day_name'],
       lastRelapseDate: json['last_relapse_date'],
       lastRelapseDayName: json['last_relapse_day_name'],
-      weekdaySummary: (json['weekday_summary'] as List?)
+      weekdaySummary:
+          (json['weekday_summary'] as List?)
               ?.map((e) => WeekdaySummaryEntry.fromJson(e))
               .toList() ??
           [],
-      streakGoalComparison: json['streak_goal_comparison'] != null
-          ? StreakGoalComparisonData.fromJson(json['streak_goal_comparison'])
-          : null,
+      streakGoalComparison:
+          json['streak_goal_comparison'] != null
+              ? StreakGoalComparisonData.fromJson(
+                json['streak_goal_comparison'],
+              )
+              : null,
     );
   }
 }

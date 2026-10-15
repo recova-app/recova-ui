@@ -45,7 +45,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = const Color(0xFF0B9A63) ;
+    final themeColor = const Color(0xFF0B9A63);
 
     return BlocListener<CommunityCubit, CommunityState>(
       listener: (context, state) {
@@ -100,8 +100,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 icon: const Icon(Icons.arrow_drop_down_rounded),
                 dropdownColor: Colors.white,
                 decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -114,10 +116,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 onChanged: (String? newValue) {
                   setState(() => _selectedCategory = newValue!);
                 },
-                items: _categories
-                    .map((value) =>
-                        DropdownMenuItem(value: value, child: Text(value)))
-                    .toList(),
+                items:
+                    _categories
+                        .map(
+                          (value) => DropdownMenuItem(
+                            value: value,
+                            child: Text(value),
+                          ),
+                        )
+                        .toList(),
               ),
 
               const SizedBox(height: 24),
@@ -138,8 +145,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   hintText: 'Tulis judul postinganmu...',
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -172,8 +181,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   hintText: 'Apa yang ingin kamu bagikan?',
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
@@ -191,7 +202,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
           builder: (context, state) {
             final isSubmitting = state is CommunitySubmitting;
             return Padding(
-              padding: EdgeInsets.fromLTRB(20, 8, 20, MediaQuery.of(context).viewInsets.bottom + 20),
+              padding: EdgeInsets.fromLTRB(
+                20,
+                8,
+                20,
+                MediaQuery.of(context).viewInsets.bottom + 20,
+              ),
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -205,22 +221,23 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ),
                     elevation: 0,
                   ),
-                  child: isSubmitting
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 3,
+                  child:
+                      isSubmitting
+                          ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 3,
+                            ),
+                          )
+                          : const Text(
+                            'Kirim',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
-                        )
-                      : const Text(
-                          'Kirim',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
                 ),
               ),
             );

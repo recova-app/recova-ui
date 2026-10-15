@@ -30,9 +30,10 @@ class AuthService {
   ///   to reuse a keep-alive connection that nginx has already closed.
   /// - `connectionTimeout = 30 s` → avoids hanging indefinitely.
   IOClient _buildClient() {
-    final inner = HttpClient()
-      ..connectionTimeout = const Duration(seconds: 30)
-      ..idleTimeout = const Duration(seconds: 0);
+    final inner =
+        HttpClient()
+          ..connectionTimeout = const Duration(seconds: 30)
+          ..idleTimeout = const Duration(seconds: 0);
     return IOClient(inner);
   }
 
@@ -86,7 +87,8 @@ class AuthService {
   /// Extract access token + onboarding flag from a successful auth response
   /// body, persist them, and return the inner `data` map.
   Future<Map<String, dynamic>> _persistAuthData(
-      Map<String, dynamic> responseBody) async {
+    Map<String, dynamic> responseBody,
+  ) async {
     final data = responseBody['data'] as Map<String, dynamic>;
     final session = data['session'] as Map<String, dynamic>;
     final user = data['user'] as Map<String, dynamic>;
@@ -197,9 +199,12 @@ class AuthService {
   Future<String?> getToken() => _storage.read(key: 'jwt_token');
 
   /// Submit onboarding data.
-  Future<Map<String, dynamic>> submitOnboarding(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> submitOnboarding(
+    Map<String, dynamic> data,
+  ) async {
     final token = await getToken();
-    if (token == null) throw Exception('Sesi telah berakhir, silakan login kembali.');
+    if (token == null)
+      throw Exception('Sesi telah berakhir, silakan login kembali.');
 
     final response = await _post(
       Uri.parse('$_baseUrl/api/v1/auth/onboarding'),

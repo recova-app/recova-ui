@@ -11,7 +11,46 @@ class Question2 extends StatefulWidget {
 
 class _Question2State extends State<Question2> {
   int selectedAge = 15;
-  final List<int> ages = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50];
+  final List<int> ages = [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+  ];
 
   void _continue() {
     OnboardingState().answers['Berapa umur kamu sekarang?'] = selectedAge;
@@ -110,27 +149,34 @@ class _Question2State extends State<Question2> {
                           return Container(
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              border: isSelected
-                                  ? Border(
-                                      top: BorderSide(
-                                          color: const Color(0xFF4BB857)
-                                              .withOpacity(0.4)),
-                                      bottom: BorderSide(
-                                          color: const Color(0xFF4BB857)
-                                              .withOpacity(0.4)),
-                                    )
-                                  : null,
+                              border:
+                                  isSelected
+                                      ? Border(
+                                        top: BorderSide(
+                                          color: const Color(
+                                            0xFF4BB857,
+                                          ).withOpacity(0.4),
+                                        ),
+                                        bottom: BorderSide(
+                                          color: const Color(
+                                            0xFF4BB857,
+                                          ).withOpacity(0.4),
+                                        ),
+                                      )
+                                      : null,
                             ),
                             child: Text(
                               age.toString(),
                               style: TextStyle(
                                 fontSize: isSelected ? 32 : 24,
-                                fontWeight: isSelected
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: isSelected
-                                    ? const Color(0xFF2E7D32)
-                                    : AppTheme.textGrey,
+                                fontWeight:
+                                    isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                color:
+                                    isSelected
+                                        ? const Color(0xFF2E7D32)
+                                        : AppTheme.textGrey,
                               ),
                             ),
                           );

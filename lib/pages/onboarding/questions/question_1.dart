@@ -26,7 +26,9 @@ class _Question1State extends State<Question1> {
 
   void _continue() {
     if (selectedAnswer != null) {
-      OnboardingState().answers['Diumur berapa kamu menonton pornografi untuk pertama kalinya?'] = selectedAnswer;
+      OnboardingState()
+              .answers['Diumur berapa kamu menonton pornografi untuk pertama kalinya?'] =
+          selectedAnswer;
       Navigator.pushNamed(context, '/question-2');
     }
   }
@@ -103,25 +105,30 @@ class _Question1State extends State<Question1> {
                             vertical: 18,
                           ),
                           decoration: BoxDecoration(
-                            color: isSelected
-                                ? const Color(0xFF4BB857).withOpacity(0.12)
-                                : const Color(0xFFF2F2F2),
-                            borderRadius: BorderRadius.circular(AppRadius.large),
-                            border: isSelected
-                                ? Border.all(
-                                    color: const Color(0xFF4BB857),
-                                    width: 2,
-                                  )
-                                : null,
+                            color:
+                                isSelected
+                                    ? const Color(0xFF4BB857).withOpacity(0.12)
+                                    : const Color(0xFFF2F2F2),
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.large,
+                            ),
+                            border:
+                                isSelected
+                                    ? Border.all(
+                                      color: const Color(0xFF4BB857),
+                                      width: 2,
+                                    )
+                                    : null,
                           ),
                           child: Text(
                             option['text']!,
                             style: AppText.body.copyWith(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: isSelected
-                                  ? const Color(0xFF2E7D32)
-                                  : AppTheme.textDark,
+                              color:
+                                  isSelected
+                                      ? const Color(0xFF2E7D32)
+                                      : AppTheme.textDark,
                             ),
                           ),
                         ),
@@ -138,9 +145,10 @@ class _Question1State extends State<Question1> {
                 child: ElevatedButton(
                   onPressed: selectedAnswer != null ? _continue : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: selectedAnswer != null
-                        ? const Color(0xFF1B5E20)
-                        : const Color(0xFFBDBDBD),
+                    backgroundColor:
+                        selectedAnswer != null
+                            ? const Color(0xFF1B5E20)
+                            : const Color(0xFFBDBDBD),
                     disabledBackgroundColor: const Color(0xFFBDBDBD),
                     shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(

@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Main Colors - Keep it simple!
-  static const Color primary = Color(0xFF4CAF50);      // Green
-  static const Color secondary = Color(0xFFFF6B6B);    // Coral
-  static const Color background = Colors.white;         // White
-  static const Color surface = Color(0xFFFFFFFF);      // White
+  static const Color primary = Color(0xFF4CAF50); // Green
+  static const Color secondary = Color(0xFFFF6B6B); // Coral
+  static const Color background = Colors.white; // White
+  static const Color surface = Color(0xFFFFFFFF); // White
 
   // Text Colors
-  static const Color textDark = Color(0xFF1A1A1A);     // Dark text
-  static const Color textGrey = Color(0xFF7F8C8D);     // Grey text
-  static const Color textLight = Color(0xFFBDC3C7);    // Light text
+  static const Color textDark = Color(0xFF1A1A1A); // Dark text
+  static const Color textGrey = Color(0xFF7F8C8D); // Grey text
+  static const Color textLight = Color(0xFFBDC3C7); // Light text
 
   // Status Colors
-  static const Color success = Color(0xFF27AE60);      // Green
-  static const Color warning = Color(0xFFF39C12);      // Orange
-  static const Color error = Color(0xFFE74C3C);        // Red
+  static const Color success = Color(0xFF27AE60); // Green
+  static const Color warning = Color(0xFFF39C12); // Orange
+  static const Color error = Color(0xFFE74C3C); // Red
 
   // Simple Gradient
   static const LinearGradient primaryGradient = LinearGradient(
@@ -50,9 +50,7 @@ class AppTheme {
 
       // Simple input style
       inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: primary, width: 2),

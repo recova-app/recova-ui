@@ -33,13 +33,18 @@ class CommunityComment {
       createdAt: _parseServerDateTime(json['created_at'] ?? json['createdAt']),
       depth: _toInt(json['depth']),
       replyCount: _toInt(json['reply_count'] ?? json['replyCount']),
-      authorName: (author['nickname'] ?? author['username'] ?? 'Anonim').toString(),
-      replies: repliesJson is List
-          ? repliesJson
-              .whereType<Map>()
-              .map((e) => CommunityComment.fromJson(Map<String, dynamic>.from(e)))
-              .toList()
-          : const [],
+      authorName:
+          (author['nickname'] ?? author['username'] ?? 'Anonim').toString(),
+      replies:
+          repliesJson is List
+              ? repliesJson
+                  .whereType<Map>()
+                  .map(
+                    (e) =>
+                        CommunityComment.fromJson(Map<String, dynamic>.from(e)),
+                  )
+                  .toList()
+              : const [],
     );
   }
 

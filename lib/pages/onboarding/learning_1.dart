@@ -54,7 +54,9 @@ class Learning1 extends StatelessWidget {
                           height: 1.4,
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.large), // Bottom spacing
+                      const SizedBox(
+                        height: AppSpacing.large,
+                      ), // Bottom spacing
                     ],
                   ),
                 ),
@@ -62,7 +64,10 @@ class Learning1 extends StatelessWidget {
 
               // Bottom Action Area - Always visible and clickable
               Padding(
-                padding: const EdgeInsets.only(top: AppSpacing.medium, bottom: AppSpacing.medium),
+                padding: const EdgeInsets.only(
+                  top: AppSpacing.medium,
+                  bottom: AppSpacing.medium,
+                ),
                 child: SizedBox(
                   width: double.infinity,
                   height: 56,

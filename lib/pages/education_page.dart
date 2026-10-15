@@ -26,8 +26,8 @@ class _EducationPageState extends State<EducationPage> {
       backgroundColor: const Color(0xFFFFFFFF),
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () =>
-              context.read<EducationCubit>().fetchEducationContents(),
+          onRefresh:
+              () => context.read<EducationCubit>().fetchEducationContents(),
           color: const Color(0xFF38B768),
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(
@@ -54,7 +54,10 @@ class _EducationPageState extends State<EducationPage> {
                         height: 64,
                       ),
                     ),
-                    const Icon(Icons.notifications_none_rounded, color: Color(0xFF6B7280)),
+                    const Icon(
+                      Icons.notifications_none_rounded,
+                      color: Color(0xFF6B7280),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 18),
@@ -142,9 +145,7 @@ class _EducationPageState extends State<EducationPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => const CoachPage(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const CoachPage()),
                     );
                   },
                   child: const _EducationFeatureCard(
@@ -163,10 +164,11 @@ class _EducationPageState extends State<EducationPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const ArticlePage(
-                          title: 'Pahami Dampak Pornografi',
-                          category: 'Dampak pornografi',
-                        ),
+                        builder:
+                            (_) => const ArticlePage(
+                              title: 'Pahami Dampak Pornografi',
+                              category: 'Dampak pornografi',
+                            ),
                       ),
                     );
                   },
@@ -186,10 +188,11 @@ class _EducationPageState extends State<EducationPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const ArticlePage(
-                          title: 'Tips & Strategi Pemulihan',
-                          category: 'Pemulihan',
-                        ),
+                        builder:
+                            (_) => const ArticlePage(
+                              title: 'Tips & Strategi Pemulihan',
+                              category: 'Pemulihan',
+                            ),
                       ),
                     );
                   },
@@ -229,20 +232,27 @@ class _EducationPageState extends State<EducationPage> {
                         child: Center(
                           child: Column(
                             children: [
-                              const Icon(Icons.error_outline,
-                                  size: 48, color: Colors.red),
+                              const Icon(
+                                Icons.error_outline,
+                                size: 48,
+                                color: Colors.red,
+                              ),
                               const SizedBox(height: 16),
                               Text(
                                 state.error,
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
-                                    fontSize: 14, color: Color(0xFF6B7280)),
+                                  fontSize: 14,
+                                  color: Color(0xFF6B7280),
+                                ),
                               ),
                               const SizedBox(height: 16),
                               ElevatedButton(
-                                onPressed: () => context
-                                    .read<EducationCubit>()
-                                    .fetchEducationContents(),
+                                onPressed:
+                                    () =>
+                                        context
+                                            .read<EducationCubit>()
+                                            .fetchEducationContents(),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF38B768),
                                   foregroundColor: Colors.white,
@@ -280,7 +290,9 @@ class _EducationPageState extends State<EducationPage> {
                               Text(
                                 'Konten edukasi akan segera tersedia. Stay tuned!',
                                 style: TextStyle(
-                                    fontSize: 10, color: Color(0xFF7A7A7A)),
+                                  fontSize: 10,
+                                  color: Color(0xFF7A7A7A),
+                                ),
                               ),
                             ],
                           ),
@@ -289,7 +301,8 @@ class _EducationPageState extends State<EducationPage> {
                       // Kelompokkan konten berdasarkan kategori
                       final groupedContent = <String, List<EducationContent>>{};
                       for (var content in state.contents) {
-                        if (content.category == 'Dampak Pornografi' || content.category == 'Pemulihan') {
+                        if (content.category == 'Dampak Pornografi' ||
+                            content.category == 'Pemulihan') {
                           continue;
                         }
                         (groupedContent[content.category] ??= []).add(content);
@@ -297,9 +310,13 @@ class _EducationPageState extends State<EducationPage> {
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: groupedContent.entries.map((entry) {
-                          return _buildVideoCategory(entry.key, entry.value);
-                        }).toList(),
+                        children:
+                            groupedContent.entries.map((entry) {
+                              return _buildVideoCategory(
+                                entry.key,
+                                entry.value,
+                              );
+                            }).toList(),
                       );
                     }
                     return const SizedBox.shrink();
@@ -334,8 +351,10 @@ class _EducationPageState extends State<EducationPage> {
                       SizedBox(height: 16),
                       Text(
                         'Insight ini berdasarkan riset neurosains tentang pemulihan dari kecanduan',
-                        style:
-                            TextStyle(fontSize: 10, color: Color(0xFF7A7A7A)),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Color(0xFF7A7A7A),
+                        ),
                       ),
                     ],
                   ),
@@ -410,8 +429,9 @@ class _VideoCard extends StatelessWidget {
           children: [
             // Thumbnail
             ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
               child: Image.network(
                 content.thumbnailUrl,
                 height: 110,
@@ -435,12 +455,16 @@ class _VideoCard extends StatelessWidget {
                     height: 110,
                     decoration: const BoxDecoration(
                       color: Color(0xFFE5E7EB),
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(12)),
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(12),
+                      ),
                     ),
                     child: const Center(
-                      child: Icon(Icons.play_circle_outline,
-                          color: Color(0xFF8B98A0), size: 36),
+                      child: Icon(
+                        Icons.play_circle_outline,
+                        color: Color(0xFF8B98A0),
+                        size: 36,
+                      ),
                     ),
                   );
                 },
@@ -537,11 +561,7 @@ class _EducationFeatureCard extends StatelessWidget {
             borderRadius: const BorderRadius.only(
               bottomRight: Radius.circular(12),
             ),
-            child: Image.asset(
-              assetPath,
-              width: 80,
-              fit: BoxFit.contain,
-            ),
+            child: Image.asset(assetPath, width: 80, fit: BoxFit.contain),
           ),
         ),
       ],
@@ -573,27 +593,32 @@ class ArticleCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
-            Text(subtitle, // Menggunakan subtitle dari parameter
-                style: const TextStyle(fontSize: 13, color: Colors.black54)),
+            Text(
+              subtitle, // Menggunakan subtitle dari parameter
+              style: const TextStyle(fontSize: 13, color: Colors.black54),
+            ),
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Chip(
-                  label: Text(tag, // Menggunakan tag dari parameter
-                      style: const TextStyle(
-                          fontSize: 12, color: Colors.teal)),
+                  label: Text(
+                    tag, // Menggunakan tag dari parameter
+                    style: const TextStyle(fontSize: 12, color: Colors.teal),
+                  ),
                   backgroundColor: Colors.teal.shade50,
                 ),
-                Text(readTime, // Menggunakan readTime dari parameter
-                    style: const TextStyle(
-                        fontSize: 12, color: Colors.teal)),
+                Text(
+                  readTime, // Menggunakan readTime dari parameter
+                  style: const TextStyle(fontSize: 12, color: Colors.teal),
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),

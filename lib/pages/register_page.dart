@@ -47,13 +47,17 @@ class _RegisterPageState extends State<RegisterPage> {
       if (!mounted) return;
 
       final user = data['user'] as Map<String, dynamic>;
-      final onboardingCompleted = user['onboarding_completed'] as bool? ?? false;
+      final onboardingCompleted =
+          user['onboarding_completed'] as bool? ?? false;
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => 
-              onboardingCompleted ? const MainScaffold() : const Learning1(),
+          builder:
+              (_) =>
+                  onboardingCompleted
+                      ? const MainScaffold()
+                      : const Learning1(),
         ),
       );
     } catch (e) {
@@ -64,11 +68,11 @@ class _RegisterPageState extends State<RegisterPage> {
           content: Text(e.toString().replaceFirst('Exception: ', '')),
           backgroundColor: const Color(0xFFD32F2F),
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
-      
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -90,8 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
       suffixIcon: suffixIcon,
       filled: true,
       fillColor: const Color(0xFFF7F7F7),
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Color(0xFFEEEEEE)),
@@ -102,8 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide:
-            const BorderSide(color: Color(0xFF4CAF50), width: 1.5),
+        borderSide: const BorderSide(color: Color(0xFF4CAF50), width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -111,8 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide:
-            const BorderSide(color: Color(0xFFD32F2F), width: 1.5),
+        borderSide: const BorderSide(color: Color(0xFFD32F2F), width: 1.5),
       ),
     );
   }
@@ -256,8 +257,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                   color: const Color(0xFF999999),
                                   size: 20,
                                 ),
-                                onPressed: () => setState(
-                                    () => _obscurePassword = !_obscurePassword),
+                                onPressed:
+                                    () => setState(
+                                      () =>
+                                          _obscurePassword = !_obscurePassword,
+                                    ),
                               ),
                             ),
                             style: const TextStyle(
@@ -293,9 +297,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                   color: const Color(0xFF999999),
                                   size: 20,
                                 ),
-                                onPressed: () => setState(() =>
-                                    _obscureConfirmPassword =
-                                        !_obscureConfirmPassword),
+                                onPressed:
+                                    () => setState(
+                                      () =>
+                                          _obscureConfirmPassword =
+                                              !_obscureConfirmPassword,
+                                    ),
                               ),
                             ),
                             style: const TextStyle(
@@ -324,31 +331,33 @@ class _RegisterPageState extends State<RegisterPage> {
                               onPressed: _isLoading ? null : _handleRegister,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF1B5E20),
-                                disabledBackgroundColor:
-                                    const Color(0xFF1B5E20).withOpacity(0.6),
+                                disabledBackgroundColor: const Color(
+                                  0xFF1B5E20,
+                                ).withOpacity(0.6),
                                 shadowColor: Colors.transparent,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(40),
                                 ),
                               ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      width: 22,
-                                      height: 22,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.5,
-                                        color: Colors.white,
+                              child:
+                                  _isLoading
+                                      ? const SizedBox(
+                                        width: 22,
+                                        height: 22,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.5,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                      : const Text(
+                                        'Daftar',
+                                        style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    )
-                                  : const Text(
-                                      'Daftar',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white,
-                                      ),
-                                    ),
                             ),
                           ),
 
@@ -380,7 +389,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             ],
                           ),
-                          
+
                           // Add padding to clear the image at bottom
                           const SizedBox(height: 40),
                         ],

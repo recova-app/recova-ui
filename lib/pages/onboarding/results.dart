@@ -7,7 +7,8 @@ class ResultsPage extends StatefulWidget {
   State<ResultsPage> createState() => _ResultsPageState();
 }
 
-class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin {
+class _ResultsPageState extends State<ResultsPage>
+    with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
@@ -26,10 +27,7 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
     _fadeAnimation = Tween<double>(
       begin: 0,
       end: 1,
-    ).animate(CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeIn,
-    ));
+    ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeIn));
 
     _fadeController.forward();
   }
@@ -52,7 +50,9 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
 
   Color _getLevelColor() {
     final level = _analysis?['level']?.toString().toLowerCase() ?? '';
-    if (level.contains('high') || level.contains('tinggi') || level.contains('severe')) {
+    if (level.contains('high') ||
+        level.contains('tinggi') ||
+        level.contains('severe')) {
       return const Color(0xFFFF6B6B);
     } else if (level.contains('moderate') || level.contains('sedang')) {
       return const Color(0xFFFFA726);
@@ -62,7 +62,9 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
 
   Color _getLevelBgColor() {
     final level = _analysis?['level']?.toString().toLowerCase() ?? '';
-    if (level.contains('high') || level.contains('tinggi') || level.contains('severe')) {
+    if (level.contains('high') ||
+        level.contains('tinggi') ||
+        level.contains('severe')) {
       return const Color(0xFFFFEBEE);
     } else if (level.contains('moderate') || level.contains('sedang')) {
       return const Color(0xFFFFF3E0);
@@ -72,7 +74,9 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
 
   IconData _getLevelIcon() {
     final level = _analysis?['level']?.toString().toLowerCase() ?? '';
-    if (level.contains('high') || level.contains('tinggi') || level.contains('severe')) {
+    if (level.contains('high') ||
+        level.contains('tinggi') ||
+        level.contains('severe')) {
       return Icons.warning_rounded;
     } else if (level.contains('moderate') || level.contains('sedang')) {
       return Icons.info_rounded;
@@ -119,7 +123,10 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
                       // Level badge
                       if (hasAnalysis) ...[
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             color: _getLevelBgColor(),
                             borderRadius: BorderRadius.circular(20),
@@ -317,10 +324,7 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
         color: const Color(0xFFF1F8E9),
         borderRadius: BorderRadius.circular(12),
         border: const Border(
-          left: BorderSide(
-            color: Color(0xFF4CAF50),
-            width: 4,
-          ),
+          left: BorderSide(color: Color(0xFF4CAF50), width: 4),
         ),
       ),
       child: Column(
@@ -328,11 +332,7 @@ class _ResultsPageState extends State<ResultsPage> with TickerProviderStateMixin
         children: [
           Row(
             children: [
-              Icon(
-                icon,
-                size: 18,
-                color: const Color(0xFF4CAF50),
-              ),
+              Icon(icon, size: 18, color: const Color(0xFF4CAF50)),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(

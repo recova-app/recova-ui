@@ -10,8 +10,8 @@ class CheckinCubit extends Cubit<CheckinState> {
   final HomeCubit _homeCubit;
 
   CheckinCubit({required HomeCubit homeCubit})
-      : _homeCubit = homeCubit,
-        super(CheckinInitial());
+    : _homeCubit = homeCubit,
+      super(CheckinInitial());
 
   Future<void> performCheckIn({
     required String content,

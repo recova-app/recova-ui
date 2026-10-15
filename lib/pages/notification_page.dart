@@ -35,7 +35,8 @@ class NotificationPage extends StatelessWidget {
         icon: Icons.people_outline_rounded,
         iconBg: const Color(0xFF8B5CF6),
         title: 'Aktivitas Komunitas',
-        body: 'Ada diskusi baru di komunitas. Bergabunglah dan berbagi pengalaman!',
+        body:
+            'Ada diskusi baru di komunitas. Bergabunglah dan berbagi pengalaman!',
         time: '3 hari lalu',
         isRead: true,
       ),
@@ -43,7 +44,8 @@ class NotificationPage extends StatelessWidget {
         icon: Icons.emoji_events_rounded,
         iconBg: const Color(0xFF0EA5E9),
         title: 'Tantangan Harian',
-        body: 'Tantangan baru sudah siap untukmu! Selesaikan untuk mendapat rewards.',
+        body:
+            'Tantangan baru sudah siap untukmu! Selesaikan untuk mendapat rewards.',
         time: '4 hari lalu',
         isRead: true,
       ),
@@ -51,7 +53,8 @@ class NotificationPage extends StatelessWidget {
         icon: Icons.favorite_rounded,
         iconBg: const Color(0xFFEF4444),
         title: 'Motivasi Hari Ini',
-        body: '"Setiap langkah kecil yang kamu ambil hari ini mendekatkanmu pada versi terbaik dirimu."',
+        body:
+            '"Setiap langkah kecil yang kamu ambil hari ini mendekatkanmu pada versi terbaik dirimu."',
         time: '5 hari lalu',
         isRead: true,
       ),
@@ -128,20 +131,21 @@ class NotificationPage extends StatelessWidget {
 
             // ── Scrollable notification list ──
             Expanded(
-              child: notifications.isEmpty
-                  ? _buildEmptyState()
-                  : ListView.separated(
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
+              child:
+                  notifications.isEmpty
+                      ? _buildEmptyState()
+                      : ListView.separated(
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(22, 0, 22, 24),
+                        itemCount: notifications.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 10),
+                        itemBuilder: (context, index) {
+                          final notif = notifications[index];
+                          return _NotificationCard(notification: notif);
+                        },
                       ),
-                      padding: const EdgeInsets.fromLTRB(22, 0, 22, 24),
-                      itemCount: notifications.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 10),
-                      itemBuilder: (context, index) {
-                        final notif = notifications[index];
-                        return _NotificationCard(notification: notif);
-                      },
-                    ),
             ),
           ],
         ),
@@ -227,16 +231,15 @@ class _NotificationCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: notification.isRead
-            ? const Color(0xFFF7F7F7)
-            : const Color(0xFFEAF9F1),
+        color:
+            notification.isRead
+                ? const Color(0xFFF7F7F7)
+                : const Color(0xFFEAF9F1),
         borderRadius: BorderRadius.circular(14),
-        border: notification.isRead
-            ? null
-            : Border.all(
-                color: const Color(0xFFD1FAE5),
-                width: 1,
-              ),
+        border:
+            notification.isRead
+                ? null
+                : Border.all(color: const Color(0xFFD1FAE5), width: 1),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,7 +272,9 @@ class _NotificationCard extends StatelessWidget {
                         notification.title,
                         style: TextStyle(
                           fontWeight:
-                              notification.isRead ? FontWeight.w600 : FontWeight.w700,
+                              notification.isRead
+                                  ? FontWeight.w600
+                                  : FontWeight.w700,
                           fontSize: 14,
                           color: const Color(0xFF111111),
                         ),

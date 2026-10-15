@@ -37,8 +37,9 @@ class _LoginPageState extends State<LoginPage> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) =>
-            onboardingCompleted ? const MainScaffold() : const Learning1(),
+        builder:
+            (_) =>
+                onboardingCompleted ? const MainScaffold() : const Learning1(),
       ),
     );
   }
@@ -161,7 +162,6 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
 
-
                           const SizedBox(height: 28),
 
                           // Heading
@@ -232,8 +232,11 @@ class _LoginPageState extends State<LoginPage> {
                                   color: const Color(0xFF999999),
                                   size: 20,
                                 ),
-                                onPressed: () => setState(
-                                    () => _obscurePassword = !_obscurePassword),
+                                onPressed:
+                                    () => setState(
+                                      () =>
+                                          _obscurePassword = !_obscurePassword,
+                                    ),
                               ),
                             ),
                             style: const TextStyle(
@@ -256,7 +259,8 @@ class _LoginPageState extends State<LoginPage> {
                             width: double.infinity,
                             height: 52,
                             child: ElevatedButton(
-                              onPressed: _isEmailLoading ? null : _handleEmailLogin,
+                              onPressed:
+                                  _isEmailLoading ? null : _handleEmailLogin,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF1B5E20),
                                 foregroundColor: Colors.white,
@@ -265,23 +269,24 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 elevation: 0,
                               ),
-                              child: _isEmailLoading
-                                  ? const SizedBox(
-                                      height: 24,
-                                      width: 24,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
+                              child:
+                                  _isEmailLoading
+                                      ? const SizedBox(
+                                        height: 24,
+                                        width: 24,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                      : const Text(
+                                        'Masuk',
+                                        style: TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    )
-                                  : const Text(
-                                      'Masuk',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
                             ),
                           ),
 
@@ -300,11 +305,13 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const RegisterPage()),
-                                ),
+                                onTap:
+                                    () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const RegisterPage(),
+                                      ),
+                                    ),
                                 child: const Text(
                                   'Daftar',
                                   style: TextStyle(
@@ -317,7 +324,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ],
                           ),
-                          
+
                           // Add some padding at the bottom so it clears the image
                           const SizedBox(height: 40),
                         ],

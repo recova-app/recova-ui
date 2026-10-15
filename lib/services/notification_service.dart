@@ -36,9 +36,7 @@ class NotificationService {
   ///
   /// Notifikasi lama (id=12) akan di-cancel terlebih dahulu agar waktu
   /// selalu sinkron jika pengguna mengubah preferensi check-in-nya.
-  static Future<void> scheduleDailyNotification({
-    String? checkinTime,
-  }) async {
+  static Future<void> scheduleDailyNotification({String? checkinTime}) async {
     // Parsing "HH:mm" → hour & minute, dengan fallback 09:15
     int hour = 9;
     int minute = 15;
