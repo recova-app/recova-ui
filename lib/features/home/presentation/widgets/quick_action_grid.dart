@@ -7,10 +7,10 @@ import 'package:recova/features/home/presentation/widgets/home_feature_card.dart
 import 'package:recova/models/daily_content_model.dart';
 import 'package:recova/models/statistics_model.dart';
 import 'package:recova/models/user_model.dart';
-import 'package:recova/pages/checkin_page.dart';
-import 'package:recova/pages/coach_page.dart';
+import 'package:recova/features/routine/presentation/pages/checkin_page.dart';
+import 'package:recova/features/coach/presentation/pages/coach_page.dart';
 import 'package:recova/pages/emergency_page.dart';
-import 'package:recova/pages/relapse_page.dart';
+import 'package:recova/features/routine/presentation/pages/relapse_page.dart';
 
 class QuickActionGrid extends StatelessWidget {
   final User user;

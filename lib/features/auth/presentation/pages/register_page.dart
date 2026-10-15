@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:recova/pages/main_scaffold.dart';
-import 'package:recova/pages/onboarding/learning_1.dart';
+import 'package:recova/features/onboarding/presentation/pages/learning_1_page.dart';
 import 'package:recova/services/auth_service.dart';
 import '../widgets/auth_button.dart';
 import '../widgets/auth_header.dart';

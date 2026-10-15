@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:recova/pages/notification_page.dart';
+import 'package:recova/features/notifications/presentation/pages/notification_page.dart';
 
 class HomeHeader extends StatelessWidget {
   final String nickname;

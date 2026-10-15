@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:recova/pages/home_page.dart';
+import 'package:recova/features/home/presentation/pages/home_page.dart';
 import 'package:recova/pages/create_post_page.dart';
-import 'package:recova/pages/stats_page.dart';
+import 'package:recova/features/routine/presentation/pages/stats_page.dart';
 import 'package:recova/pages/community_hub_page.dart';
-import 'package:recova/pages/education_page.dart';
-import 'package:recova/pages/profile_page.dart';
+import 'package:recova/features/education/presentation/pages/education_page.dart';
+import 'package:recova/features/profile/presentation/pages/profile_page.dart';
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});

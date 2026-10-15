@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:recova/pages/notification_page.dart';
-import 'package:recova/pages/coach_page.dart';
+import 'package:recova/features/notifications/presentation/pages/notification_page.dart';
+import 'package:recova/features/coach/presentation/pages/coach_page.dart';
 import 'package:recova/pages/community_page.dart';
 
 class CommunityHubPage extends StatelessWidget {

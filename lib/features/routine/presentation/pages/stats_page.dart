@@ -7,7 +7,7 @@ import 'package:recova/features/routine/presentation/widgets/stats_streak_calend
 import 'package:recova/features/routine/presentation/widgets/stats_summary_cards.dart';
 import 'package:recova/features/routine/presentation/widgets/stats_trigger_bar_chart.dart';
 import 'package:recova/models/relapse_statistics_model.dart';
-import 'package:recova/pages/notification_page.dart';
+import 'package:recova/features/notifications/presentation/pages/notification_page.dart';
 
 class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
