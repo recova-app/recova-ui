@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recova/bloc/relapse_cubit.dart';
+import 'package:recova/features/routine/presentation/cubit/relapse_cubit.dart';
 import 'package:recova/pages/main_scaffold.dart';
 
 class RelapsePage extends StatefulWidget {

@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:recova/models/statistics_model.dart';
 
 Map<String, dynamic> _asMap(dynamic value) {
@@ -24,7 +25,7 @@ bool _parseBool(dynamic value, {bool defaultValue = true}) {
   return defaultValue;
 }
 
-class RoutineCheckInData {
+class RoutineCheckInData extends Equatable {
   final String id;
   final String userId;
   final String checkInDate;
@@ -35,7 +36,7 @@ class RoutineCheckInData {
   final List<String> relapseTrigger;
   final DateTime? createdAt;
 
-  RoutineCheckInData({
+  const RoutineCheckInData({
     required this.id,
     required this.userId,
     required this.checkInDate,
@@ -84,9 +85,22 @@ class RoutineCheckInData {
       'created_at': createdAt?.toIso8601String(),
     };
   }
+
+  @override
+  List<Object?> get props => [
+    id,
+    userId,
+    checkInDate,
+    checkInDayName,
+    mood,
+    isSuccessful,
+    commitment,
+    relapseTrigger,
+    createdAt,
+  ];
 }
 
-class RoutineRelapseData {
+class RoutineRelapseData extends Equatable {
   final String id;
   final String userId;
   final String relapseDate;
@@ -97,7 +111,7 @@ class RoutineRelapseData {
   final List<String> relapseTrigger;
   final DateTime? createdAt;
 
-  RoutineRelapseData({
+  const RoutineRelapseData({
     required this.id,
     required this.userId,
     required this.relapseDate,
@@ -145,15 +159,28 @@ class RoutineRelapseData {
       'created_at': createdAt?.toIso8601String(),
     };
   }
+
+  @override
+  List<Object?> get props => [
+    id,
+    userId,
+    relapseDate,
+    relapseDayName,
+    checkInId,
+    mood,
+    commitment,
+    relapseTrigger,
+    createdAt,
+  ];
 }
 
-class RoutineRelapseSolutionData {
+class RoutineRelapseSolutionData extends Equatable {
   final String title;
   final String analysis;
   final String summary;
   final DateTime? generatedAt;
 
-  RoutineRelapseSolutionData({
+  const RoutineRelapseSolutionData({
     required this.title,
     required this.analysis,
     required this.summary,
@@ -172,6 +199,20 @@ class RoutineRelapseSolutionData {
     );
   }
 
+  RoutineRelapseSolutionData copyWith({
+    String? title,
+    String? analysis,
+    String? summary,
+    DateTime? generatedAt,
+  }) {
+    return RoutineRelapseSolutionData(
+      title: title ?? this.title,
+      analysis: analysis ?? this.analysis,
+      summary: summary ?? this.summary,
+      generatedAt: generatedAt ?? this.generatedAt,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'title': title,
@@ -180,14 +221,17 @@ class RoutineRelapseSolutionData {
       'generated_at': generatedAt?.toIso8601String(),
     };
   }
+
+  @override
+  List<Object?> get props => [title, analysis, summary, generatedAt];
 }
 
-class RoutineCheckInResponseData {
+class RoutineCheckInResponseData extends Equatable {
   final RoutineCheckInData checkIn;
   final Statistics statistics;
   final RoutineRelapseSolutionData? relapseSolution;
 
-  RoutineCheckInResponseData({
+  const RoutineCheckInResponseData({
     required this.checkIn,
     required this.statistics,
     this.relapseSolution,
@@ -221,14 +265,17 @@ class RoutineCheckInResponseData {
       'relapse_solution': relapseSolution?.toJson(),
     };
   }
+
+  @override
+  List<Object?> get props => [checkIn, statistics, relapseSolution];
 }
 
-class RoutineRelapseResponseData {
+class RoutineRelapseResponseData extends Equatable {
   final RoutineRelapseData relapse;
   final Statistics statistics;
   final RoutineRelapseSolutionData? relapseSolution;
 
-  RoutineRelapseResponseData({
+  const RoutineRelapseResponseData({
     required this.relapse,
     required this.statistics,
     this.relapseSolution,
@@ -262,9 +309,12 @@ class RoutineRelapseResponseData {
       'relapse_solution': relapseSolution?.toJson(),
     };
   }
+
+  @override
+  List<Object?> get props => [relapse, statistics, relapseSolution];
 }
 
-class CheckInResult {
+class CheckInResult extends Equatable {
   final String id;
   final DateTime startDate;
   final DateTime? endDate;
@@ -345,4 +395,84 @@ class CheckInResult {
       isActive: _parseBool(json['isActive']),
     );
   }
+
+  factory CheckInResult.fromCheckInResponse(
+    RoutineCheckInResponseData response,
+  ) {
+    return CheckInResult(
+      id: response.checkIn.id,
+      startDate:
+          response.checkIn.createdAt ??
+          DateTime.tryParse(response.checkIn.checkInDate) ??
+          DateTime.now(),
+      isActive: response.checkIn.isSuccessful,
+      checkIn: response.checkIn,
+      statistics: response.statistics,
+      relapseSolution: response.relapseSolution,
+    );
+  }
+
+  factory CheckInResult.fromRelapseResponse(
+    RoutineRelapseResponseData response,
+  ) {
+    return CheckInResult(
+      id: response.relapse.id,
+      startDate:
+          response.relapse.createdAt ??
+          DateTime.tryParse(response.relapse.relapseDate) ??
+          DateTime.now(),
+      isActive: false,
+      relapse: response.relapse,
+      statistics: response.statistics,
+      relapseSolution: response.relapseSolution,
+    );
+  }
+
+  CheckInResult copyWith({
+    String? id,
+    DateTime? startDate,
+    DateTime? endDate,
+    bool? isActive,
+    RoutineCheckInData? checkIn,
+    RoutineRelapseData? relapse,
+    Statistics? statistics,
+    RoutineRelapseSolutionData? relapseSolution,
+  }) {
+    return CheckInResult(
+      id: id ?? this.id,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      isActive: isActive ?? this.isActive,
+      checkIn: checkIn ?? this.checkIn,
+      relapse: relapse ?? this.relapse,
+      statistics: statistics ?? this.statistics,
+      relapseSolution: relapseSolution ?? this.relapseSolution,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'startDate': startDate.toIso8601String(),
+      if (endDate != null) 'endDate': endDate!.toIso8601String(),
+      'isActive': isActive,
+      if (checkIn != null) 'check_in': checkIn!.toJson(),
+      if (relapse != null) 'relapse': relapse!.toJson(),
+      if (statistics != null) 'statistics': statistics!.toJson(),
+      if (relapseSolution != null)
+        'relapse_solution': relapseSolution!.toJson(),
+    };
+  }
+
+  @override
+  List<Object?> get props => [
+    id,
+    startDate,
+    endDate,
+    isActive,
+    checkIn,
+    relapse,
+    statistics,
+    relapseSolution,
+  ];
 }

@@ -5,9 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recova/bloc/education_cubit.dart';
 import 'package:recova/bloc/home_cubit.dart';
 import 'package:recova/bloc/community_cubit.dart';
-import 'package:recova/bloc/checkin_cubit.dart';
-import 'package:recova/bloc/relapse_cubit.dart';
 import 'package:recova/bloc/stats_cubit.dart';
+import 'package:recova/core/network/api_client.dart';
+import 'package:recova/features/routine/data/datasources/routine_remote_data_source.dart';
+import 'package:recova/features/routine/data/repositories/routine_repository_impl.dart';
+import 'package:recova/features/routine/domain/repositories/routine_repository.dart';
+import 'package:recova/features/routine/presentation/cubit/checkin_cubit.dart';
+import 'package:recova/features/routine/presentation/cubit/relapse_cubit.dart';
+import 'package:recova/services/auth_service.dart';
 import 'package:recova/pages/login_page.dart';
 import 'package:recova/pages/main_scaffold.dart';
 import 'package:recova/pages/onboarding/learning_2.dart';
@@ -80,25 +85,44 @@ void main() async {
         );
       };
 
+      final apiClient = ApiClient(tokenProvider: AuthService().getToken);
+      final routineRemoteDataSource = RoutineRemoteDataSourceImpl(
+        apiClient: apiClient,
+      );
+      final routineRepository = RoutineRepositoryImpl(
+        remoteDataSource: routineRemoteDataSource,
+      );
+
       runApp(
-        MultiBlocProvider(
-          providers: [
-            BlocProvider<HomeCubit>(create: (context) => HomeCubit()),
-            BlocProvider<CheckinCubit>(
-              create:
-                  (context) =>
-                      CheckinCubit(homeCubit: context.read<HomeCubit>()),
-            ),
-            BlocProvider<RelapseCubit>(
-              create:
-                  (context) =>
-                      RelapseCubit(homeCubit: context.read<HomeCubit>()),
-            ),
-            BlocProvider<CommunityCubit>(create: (context) => CommunityCubit()),
-            BlocProvider<EducationCubit>(create: (context) => EducationCubit()),
-            BlocProvider<StatsCubit>(create: (context) => StatsCubit()),
-          ],
-          child: const MyApp(),
+        RepositoryProvider<RoutineRepository>.value(
+          value: routineRepository,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<HomeCubit>(create: (context) => HomeCubit()),
+              BlocProvider<CheckinCubit>(
+                create:
+                    (context) => CheckinCubit(
+                      homeCubit: context.read<HomeCubit>(),
+                      routineRepository: routineRepository,
+                    ),
+              ),
+              BlocProvider<RelapseCubit>(
+                create:
+                    (context) => RelapseCubit(
+                      homeCubit: context.read<HomeCubit>(),
+                      routineRepository: routineRepository,
+                    ),
+              ),
+              BlocProvider<CommunityCubit>(
+                create: (context) => CommunityCubit(),
+              ),
+              BlocProvider<EducationCubit>(
+                create: (context) => EducationCubit(),
+              ),
+              BlocProvider<StatsCubit>(create: (context) => StatsCubit()),
+            ],
+            child: const MyApp(),
+          ),
         ),
       );
     },
