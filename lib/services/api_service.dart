@@ -43,9 +43,10 @@ class ApiService {
 
   /// Returns a fresh [IOClient] with standard TLS verification.
   static IOClient _buildClient() {
-    final inner = HttpClient()
-      ..connectionTimeout = const Duration(seconds: 30)
-      ..idleTimeout = const Duration(seconds: 0);
+    final inner =
+        HttpClient()
+          ..connectionTimeout = const Duration(seconds: 30)
+          ..idleTimeout = const Duration(seconds: 0);
     return IOClient(inner);
   }
 
@@ -177,7 +178,11 @@ class ApiService {
   static Future<User> getUserMe() async {
     http.Response? response;
     try {
-      response = await _request('GET', Uri.parse('$baseUrl/users/me'), timeoutSeconds: 10);
+      response = await _request(
+        'GET',
+        Uri.parse('$baseUrl/users/me'),
+        timeoutSeconds: 10,
+      );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return User.fromJson(data['data'] ?? data);
@@ -194,7 +199,11 @@ class ApiService {
   static Future<Statistics> getStatistics() async {
     http.Response? response;
     try {
-      response = await _request('GET', Uri.parse('$baseUrl/routine/statistics'), timeoutSeconds: 10);
+      response = await _request(
+        'GET',
+        Uri.parse('$baseUrl/routine/statistics'),
+        timeoutSeconds: 10,
+      );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return Statistics.fromJson(data['data'] ?? data);
@@ -229,9 +238,9 @@ class ApiService {
         body: jsonEncode(payload),
         timeoutSeconds: 15,
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        return CheckInResult.fromJson(data['data']);
+        return CheckInResult.fromJson(data['data'] ?? data);
       }
       await _check401(response);
       throw Exception(_handleError(null, response));
@@ -241,7 +250,7 @@ class ApiService {
     }
   }
 
-    static Future<CheckInResult> relapse({
+  static Future<CheckInResult> relapse({
     required String content,
     String mood = '',
     bool isSuccessful = true,
@@ -264,9 +273,9 @@ class ApiService {
         body: jsonEncode(payload),
         timeoutSeconds: 15,
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
-        return CheckInResult.fromJson(data['data']);
+        return CheckInResult.fromJson(data['data'] ?? data);
       }
       await _check401(response);
       throw Exception(_handleError(null, response));
@@ -276,17 +285,18 @@ class ApiService {
     }
   }
 
-
   // === COMMUNITY ===
   static Future<List<Post>> getCommunityPosts({String? category}) async {
     http.Response? response;
     try {
-      final normalizedCategory = category == null || category.isEmpty
-          ? null
-          : _normalizeCommunityCategory(category);
-      final uri = normalizedCategory == null || normalizedCategory.isEmpty
-          ? Uri.parse('$baseUrl/community')
-          : Uri.parse('$baseUrl/community?category=$normalizedCategory');
+      final normalizedCategory =
+          category == null || category.isEmpty
+              ? null
+              : _normalizeCommunityCategory(category);
+      final uri =
+          normalizedCategory == null || normalizedCategory.isEmpty
+              ? Uri.parse('$baseUrl/community')
+              : Uri.parse('$baseUrl/community?category=$normalizedCategory');
       response = await _request('GET', uri, timeoutSeconds: 15);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -301,7 +311,11 @@ class ApiService {
     }
   }
 
-  static Future<Post> createPost({required String title, required String content, required String category}) async {
+  static Future<Post> createPost({
+    required String title,
+    required String content,
+    required String category,
+  }) async {
     http.Response? response;
     try {
       final normalizedCategory = _normalizeCommunityCategory(category);
@@ -311,11 +325,13 @@ class ApiService {
         body: jsonEncode({
           'title': title,
           'content': content,
-          'category': normalizedCategory, // Selalu kirim nilai kategori yang valid ke backend.
+          'category':
+              normalizedCategory, // Selalu kirim nilai kategori yang valid ke backend.
         }),
         timeoutSeconds: 15,
       );
-      if (response.statusCode == 201) { // 201 Created
+      if (response.statusCode == 201) {
+        // 201 Created
         final data = jsonDecode(response.body);
         return Post.fromJson(data['data']);
       }
@@ -330,7 +346,11 @@ class ApiService {
   static Future<void> likePost(String postId) async {
     http.Response? response;
     try {
-      response = await _request('POST', Uri.parse('$baseUrl/community/$postId/like'), timeoutSeconds: 10);
+      response = await _request(
+        'POST',
+        Uri.parse('$baseUrl/community/$postId/like'),
+        timeoutSeconds: 10,
+      );
       if (response.statusCode != 200 && response.statusCode != 201) {
         throw Exception(_handleError(null, response));
       }
@@ -343,7 +363,11 @@ class ApiService {
     http.Response? response;
     try {
       // Umumnya, unlike menggunakan metode DELETE
-      response = await _request('DELETE', Uri.parse('$baseUrl/community/$postId/like'), timeoutSeconds: 10);
+      response = await _request(
+        'DELETE',
+        Uri.parse('$baseUrl/community/$postId/like'),
+        timeoutSeconds: 10,
+      );
       if (response.statusCode != 200) {
         throw Exception(_handleError(null, response));
       }
@@ -426,12 +450,15 @@ class ApiService {
     }
   }
 
-
   // === EDUCATION ===
   static Future<List<EducationContent>> getEducationContents() async {
     http.Response? response;
     try {
-      response = await _request('GET', Uri.parse('$baseUrl/education'), timeoutSeconds: 15);
+      response = await _request(
+        'GET',
+        Uri.parse('$baseUrl/education'),
+        timeoutSeconds: 15,
+      );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print(data);
@@ -458,7 +485,8 @@ class ApiService {
       final payload = <String, dynamic>{};
       if (nickname != null) payload['nickname'] = nickname;
       if (recoveryReason != null) payload['recovery_reason'] = recoveryReason;
-      if (dailyCheckinTime != null) payload['daily_checkin_time'] = dailyCheckinTime;
+      if (dailyCheckinTime != null)
+        payload['daily_checkin_time'] = dailyCheckinTime;
       if (pornFreeGoal != null) payload['porn_free_goal'] = pornFreeGoal;
 
       response = await _request(
@@ -483,7 +511,11 @@ class ApiService {
   static Future<DailyContent> getDailyContent() async {
     http.Response? response;
     try {
-      response = await _request('GET', Uri.parse('$baseUrl/content/daily'), timeoutSeconds: 10);
+      response = await _request(
+        'GET',
+        Uri.parse('$baseUrl/content/daily'),
+        timeoutSeconds: 10,
+      );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return DailyContent.fromJson(data['data'] ?? data);
@@ -497,7 +529,9 @@ class ApiService {
   }
 
   // === AI COACH ===
-  static Future<List<Map<String, dynamic>>> getAiChatHistory({int limit = 50}) async {
+  static Future<List<Map<String, dynamic>>> getAiChatHistory({
+    int limit = 50,
+  }) async {
     http.Response? response;
     try {
       response = await _request(
@@ -509,7 +543,10 @@ class ApiService {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         final raw = data['data'];
         if (raw is List) {
-          return raw.whereType<Map>().map((e) => Map<String, dynamic>.from(e)).toList();
+          return raw
+              .whereType<Map>()
+              .map((e) => Map<String, dynamic>.from(e))
+              .toList();
         }
         return [];
       }
@@ -521,7 +558,9 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> askAiCoach({required String message}) async {
+  static Future<Map<String, dynamic>> askAiCoach({
+    required String message,
+  }) async {
     http.Response? response;
     try {
       response = await _request(
@@ -571,7 +610,9 @@ class ApiService {
     return 'supportive';
   }
 
-  static Future<void> updateAiPersonaPreference({required String persona}) async {
+  static Future<void> updateAiPersonaPreference({
+    required String persona,
+  }) async {
     http.Response? response;
     try {
       response = await _request(
@@ -615,7 +656,11 @@ class ApiService {
   static Future<List<Journal>> getJournals() async {
     http.Response? response;
     try {
-      response = await _request('GET', Uri.parse('$baseUrl/journals'), timeoutSeconds: 15);
+      response = await _request(
+        'GET',
+        Uri.parse('$baseUrl/journals'),
+        timeoutSeconds: 15,
+      );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final list = data['data'] as List? ?? [];

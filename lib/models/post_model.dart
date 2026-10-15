@@ -37,15 +37,15 @@ class Post {
       category: categoryValue.isEmpty ? 'Nasihat' : categoryValue,
       commentCount: _readInt(json['commentCount'] ?? json['comment_count']),
       likeCount: _readInt(json['likeCount'] ?? json['like_count']),
-      createdAt: _parseServerDateTime(
-        json['createdAt'] ?? json['created_at'],
-      ),
-      userId: (json['userId'] ?? json['user_id'] ?? '').toString(),
+      createdAt: _parseServerDateTime(json['createdAt'] ?? json['created_at']),
+      userId:
+          (json['userId'] ?? json['user_id'] ?? author['id'] ?? '').toString(),
       // Jika backend mengirim data user, kita bisa parse di sini
-      username: (author['nickname'] ?? author['username'] ?? 'Anonim').toString(),
+      username:
+          (author['nickname'] ?? author['username'] ?? 'Anonim').toString(),
       userStreak: _readInt(author['currentStreak'] ?? author['current_streak']),
       // Asumsi backend mengirim field 'isLiked'
-      isLiked: json['isLiked'] ?? false,
+      isLiked: json['isLiked'] ?? json['is_liked'] ?? false,
     );
   }
 
@@ -79,7 +79,15 @@ class Post {
 
   // Helper untuk mengubah Post menjadi Map yang bisa dipakai di PostCard
   Map<String, dynamic> toPostCardMap() {
-    return {'id': id, 'username': username, 'likes': likeCount, 'text': content, 'streak': userStreak, 'category': category, 'isLiked': isLiked};
+    return {
+      'id': id,
+      'username': username,
+      'likes': likeCount,
+      'text': content,
+      'streak': userStreak,
+      'category': category,
+      'isLiked': isLiked,
+    };
   }
 
   static int _readInt(dynamic value) {
@@ -96,3 +104,5 @@ class Post {
     return parsed.toLocal();
   }
 }
+
+typedef CommunityPostData = Post;

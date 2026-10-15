@@ -24,7 +24,12 @@ class User {
       nickname: json['nickname'] ?? '',
       recoveryReason: json['recovery_reason'],
       dailyCheckinTime: json['daily_checkin_time'],
-      pornFreeGoal: json['porn_free_goal'] != null ? (json['porn_free_goal'] is int ? json['porn_free_goal'] : int.tryParse(json['porn_free_goal'].toString())) : null,
+      pornFreeGoal:
+          json['porn_free_goal'] != null
+              ? (json['porn_free_goal'] is int
+                  ? json['porn_free_goal']
+                  : int.tryParse(json['porn_free_goal'].toString()))
+              : null,
       onboardingCompleted: json['onboarding_completed'] ?? false,
     );
   }
@@ -41,3 +46,5 @@ class User {
     };
   }
 }
+
+typedef UserProfileData = User;
