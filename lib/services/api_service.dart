@@ -41,13 +41,11 @@ class ApiService {
     }
   }
 
-  /// Returns a fresh [IOClient] that accepts the server's SSL certificate.
+  /// Returns a fresh [IOClient] with standard TLS verification.
   static IOClient _buildClient() {
     final inner = HttpClient()
       ..connectionTimeout = const Duration(seconds: 30)
-      ..idleTimeout = const Duration(seconds: 0)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+      ..idleTimeout = const Duration(seconds: 0);
     return IOClient(inner);
   }
 

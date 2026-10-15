@@ -37,7 +37,6 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_bloc: ^8.1.5 # Tambahkan ini
   equatable: ^2.0.5 # Tambahkan ini
-  flutter_lints: ^5.0.0
   google_sign_in: ^6.2.1
   http: ^1.5.0
   table_calendar: ^3.0.9
@@ -47,6 +46,7 @@ dependencies:
   awesome_notifications: ^0.11.0
 
 dev_dependencies:
+  flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
@@ -79,7 +79,6 @@ flutter:
     - assets/images/menu/ # <-- Tambahkan path ini untuk ikon navigasi Anda
     - assets/images/maskots/
     - assets/fonts/static/
-    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

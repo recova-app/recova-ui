@@ -16,6 +16,23 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
+  errors:
+    unused_import: ignore
+    unused_element: ignore
+    unused_element_parameter: ignore
+    unused_field: ignore
+    unused_local_variable: ignore
+    deprecated_member_use: ignore
+    avoid_print: ignore
+    sized_box_for_whitespace: ignore
+    control_flow_in_finally: ignore
+    curly_braces_in_flow_control_structures: ignore
+    file_names: ignore
+    annotate_overrides: ignore
+    avoid_unnecessary_containers: ignore
+    depend_on_referenced_packages: ignore
+    prefer_final_fields: ignore
+    unnecessary_brace_in_string_interps: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:

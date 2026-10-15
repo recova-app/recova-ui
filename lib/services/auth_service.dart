@@ -6,7 +6,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'package:recova/services/onboarding_state.dart';
-import 'dart:developer' as developer;
 
 class AuthService {
   static const String _baseUrl = 'https://recova.salmanabdurrahman.my.id';
@@ -33,9 +32,7 @@ class AuthService {
   IOClient _buildClient() {
     final inner = HttpClient()
       ..connectionTimeout = const Duration(seconds: 30)
-      ..idleTimeout = const Duration(seconds: 0)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+      ..idleTimeout = const Duration(seconds: 0);
     return IOClient(inner);
   }
 
@@ -68,7 +65,6 @@ class AuthService {
         // SSL/TLS handshake failure – retry
         lastError = e;
       } on http.ClientException catch (e) {
-        print(e);
         // Retry only on connection-reset; surface everything else immediately.
         if (!e.message.toLowerCase().contains('connection reset') &&
             !e.message.toLowerCase().contains('connection closed')) {
@@ -81,7 +77,7 @@ class AuthService {
     }
     throw Exception(
       'Gagal terhubung ke server setelah $maxRetries percobaan. '
-      'Periksa koneksi internet kamu.',
+      'Periksa koneksi internet kamu.${lastError != null ? " ($lastError)" : ""}',
     );
   }
 
@@ -215,15 +211,6 @@ class AuthService {
     );
 
     final body = jsonDecode(response.body) as Map<String, dynamic>;
-    developer.log(response.body, name: 'NetworkResponse');
-    print(response.body);
-     print(response.statusCode);
-    print(response.headers);
-    print(response.request);
-    print(response.reasonPhrase);
-    print(response.isRedirect);
-    print(response.persistentConnection);
-   
     if (response.statusCode == 200 || response.statusCode == 201) {
       await setOnboardingCompleted();
       return body['data'] as Map<String, dynamic>;
